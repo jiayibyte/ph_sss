@@ -1,0 +1,106 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const agencies = [
+  {
+    name: 'SSS — Social Security System',
+    links: [
+      { label: 'SSS Contribution Table (official)', url: 'https://www.sss.gov.ph/sss-contribution-table/' },
+      { label: '2025 Schedule of Contributions PDF (Circulars 2024-006 to 2024-010, in force 2026)', url: 'https://www.sss.gov.ph/wp-content/uploads/2024/12/2025-SSS-Contribution-Table-rev.pdf' },
+      { label: 'SSS main site / My.SSS portal', url: 'https://www.sss.gov.ph/' },
+    ],
+    used: 'SSS Contribution Table & Calculator, Take-Home Pay Calculator',
+  },
+  {
+    name: 'PhilHealth — Philippine Health Insurance Corporation',
+    links: [
+      { label: 'PhilHealth Advisory No. 2026-0042 (premium payment, direct contributors)', url: 'https://www.philhealth.gov.ph/advisories/2026/PA2026-0042.pdf' },
+      { label: 'PhilHealth Circular 2020-0005 Rev. 1 (premium schedule under the UHC Act)', url: 'https://www.philhealth.gov.ph/circulars/2020/circ2020-0005.pdf' },
+      { label: 'PhilHealth main site', url: 'https://www.philhealth.gov.ph/' },
+    ],
+    used: 'PhilHealth Contribution page, Take-Home Pay Calculator',
+  },
+  {
+    name: 'Pag-IBIG Fund — Home Development Mutual Fund (HDMF)',
+    links: [
+      { label: 'HDMF Circular No. 460 (MFS increase to ₱10,000, Feb 2024)', url: "https://www.pagibigfund.gov.ph/document/pdf/circulars/provident/Circular%20No.%20460%20-%20Guidelines%20on%20the%20Pag-IBIG%20Fund's%20Implementation%20of%20Increase%20in%20the%20MFS%20Effective%20February%202024.pdf" },
+      { label: 'Pag-IBIG Fund main site / Virtual Pag-IBIG', url: 'https://www.pagibigfund.gov.ph/' },
+    ],
+    used: 'Pag-IBIG Contribution page, Take-Home Pay Calculator',
+  },
+  {
+    name: 'BIR — Bureau of Internal Revenue',
+    links: [
+      { label: 'Revised Withholding Tax Table, Annex E of RR 11-2018 (effective Jan 1, 2023 onwards)', url: 'https://bir-cdn.bir.gov.ph/local/pdf/Annex%20E%20RR%2011-2018.pdf' },
+      { label: 'BIR main site', url: 'https://www.bir.gov.ph/' },
+    ],
+    used: 'Take-Home Pay Calculator',
+  },
+  {
+    name: 'DOLE — Department of Labor and Employment / Bureau of Working Conditions',
+    links: [
+      { label: 'Handbook on Workers’ Statutory Monetary Benefits (2024 edition)', url: 'https://bwc.dole.gov.ph/wp-content/uploads/2024/10/Workers-Statutory-Monetary-Benefits-Handbook-2024-Edition.pdf' },
+      { label: 'Labor Advisory No. 12-25 (2026 holiday pay rules)', url: 'https://bwc.dole.gov.ph/wp-content/uploads/2025/10/Labor-Advisory-No.-12-25-Payment-of-Wages-for-the-Regular-Holidays-Special-Non-Working-Days-and-Special-Working-Day-for-the-Year-2026-1.pdf' },
+      { label: 'DOLE on final pay & COE (Labor Advisory No. 06-20)', url: 'https://dole.gov.ph/final-pay-coe-must-be-released-on-time-dole/' },
+    ],
+    used: '13th Month Pay, Holiday Pay, Night Differential, Overtime, Final Pay calculators',
+  },
+  {
+    name: 'Malacañang / Presidential Communications Office',
+    links: [
+      { label: 'Proclamation No. 1006, s. 2025 (2026 holidays)', url: 'https://pco.gov.ph/issuances/proclamation-no-1006-declaring-the-regular-holidays-and-special-non-working-days-for-the-year-2026/' },
+      { label: 'Proclamation No. 1264, s. 2026 (Eid’l Adha 2026)', url: 'https://www.officialgazette.gov.ph/2026/05/21/proclamation-no-1264-s-2026/' },
+    ],
+    used: 'Holiday Pay Calculator (2026 holiday calendar)',
+  },
+  {
+    name: 'DMW — Department of Migrant Workers',
+    links: [
+      { label: 'DMW Advisory No. 38, s. 2025 (OFW Travel Pass)', url: 'https://dmw.gov.ph/archives/v1/resources/dsms/DMW/ISN-EXT/2025/DMW-ADVISORY-38-2025.pdf' },
+      { label: 'DMW official OEC Exemption Q&A', url: 'https://dmw.gov.ph/archives/poea/files/OECExemption.pdf' },
+      { label: 'DMW main site', url: 'https://dmw.gov.ph/' },
+    ],
+    used: 'OEC Exemption Guide',
+  },
+  {
+    name: 'PRC — Professional Regulation Commission',
+    links: [
+      { label: 'Schedule of Licensure Examinations for 2026 (Resolution No. 2113, s. 2025)', url: 'https://www.prc.gov.ph/article/schedule-licensure-examinations-year-2026' },
+      { label: 'PRC main site / LERIS', url: 'https://www.prc.gov.ph/' },
+    ],
+    used: 'PRC Board Exam Schedule 2026',
+  },
+];
+---
+
+<BaseLayout
+  title="Sources – Official References Used by AyTool"
+  description="Every official source behind AyTool's calculators: SSS circulars, PhilHealth advisories, HDMF circulars, BIR tax tables, DOLE advisories, Malacañang proclamations, DMW and PRC issuances."
+  path="/sources/"
+>
+  <article class="content-prose mx-auto max-w-content px-4 pt-8">
+    <h1 class="text-2xl font-bold text-ink sm:text-3xl">Sources</h1>
+    <p class="mt-4">
+      Every rate, bracket, multiplier and date on AyTool is transcribed from the official issuances
+      below and re-verified on each agency's update cycle. We do not source numbers from other
+      calculator sites.
+    </p>
+    {
+      agencies.map((a) => (
+        <section>
+          <h2>{a.name}</h2>
+          <ul>
+            {a.links.map((l) => (
+              <li>
+                <a href={l.url} target="_blank" rel="noopener">
+                  {l.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+          <p class="text-sm text-ink-soft">Used by: {a.used}</p>
+        </section>
+      ))
+    }
+  </article>
+</BaseLayout>

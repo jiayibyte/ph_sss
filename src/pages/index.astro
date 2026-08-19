@@ -1,0 +1,99 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../../site.config';
+import { ALL_TOOLS } from '../lib/pages';
+
+const p0 = ALL_TOOLS.filter((t) => t.priority === 'P0');
+const p1 = ALL_TOOLS.filter((t) => t.priority === 'P1');
+const p2 = ALL_TOOLS.filter((t) => t.priority === 'P2');
+---
+
+<BaseLayout
+  title="Philippines Salary, Payroll & Contribution Calculators"
+  description="Free calculators for SSS, PhilHealth, Pag-IBIG, 13th month pay, take-home pay and other Philippine payroll computations. Independent, official-source based, updated for 2026."
+  path="/"
+>
+  <div class="bg-accent-soft">
+    <div class="mx-auto max-w-wide px-4 py-12 text-center">
+      <h1 class="text-3xl font-bold text-ink sm:text-4xl">
+        Philippines Payroll &amp; Contribution Calculators
+      </h1>
+      <p class="mx-auto mt-3 max-w-xl text-ink-soft">
+        Free calculators for SSS, PhilHealth, Pag-IBIG, 13th month pay and employee payroll
+        computations — based on official 2026 schedules, verified against government sources.
+      </p>
+      <p class="mt-4 text-lg font-semibold italic text-accent-strong">{SITE.slogan}</p>
+    </div>
+  </div>
+
+  <div class="mx-auto max-w-wide px-4" id="all-calculators">
+    <section aria-labelledby="core-tools">
+      <h2 id="core-tools" class="mt-10 text-xl font-bold text-ink">Contribution Calculators</h2>
+      <ul class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          p0.map((t) => (
+            <li>
+              <a
+                href={t.href}
+                class="block h-full rounded-xl border border-line bg-surface p-5 shadow-sm transition-colors hover:border-accent"
+              >
+                <span class="text-base font-bold text-accent-strong">{t.label}</span>
+                <span class="mt-2 block text-sm leading-relaxed text-ink-soft">{t.blurb}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section aria-labelledby="pay-tools">
+      <h2 id="pay-tools" class="mt-10 text-xl font-bold text-ink">Pay &amp; Payroll Calculators</h2>
+      <ul class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          p1.map((t) => (
+            <li>
+              <a
+                href={t.href}
+                class="block h-full rounded-xl border border-line bg-surface p-5 shadow-sm transition-colors hover:border-accent"
+              >
+                <span class="text-base font-bold text-accent-strong">{t.label}</span>
+                <span class="mt-2 block text-sm leading-relaxed text-ink-soft">{t.blurb}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section aria-labelledby="guides">
+      <h2 id="guides" class="mt-10 text-xl font-bold text-ink">Guides &amp; Schedules</h2>
+      <ul class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          p2.map((t) => (
+            <li>
+              <a
+                href={t.href}
+                class="block h-full rounded-xl border border-line bg-surface p-5 shadow-sm transition-colors hover:border-accent"
+              >
+                <span class="text-base font-bold text-accent-strong">{t.label}</span>
+                <span class="mt-2 block text-sm leading-relaxed text-ink-soft">{t.blurb}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section class="mt-12 rounded-xl border border-line bg-surface-soft p-5 text-sm leading-relaxed text-ink-soft">
+      <h2 class="text-base font-bold text-ink">Why AyTool?</h2>
+      <p class="mt-2">
+        AyTool, an independent Philippine payroll calculator, keeps every rate and table
+        version-controlled against the official source — SSS circulars, PhilHealth advisories,
+        Pag-IBIG (HDMF) circulars, the BIR withholding tax table and DOLE labor advisories. Every
+        result shows the schedule used, its effective date and when we last verified it. We never
+        ask for your SSS/PhilHealth/Pag-IBIG number, password or OTP — calculations run entirely in
+        your browser and your inputs are never stored or transmitted.
+      </p>
+    </section>
+  </div>
+</BaseLayout>

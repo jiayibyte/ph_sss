@@ -1,0 +1,112 @@
+---
+import ToolPageLayout from '../layouts/ToolPageLayout.astro';
+import ThirteenthMonthCalculator from '../islands/ThirteenthMonthCalculator';
+import laborRules from '../data/labor/2026.json';
+
+const meta = laborRules.meta;
+const faqs = [
+  {
+    q: 'How do I compute my 13th month pay?',
+    a: '13th month pay = total basic salary you actually earned during the calendar year ÷ 12. If you earned ₱20,000 per month for all 12 months, your 13th month pay is ₱240,000 ÷ 12 = ₱20,000. If you worked fewer months, only the salary you actually earned is counted, which gives a pro-rated amount.',
+  },
+  {
+    q: 'Is 13th month pay taxable?',
+    a: '13th month pay is tax-exempt up to ₱90,000, combined with other benefits like bonuses (the "13th month pay and other benefits" cap under the TRAIN law). Only the amount exceeding ₱90,000 in total benefits is added to your taxable income.',
+  },
+  {
+    q: 'When is 13th month pay released?',
+    a: 'Employers must pay 13th month pay on or before December 24 of each year (PD 851). Some employers release half earlier in the year (commonly before school opening in June) and the balance in December — that is allowed as long as the full amount is paid by December 24.',
+  },
+  {
+    q: 'Am I entitled to 13th month pay if I resigned mid-year?',
+    a: 'Yes. Rank-and-file employees who worked at least one month during the calendar year are entitled to a pro-rated 13th month pay, usually released with the final pay. The formula is the same: total basic salary earned before separation ÷ 12.',
+  },
+  {
+    q: 'Does overtime pay count in the 13th month computation?',
+    a: 'No. The base is basic salary only. Overtime pay, holiday premium, night differential, and cost-of-living allowances are excluded unless your company policy, practice, or collective bargaining agreement treats them as part of basic salary.',
+  },
+  {
+    q: 'Paano kung tumaas ang sahod ko sa kalagitnaan ng taon?',
+    a: 'Add up what you actually earned each month at each salary level, then divide by 12. Example: 6 months at ₱20,000 plus 6 months at ₱25,000 = ₱270,000 total → ₱270,000 ÷ 12 = ₱22,500 13th month pay. The Accurate mode of the calculator above handles this month by month.',
+  },
+];
+---
+
+<ToolPageLayout
+  title="13th Month Pay Calculator Philippines 2026 – Formula & Computation"
+  description="Compute your 13th month pay: total basic salary earned in the year ÷ 12 (PD 851 / DOLE). Simple and month-by-month modes cover mid-year hires, resignations and salary increases."
+  path="/13th-month-pay-calculator/"
+  h1="13th Month Pay Calculator Philippines"
+  updated="August 2026"
+  faqs={faqs}
+  related={['finalPay', 'takeHome', 'overtime', 'nightDiff']}
+>
+  <Fragment slot="answer">
+    <p>
+      Your 13th month pay equals the <strong>total basic salary you earned during the calendar
+      year divided by 12</strong> — the official DOLE formula under Presidential Decree 851. Every
+      rank-and-file employee who has worked at least one month in the year is entitled to it, and
+      it must be paid on or before <strong>December 24</strong>. Use Simple mode for a fixed
+      salary, or Accurate mode to enter each month separately.
+    </p>
+  </Fragment>
+
+  <Fragment slot="calculator">
+    <ThirteenthMonthCalculator client:idle />
+  </Fragment>
+
+  <h2>The Official Formula</h2>
+  <p>
+    <strong>13th Month Pay = Total Basic Salary Earned During the Calendar Year ÷ 12.</strong>
+    "Basic salary" is your contractual pay for work performed — it excludes overtime pay, premium
+    pay for holidays and rest days, night shift differential, and allowances not integrated into
+    basic salary, unless company policy or agreement includes them.
+  </p>
+
+  <h2>How It Is Calculated (Step by Step)</h2>
+  <ol>
+    <li>List the basic salary you actually earned in each month of the calendar year (January to December).</li>
+    <li>Months you did not work — before you were hired, after you resigned, or fully unpaid leave — count as ₱0. Months with unpaid absences count only what you were actually paid as basic salary.</li>
+    <li>Add all twelve amounts.</li>
+    <li>Divide the total by 12. The divisor is always 12, even if you worked fewer months — that is what makes the result pro-rated.</li>
+  </ol>
+
+  <h2>Example Computations</h2>
+  <div class="example-card">
+    <p><strong>Example 1 — Full year, fixed salary:</strong> ₱18,000 × 12 months = ₱216,000 total.
+    13th month pay = ₱216,000 ÷ 12 = <strong>₱18,000</strong>.</p>
+  </div>
+  <div class="example-card">
+    <p><strong>Example 2 — Hired mid-year (June 1):</strong> ₱18,000 × 7 months (June–December) =
+    ₱126,000. 13th month pay = ₱126,000 ÷ 12 = <strong>₱10,500</strong>.</p>
+  </div>
+  <div class="example-card">
+    <p><strong>Example 3 — Resigned September 30:</strong> ₱15,000 × 9 months = ₱135,000.
+    Pro-rated 13th month pay = ₱135,000 ÷ 12 = <strong>₱11,250</strong>, released with the final
+    pay.</p>
+  </div>
+  <div class="example-card">
+    <p><strong>Example 4 — Salary increase in July:</strong> 6 months at ₱20,000 + 6 months at
+    ₱25,000 = ₱270,000. 13th month pay = ₱270,000 ÷ 12 = <strong>₱22,500</strong>.</p>
+  </div>
+
+  <h2>Who This Applies To</h2>
+  <p>
+    All rank-and-file employees in the private sector who worked at least one month during the
+    calendar year, regardless of position, designation, employment status, or how wages are paid.
+    Managerial employees are not covered by the legal minimum (though many companies grant it
+    anyway). Government employees follow a separate year-end bonus system. Note that your actual
+    payroll or company policy may be <em>more</em> generous than this legal minimum — this
+    calculator computes the statutory floor.
+  </p>
+
+  <h2>Official Source</h2>
+  <p>
+    Presidential Decree 851 and the DOLE guidelines on 13th month pay (reiterated in DOLE's annual
+    Labor Advisory each year). Last verified
+    {new Date(meta.last_verified + 'T00:00:00').toLocaleDateString('en-PH', { month: 'long', day: 'numeric', year: 'numeric' })}
+    against the
+    <a href="https://bwc.dole.gov.ph/" target="_blank" rel="noopener">DOLE Bureau of Working Conditions</a>
+    handbook and advisories.
+  </p>
+</ToolPageLayout>

@@ -1,0 +1,110 @@
+---
+import ToolPageLayout from '../layouts/ToolPageLayout.astro';
+
+const faqs = [
+  {
+    q: 'Who is exempted from getting an OEC?',
+    a: 'Returning OFWs (Balik-Manggagawa) who hold a valid work visa or permit and are returning to the SAME employer at the SAME jobsite, and who already have a record in the DMW (formerly POEA) database. If you changed employer or jobsite, you are not exempt and must process regular documentation.',
+  },
+  {
+    q: 'How do I get an OEC exemption online in 2026?',
+    a: 'Through the eGovPH app: register and verify your account, open the DMW section, choose Balik-Manggagawa, and generate your OFW Travel Pass (a QR code valid for 90 days). Workers whose cases fall outside the app’s scope can still use the DMW Online Services portal (the successor of BM Online) to secure the exemption/OEC before their flight.',
+  },
+  {
+    q: 'How much does the OEC or OFW Pass cost?',
+    a: 'It is free. OEC/OFW Pass issuance for Balik-Manggagawa has been free of charge since July 29, 2023 under DMW Department Circular No. 02, s. 2023.',
+  },
+  {
+    q: 'Is the OEC still required, or has it been replaced?',
+    a: 'The OEC is being replaced gradually by the digital OFW (Travel) Pass generated in the eGovPH app — made the standard exit clearance for returning workers by DMW Advisory No. 38, s. 2025. As of mid-2026, both the digital pass and the printed OEC/exemption from DMW Online Services are accepted at immigration.',
+  },
+  {
+    q: 'Why does the system tell me to book an appointment instead of giving the exemption?',
+    a: 'That means the system could not match you as an exempt Balik-Manggagawa — usually because of a name/employer/jobsite mismatch, no prior OEC record in the database, a watchlisted employer, or a restricted destination. You will need in-person processing at a DMW Regional Office or the Migrant Workers Office (MWO) at your jobsite.',
+  },
+  {
+    q: 'Do I need a new OEC exemption every vacation?',
+    a: 'Yes. The exemption/pass is per departure: the legacy OEC exemption was tied to your flight, and the OFW Travel Pass is valid for 90 days from issuance. Generate a new one each time you go home and return to your jobsite.',
+  },
+];
+---
+
+<ToolPageLayout
+  title="OEC Exemption Guide 2026 – Who Qualifies & How to Get It"
+  description="OEC exemption for Balik-Manggagawa: qualify by returning to the same employer and jobsite. Step-by-step 2026 process via the eGovPH OFW Travel Pass and DMW Online Services."
+  path="/oec-exemption/"
+  h1="OEC Exemption Guide for Returning OFWs"
+  updated="August 2026"
+  faqs={faqs}
+  related={['prc', 'sssCalculator', 'philhealth', 'pagibig']}
+  isApp={false}
+>
+  <Fragment slot="answer">
+    <p>
+      You qualify for an <strong>OEC exemption</strong> if you are a returning OFW
+      (Balik-Manggagawa) with a valid work visa who is going back to the <strong>same employer at
+      the same jobsite</strong>, with an existing record in the DMW database. Since late 2025 the
+      standard way to get it is the <strong>OFW Travel Pass in the eGovPH app</strong> (DMW
+      Advisory No. 38, s. 2025) — free of charge, valid 90 days.
+    </p>
+  </Fragment>
+
+  <h2>Who May Qualify</h2>
+  <ul>
+    <li>You hold a valid employment visa or work permit and have served (or are serving) your contract.</li>
+    <li>You are returning to the <strong>same employer</strong> and <strong>same jobsite</strong>.</li>
+    <li>You have a record in the DMW/POEA database (a previous OEC issued by DMW, POEA, POLO or MWO).</li>
+  </ul>
+
+  <h2>Who Is NOT Exempt</h2>
+  <ul>
+    <li>Workers with a <strong>new employer and/or new jobsite</strong> — regular contract processing applies.</li>
+    <li>Workers or employers on a watchlist, or destinations classified as restricted/non-compliant.</li>
+    <li>Workers with no database record or mismatched records (name, employer, jobsite discrepancies).</li>
+    <li>Undocumented workers — e.g., those who left as tourists and became workers abroad — who must first undergo DMW documentation.</li>
+    <li>Seafarers who shifted to land-based work.</li>
+  </ul>
+
+  <h2>Requirements Checklist</h2>
+  <ul>
+    <li>Passport valid for at least 6 months from departure.</li>
+    <li>Valid work visa / work permit / residence ID showing your employer and jobsite.</li>
+    <li>A verified eGovPH account (or DMW Online Services account) with your contract records matched.</li>
+    <li>If your visa does not name the employer: employment contract, certificate of employment, company ID, or a recent pay slip. Domestic workers may need an MWO-verified contract.</li>
+    <li>Fee: <strong>none</strong> — issuance has been free since July 2023.</li>
+  </ul>
+
+  <h2>How to Get It Online (2026 Process)</h2>
+  <h3>Option A — OFW Travel Pass via eGovPH (standard since Nov 2025)</h3>
+  <ol>
+    <li>Download the <strong>eGovPH</strong> app and complete identity verification.</li>
+    <li>Open the DMW section and choose <strong>Balik-Manggagawa</strong>.</li>
+    <li>Confirm your employer, jobsite and contract details when prompted.</li>
+    <li>Generate the <strong>OFW Travel Pass</strong> — a QR code valid for 90 days, verifiable on the DMW website and transmitted electronically to the Bureau of Immigration and eTravel.</li>
+  </ol>
+  <h3>Option B — DMW Online Services portal</h3>
+  <ol>
+    <li>Log in at the official DMW Online Services portal (successor of BM Online).</li>
+    <li>Update your profile and passport details; check "My Contracts" is matched to your latest record.</li>
+    <li>Select Balik-Manggagawa, enter your flight date, and confirm same employer / same jobsite / same position.</li>
+    <li>The system issues your OEC / exemption — save or print it for the airport.</li>
+  </ol>
+
+  <h2>Common Errors and What They Mean</h2>
+  <ul>
+    <li><strong>Redirected to appointment page:</strong> no database match — process in person at a DMW Regional Office or MWO.</li>
+    <li><strong>Changed position with the same employer:</strong> may require contract verification at the MWO first.</li>
+    <li><strong>Locked profile fields</strong> (name, employer, jobsite, salary): can only be corrected via an in-person appointment.</li>
+    <li><strong>No pass before the flight:</strong> the Labor Assistance Center / MWAAC at the airport can manually assist, but do not rely on this.</li>
+  </ul>
+
+  <h2>Official Source</h2>
+  <p>
+    DMW Advisory No. 38, s. 2025 (OFW Travel Pass), DMW's official OEC Exemption Q&amp;A, and DMW
+    Department Circular No. 02, s. 2023 (free issuance). Process everything only through the
+    official <a href="https://dmw.gov.ph/" target="_blank" rel="noopener">DMW website (dmw.gov.ph)</a>
+    and the eGovPH app — never pay a fixer for an "OEC exemption". This page is an independent
+    guide, last verified August 19, 2026; AyTool is not affiliated with the DMW and cannot process
+    or check your documents.
+  </p>
+</ToolPageLayout>

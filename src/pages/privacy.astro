@@ -1,0 +1,58 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../../site.config';
+---
+
+<BaseLayout
+  title="Privacy Policy – AyTool"
+  description="AyTool's privacy policy: calculations run in your browser, salary inputs are never stored or transmitted, and analytics never records the amounts you type."
+  path="/privacy/"
+>
+  <article class="content-prose mx-auto max-w-content px-4 pt-8">
+    <h1 class="text-2xl font-bold text-ink sm:text-3xl">Privacy Policy</h1>
+    <p class="mt-4"><em>Last updated: August 19, 2026</em></p>
+
+    <h2>The short version</h2>
+    <ul>
+      <li>Every calculation runs entirely in your browser. The amounts you type — salaries, rates, hours — are <strong>never sent to our servers, never stored, and never logged</strong>.</li>
+      <li>We have no accounts, no sign-ups, and we never ask for names, government ID numbers (SSS/PhilHealth/Pag-IBIG/TIN), passwords or OTPs.</li>
+      <li>We use Google Analytics 4 to count page views and which calculators get used. It is configured to receive <strong>no user-entered values</strong> — only the fact that a calculator was used.</li>
+    </ul>
+
+    <h2>What we collect</h2>
+    <p>
+      Standard web server logs (IP address, user agent, requested URL, timestamp) are kept briefly
+      for security and capacity monitoring, then rotated out. If analytics is enabled, Google
+      Analytics 4 collects the usual aggregate usage data — pages viewed, approximate location at
+      city level, device type — under Google's own policies. Our analytics event whitelist contains
+      exactly two events: a page view, and a "calculator used" counter carrying only the tool name.
+    </p>
+
+    <h2>What we never collect</h2>
+    <ul>
+      <li>The numbers you type into any calculator.</li>
+      <li>Government identification numbers, member numbers, or credentials of any kind.</li>
+      <li>Anything that would let us identify your salary or employment situation.</li>
+    </ul>
+
+    <h2>Cookies</h2>
+    <p>
+      AyTool itself sets no cookies. Google Analytics may set its own cookies to distinguish
+      returning visitors; you can block them with any cookie/tracker blocker and every calculator
+      will keep working normally, since no functionality depends on cookies.
+    </p>
+
+    <h2>Third parties</h2>
+    <p>
+      Links to official government portals (SSS, PhilHealth, Pag-IBIG, BIR, DOLE, DMW, PRC) and
+      social sharing links (Facebook, Messenger) take you to sites governed by their own privacy
+      policies. We embed no third-party widgets, ad networks or trackers beyond the analytics
+      described above; this site carries no advertising.
+    </p>
+
+    <h2>Contact</h2>
+    <p>
+      Privacy questions: <a href={`mailto:${SITE.contactEmail}`}>{SITE.contactEmail}</a>.
+    </p>
+  </article>
+</BaseLayout>

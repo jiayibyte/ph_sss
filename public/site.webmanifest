@@ -1,0 +1,12 @@
+{
+  "name": "AyTool — Philippine Payroll Calculators",
+  "short_name": "AyTool",
+  "icons": [
+    { "src": "/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" },
+    { "src": "/favicon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ],
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#ffffff",
+  "theme_color": "#0f766e"
+}

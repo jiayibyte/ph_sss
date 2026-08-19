@@ -1,0 +1,107 @@
+---
+import ToolPageLayout from '../layouts/ToolPageLayout.astro';
+import SssCalculator from '../islands/SssCalculator';
+import sssRules from '../data/sss/2026.json';
+
+const meta = sssRules.meta;
+const faqs = [
+  {
+    q: 'How do I compute my SSS contribution?',
+    a: 'Find the salary range your monthly salary falls into on the official SSS schedule, take the Monthly Salary Credit (MSC) for that range, then multiply by the rate: employees pay 5% of the MSC (the employer pays 10% plus EC), while self-employed, voluntary and OFW members pay the full 15%. Example: a ₱18,000 salary maps to an ₱18,000 MSC, so an employee pays ₱900 per month.',
+  },
+  {
+    q: 'How much SSS do I pay for a ₱20,000 salary?',
+    a: 'For a ₱20,000 monthly salary, the MSC is ₱20,000. An employed member pays ₱1,000 (5%); the employer adds ₱2,000 (10%) plus ₱30 EC for a total of ₱3,030. A self-employed member pays ₱3,030; a voluntary member pays ₱3,000.',
+  },
+  {
+    q: 'How is SSS computed for self-employed members?',
+    a: 'Self-employed members declare their monthly earnings, which map to an MSC on the same schedule. They pay the full 15% of the MSC plus the Employees’ Compensation contribution (₱10 for MSC below ₱15,000, ₱30 for ₱15,000 and above). A self-employed member declaring ₱25,000 pays 15% × ₱25,000 + ₱30 = ₱3,780 per month.',
+  },
+  {
+    q: 'Can a voluntary member choose any MSC?',
+    a: 'Voluntary members generally declare their monthly earnings to set their MSC, subject to SSS rules on MSC changes (limits apply to how much you can increase your MSC within a year, especially for members aged 55 and above). The contribution is 15% of the chosen MSC with no EC.',
+  },
+  {
+    q: 'Is the calculator result the exact amount I will pay?',
+    a: 'It matches the official schedule for the standard cases, but your actual billing can differ if you have retroactive adjustments, MSC-change restrictions, or employer-specific arrangements. Always confirm your posted contributions in your My.SSS account — this site is independent and cannot access SSS records.',
+  },
+];
+---
+
+<ToolPageLayout
+  title="SSS Contribution Calculator 2026 – Compute Monthly SSS Payment"
+  description="Free SSS contribution calculator for 2026. Enter your monthly salary and member type (Employee, Self-Employed, Voluntary, OFW) to get your exact monthly contribution with full breakdown."
+  path="/sss-contribution-calculator/"
+  h1="SSS Contribution Calculator"
+  updated="August 2026"
+  faqs={faqs}
+  related={['sssTable', 'takeHome', 'philhealth', 'pagibig']}
+>
+  <Fragment slot="answer">
+    <p>
+      To compute your SSS contribution, match your monthly salary to its <strong>Monthly Salary
+      Credit (MSC)</strong> and apply the 2026 rate: <strong>employees pay 5% of the MSC</strong>
+      (their employer pays 10% plus EC), while self-employed, voluntary and OFW members pay the
+      full 15%. The calculator below does the lookup and the math for you using the official
+      schedule in force since January 2025.
+    </p>
+  </Fragment>
+
+  <Fragment slot="calculator">
+    <SssCalculator client:idle />
+  </Fragment>
+
+  <h2>How the Calculation Works</h2>
+  <ol>
+    <li><strong>Find your MSC.</strong> Your salary falls into a ₱500-wide range on the official schedule; that range maps to an MSC between ₱5,000 and ₱35,000 (₱8,000 minimum for OFW members).</li>
+    <li><strong>Apply the rate.</strong> The 2026 rate is 15% of the MSC. Employees pay 5% and their employer pays 10%; other member types pay the full 15% themselves.</li>
+    <li><strong>Add EC where applicable.</strong> Employers (and self-employed members for themselves) add ₱10 per month if the MSC is below ₱15,000, or ₱30 if ₱15,000 and above.</li>
+    <li><strong>MPF split.</strong> If your MSC exceeds ₱20,000, the contribution on the excess automatically goes to the Mandatory Provident Fund (MySSS Pension Booster) — same rate, no extra action needed.</li>
+  </ol>
+
+  <h2>Current SSS Contribution Rate &amp; Schedule</h2>
+  <p>
+    The rate is <strong>15%</strong> — the final step of the graduated increases under RA 11199
+    (12% in 2019, 13% in 2021, 14% in 2023, 15% since January 2025). The MSC floor is ₱5,000 and
+    the ceiling ₱35,000; both are unchanged for 2026. See the
+    <a href="/sss-contribution-table/">full SSS Contribution Table 2026</a> for every salary
+    bracket and member type.
+  </p>
+
+  <h2>Example Computations</h2>
+  <div class="example-card">
+    <p><strong>Employee example:</strong> ₱22,400 salary → range ₱22,250–₱22,749.99 → MSC ₱22,500.
+    Employee share = 5% × ₱22,500 = <strong>₱1,125</strong>. Employer adds ₱2,250 + ₱30 EC. Total
+    remitted: ₱3,405.</p>
+  </div>
+  <div class="example-card">
+    <p><strong>Self-employed example:</strong> declared earnings ₱14,000 → MSC ₱14,000.
+    Contribution = 15% × ₱14,000 + ₱10 EC = <strong>₱2,110</strong>, paid by the member.</p>
+  </div>
+  <div class="example-card">
+    <p><strong>Voluntary example:</strong> declared earnings ₱10,000 → MSC ₱10,000. Contribution =
+    15% × ₱10,000 = <strong>₱1,500</strong>, no EC.</p>
+  </div>
+  <div class="example-card">
+    <p><strong>OFW example:</strong> ₱7,000 declared earnings still uses the ₱8,000 OFW minimum
+    MSC. Contribution = 15% × ₱8,000 = <strong>₱1,200</strong>.</p>
+  </div>
+
+  <h2>Who This Applies To</h2>
+  <p>
+    Use the Employee mode if you work for a private employer in the Philippines (including
+    kasambahays and sea-based OFWs). Use Self-Employed if you are a freelancer, professional or
+    business owner registered with SSS. Use Voluntary if you previously had coverage and are
+    continuing contributions on your own. Use OFW if you are a land-based overseas Filipino worker.
+  </p>
+
+  <h2>Official Source</h2>
+  <p>
+    Rates and brackets come from <strong>{meta.rule_version}</strong> — last verified
+    {new Date(meta.last_verified + 'T00:00:00').toLocaleDateString('en-PH', { month: 'long', day: 'numeric', year: 'numeric' })}
+    against
+    <a href={meta.official_source_url} target="_blank" rel="noopener">{meta.official_source_label}</a>.
+    To pay contributions or check your posted records, go directly to the official
+    <a href="https://www.sss.gov.ph/" target="_blank" rel="noopener">SSS website / My.SSS portal</a>.
+  </p>
+</ToolPageLayout>

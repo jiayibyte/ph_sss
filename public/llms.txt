@@ -1,0 +1,31 @@
+# AyTool
+
+> AyTool (aytool.com) is an independent Philippine payroll calculator site: free tools for SSS, PhilHealth and Pag-IBIG contributions, 13th month pay, take-home pay, holiday pay, night differential, overtime and final pay. Every rate is transcribed from the official government issuance (circular / advisory / regulation / proclamation), version-controlled, and shown with its effective date, last-verified date and source link. Not affiliated with any Philippine government agency. Calculations run client-side; no user data is collected.
+
+Key facts currently in force (last verified 2026-08-19):
+- SSS: 15% of Monthly Salary Credit (MSC ₱5,000–₱35,000); employee 5% / employer 10% + EC; OFW minimum MSC ₱8,000. Basis: SSS Circulars 2024-006/008/009/010 (effective Jan 2025, unchanged 2026).
+- PhilHealth: 5% of monthly basic salary, floor ₱10,000 / ceiling ₱100,000; employed split 50/50. Basis: PhilHealth Circular 2020-0005 Rev. 1; Advisory 2026-0042.
+- Pag-IBIG: employee 2% (1% if ≤₱1,500) + employer 2% on fund salary capped ₱10,000 (max ₱200+₱200). Basis: HDMF Circular 460.
+- Withholding tax: BIR TRAIN monthly table effective 2023 onwards (Annex E, RR 11-2018).
+- 2026 holidays: Proclamation No. 1006, s. 2025 (+1189/1264 for Eid); pay rules per DOLE Labor Advisory 12-25.
+
+## Calculators
+
+- [SSS Contribution Table 2026](https://aytool.com/sss-contribution-table/): full official schedule for Employee / Self-Employed / Voluntary / OFW with salary lookup. Source: sss.gov.ph.
+- [SSS Contribution Calculator](https://aytool.com/sss-contribution-calculator/): monthly SSS contribution from salary + member type. Source: sss.gov.ph.
+- [13th Month Pay Calculator](https://aytool.com/13th-month-pay-calculator/): total basic salary earned ÷ 12 (PD 851 / DOLE), simple and month-by-month modes. Source: DOLE/BWC.
+- [PhilHealth Contribution](https://aytool.com/philhealth-contribution/): 5% premium calculator + 2026 table with employee/employer split. Source: philhealth.gov.ph.
+- [Pag-IBIG Contribution](https://aytool.com/pagibig-contribution/): HDMF savings calculator + table (2% + 2%, ₱10,000 MFS cap). Source: pagibigfund.gov.ph.
+- [Take-Home Pay Calculator](https://aytool.com/take-home-pay-calculator/): net monthly salary after SSS + PhilHealth + Pag-IBIG + BIR withholding tax, itemized. Sources: sss.gov.ph, philhealth.gov.ph, pagibigfund.gov.ph, bir.gov.ph.
+- [Holiday Pay Calculator](https://aytool.com/holiday-pay-calculator/): 200%/130% holiday multipliers + official 2026 Philippine holiday calendar. Sources: pco.gov.ph, dole.gov.ph.
+- [Night Differential Calculator](https://aytool.com/night-differential-calculator/): 10% night shift differential (10 PM–6 AM) with holiday/OT stacking. Source: DOLE handbook.
+- [Final Pay Calculator](https://aytool.com/final-pay-calculator/): back pay estimate (unpaid salary, leave conversion, pro-rated 13th month, separation pay), DOLE 30-day release rule. Source: DOLE Labor Advisory 06-20.
+- [Overtime Pay Calculator](https://aytool.com/overtime-pay-calculator/): OT rates 125%–338% by day type with night-hour handling. Source: DOLE handbook.
+- [OEC Exemption Guide](https://aytool.com/oec-exemption/): Balik-Manggagawa exemption criteria and the eGovPH OFW Travel Pass process. Source: dmw.gov.ph (Advisory 38-2025).
+- [PRC Board Exam Schedule 2026](https://aytool.com/prc-board-exam-schedule/): all 88 scheduled licensure exams with application windows (PRC Resolution 2113, s. 2025). Source: prc.gov.ph.
+
+## About
+
+- [Methodology](https://aytool.com/methodology/): how rules are versioned and verified.
+- [Sources](https://aytool.com/sources/): every official issuance used, by agency.
+- [About](https://aytool.com/about/), [Privacy](https://aytool.com/privacy/), [Disclaimer](https://aytool.com/disclaimer/).

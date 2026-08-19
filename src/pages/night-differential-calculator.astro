@@ -1,0 +1,107 @@
+---
+import ToolPageLayout from '../layouts/ToolPageLayout.astro';
+import NightDiffCalculator from '../islands/NightDiffCalculator';
+import laborRules from '../data/labor/2026.json';
+
+const meta = laborRules.meta;
+const faqs = [
+  {
+    q: 'How is night differential computed in the Philippines?',
+    a: 'Night shift differential is at least 10% of your hourly rate for every hour worked between 10:00 PM and 6:00 AM. Example: at ₱100/hour, each night hour pays an extra ₱10, so a full 10 PM–6 AM shift earns ₱800 base + ₱80 night differential = ₱880.',
+  },
+  {
+    q: 'What hours count as night differential hours?',
+    a: 'Only the hours that actually fall between 10:00 PM and 6:00 AM. A 2 PM–11 PM shift has one night hour (10–11 PM); a 6 PM–3 AM shift has five (10 PM–3 AM); a full 10 PM–6 AM graveyard shift has eight.',
+  },
+  {
+    q: 'How is night differential computed on a holiday or rest day?',
+    a: 'The 10% applies on the hourly rate for that day. On a rest day (130%), a night hour pays 130% × 110% = 143% of the ordinary hourly rate; on a regular holiday (200%), it pays 220%; on a regular holiday falling on a rest day, 286%.',
+  },
+  {
+    q: 'How does night differential stack with overtime?',
+    a: 'Multiplicatively, per the DOLE handbook. Overtime on an ordinary night: 125% × 110% = 137.5% per hour. Overtime on a regular holiday at night: 200% × 130% × 110% = 286% per hour.',
+  },
+  {
+    q: 'Is night differential taxable?',
+    a: 'For most employees, yes — it is part of taxable compensation. However, night differential received by minimum wage earners is income-tax-exempt under the NIRC as amended.',
+  },
+];
+---
+
+<ToolPageLayout
+  title="Night Differential Calculator Philippines – 10% Night Shift Pay"
+  description="Compute your night shift differential: at least 10% of the hourly rate for work between 10 PM and 6 AM, including holiday, rest-day and overtime combinations."
+  path="/night-differential-calculator/"
+  h1="Night Differential Calculator"
+  updated="August 2026"
+  faqs={faqs}
+  related={['overtime', 'holidayPay', 'takeHome', 'thirteenth']}
+>
+  <Fragment slot="answer">
+    <p>
+      Night shift differential in the Philippines is <strong>at least 10% of your hourly rate for
+      each hour worked between 10:00 PM and 6:00 AM</strong> (Labor Code, Art. 86). On rest days,
+      special days or holidays, the 10% applies on that day's premium rate, so the differentials
+      stack multiplicatively. Enter your shift below — the calculator counts the eligible night
+      hours automatically.
+    </p>
+  </Fragment>
+
+  <Fragment slot="calculator">
+    <NightDiffCalculator client:idle />
+  </Fragment>
+
+  <h2>The Night Work Window</h2>
+  <p>
+    The law fixes the window at <strong>10:00 PM to 6:00 AM</strong>. It does not matter when your
+    shift starts — only the hours that overlap this window earn the differential. Shifts that
+    cross midnight (e.g., 8 PM–5 AM) are handled correctly by the calculator.
+  </p>
+
+  <h2>Rates by Day Type (per night hour, % of ordinary hourly rate)</h2>
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Day Type</th><th>Regular Night Hour</th><th>Night Hour + Overtime</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Ordinary day</td><td>110%</td><td>137.5%</td></tr>
+        <tr><td>Rest day / Special day</td><td>143%</td><td>185.9%</td></tr>
+        <tr><td>Special day + rest day</td><td>165%</td><td>214.5%</td></tr>
+        <tr><td>Regular holiday</td><td>220%</td><td>286%</td></tr>
+        <tr><td>Regular holiday + rest day</td><td>286%</td><td>371.8%</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Example Computations</h2>
+  <div class="example-card">
+    <p><strong>Example 1 — Call-center graveyard shift (10 PM–6 AM), ₱120/hour, ordinary day:</strong>
+    base ₱960 + ND (8h × ₱12) = ₱96. Total: <strong>₱1,056</strong>.</p>
+  </div>
+  <div class="example-card">
+    <p><strong>Example 2 — 6 PM–3 AM shift, ₱90/hour:</strong> 5 night hours (10 PM–3 AM). ND = 5
+    × ₱9 = <strong>₱45</strong> on top of the ₱810 base (9 hours; hours beyond 8 also need OT
+    premium — use the Overtime Calculator for that part).</p>
+  </div>
+  <div class="example-card">
+    <p><strong>Example 3 — Rest-day night shift 10 PM–6 AM, ₱100/hour:</strong> premium hourly =
+    ₱130; base ₱1,040 + ND (8 × ₱13) = ₱104. Total: <strong>₱1,144</strong>.</p>
+  </div>
+
+  <h2>Who This Applies To</h2>
+  <p>
+    Every covered employee under the Labor Code — most rank-and-file workers in the private
+    sector, notably BPO/call-center agents, healthcare staff, security, manufacturing and hotel
+    workers. Government employees follow separate rules; managerial employees and field personnel
+    are generally excluded. Company policy or CBA can grant more than 10% — this calculator uses
+    the legal minimum.
+  </p>
+
+  <h2>Official Source</h2>
+  <p>
+    Labor Code of the Philippines, Art. 86, as summarized in the
+    <a href={meta.official_source_url} target="_blank" rel="noopener">DOLE Handbook on Workers' Statutory Monetary Benefits</a>.
+    Last verified {new Date(meta.last_verified + 'T00:00:00').toLocaleDateString('en-PH', { month: 'long', day: 'numeric', year: 'numeric' })}.
+  </p>
+</ToolPageLayout>

@@ -1,0 +1,33 @@
+---
+import { SITE } from '../../site.config';
+
+interface Props {
+  path: string;
+  title: string;
+}
+const { path, title } = Astro.props;
+const url = encodeURIComponent(`${SITE.url}${path}`);
+const fbShare = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+const messengerShare = `fb-messenger://share/?link=${url}`;
+---
+
+<div class="flex items-center gap-2 text-xs text-ink-soft">
+  <span>Share:</span>
+  <a
+    href={fbShare}
+    target="_blank"
+    rel="noopener nofollow"
+    class="rounded border border-line px-2.5 py-1 font-medium text-ink-soft hover:border-accent hover:text-accent-strong"
+    aria-label={`Share ${title} on Facebook`}
+  >
+    Facebook
+  </a>
+  <a
+    href={messengerShare}
+    rel="noopener nofollow"
+    class="rounded border border-line px-2.5 py-1 font-medium text-ink-soft hover:border-accent hover:text-accent-strong"
+    aria-label={`Share ${title} on Messenger`}
+  >
+    Messenger
+  </a>
+</div>

@@ -1,0 +1,35 @@
+{
+ "meta": {
+  "rule_version": "PhilHealth Circular 2020-0005 (Rev. 1) under RA 11223; PhilHealth Advisory 2026-0042 (5% for CY 2026)",
+  "effective_from": "2025-01-01",
+  "effective_to": null,
+  "last_verified": "2026-08-19",
+  "official_source_url": "https://www.philhealth.gov.ph/advisories/2026/PA2026-0042.pdf",
+  "official_source_label": "PhilHealth Advisory No. 2026-0042 (philhealth.gov.ph)"
+ },
+ "rate": 0.05,
+ "income_floor": 10000,
+ "income_ceiling": 100000,
+ "member_types": {
+  "employed": {
+   "label": "Employed",
+   "split": true,
+   "note": "Premium is shared equally: 50% employee, 50% employer, deducted through payroll."
+  },
+  "self-earning": {
+   "label": "Self-Earning / Self-Paying",
+   "split": false,
+   "note": "Direct contributors pay the full premium themselves. Payment may be made monthly, quarterly, semi-annually, or annually."
+  },
+  "ofw": {
+   "label": "OFW",
+   "split": false,
+   "note": "Overseas Filipino workers are direct contributors and pay the full premium based on monthly income."
+  },
+  "kasambahay": {
+   "label": "Kasambahay",
+   "split": true,
+   "note": "If the kasambahay earns less than ₱5,000 per month, the household employer shoulders the entire premium."
+  }
+ }
+}

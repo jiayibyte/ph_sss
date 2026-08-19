@@ -1,0 +1,85 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE } from '../../site.config';
+import sss from '../data/sss/2026.json';
+import ph from '../data/philhealth/2026.json';
+import pagibig from '../data/pagibig/2026.json';
+import labor from '../data/labor/2026.json';
+import holidays from '../data/holidays/2026.json';
+import tax from '../data/tax/2026.json';
+import prc from '../data/prc/2026.json';
+
+const datasets = [
+  { name: 'SSS contribution schedule', meta: sss.meta },
+  { name: 'PhilHealth premium rules', meta: ph.meta },
+  { name: 'Pag-IBIG (HDMF) contribution rules', meta: pagibig.meta },
+  { name: 'Labor Code pay rules (holiday/OT/ND/13th month)', meta: labor.meta },
+  { name: '2026 holiday calendar', meta: holidays.meta },
+  { name: 'BIR withholding tax table', meta: tax.meta },
+  { name: 'PRC 2026 exam schedule', meta: prc.meta },
+];
+const fmt = (d: string) =>
+  new Date(d + 'T00:00:00').toLocaleDateString('en-PH', { year: 'numeric', month: 'long', day: 'numeric' });
+---
+
+<BaseLayout
+  title="Methodology – How AyTool Calculators Work"
+  description="How AyTool computes Philippine payroll figures: versioned rule data from official sources, pure calculation engines, verification dates on every result."
+  path="/methodology/"
+>
+  <article class="content-prose mx-auto max-w-content px-4 pt-8">
+    <h1 class="text-2xl font-bold text-ink sm:text-3xl">Methodology</h1>
+    <h2>How the calculators work</h2>
+    <p>
+      Every calculator on AyTool is a pure function over a versioned rule file. The rules — rates,
+      salary brackets, floors, ceilings, multipliers, holiday lists — live in structured data files
+      transcribed manually from the official issuance (a circular, advisory, revenue regulation or
+      proclamation), never from other calculator websites. The calculation code contains no
+      numbers of its own; when a rate changes, we update the data file, its verification date, and
+      nothing else.
+    </p>
+    <h2>Where every number comes from</h2>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>Dataset</th><th>Basis</th><th>Effective</th><th>Last verified</th></tr>
+        </thead>
+        <tbody>
+          {
+            datasets.map((d) => (
+              <tr>
+                <td>{d.name}</td>
+                <td>
+                  <a href={d.meta.official_source_url} target="_blank" rel="noopener">
+                    {d.meta.rule_version}
+                  </a>
+                </td>
+                <td>{fmt(d.meta.effective_from)}</td>
+                <td>{fmt(d.meta.last_verified)}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+    <h2>Verification practice</h2>
+    <ul>
+      <li>Before publication, each engine's output is checked line-by-line against the official schedule for every member type, including floor and ceiling edge cases.</li>
+      <li>Rules are re-verified on the official update cycle: SSS/PhilHealth/Pag-IBIG each December–January, holiday proclamations each Q3–Q4, the 13th month rules each October, PRC's calendar each November, and the BIR table whenever revenue regulations change.</li>
+      <li>Every result card and page shows the schedule used, its effective date, the verification date and a link to the official source — so you can always check our work.</li>
+    </ul>
+    <h2>What the results are (and aren't)</h2>
+    <p>
+      Results are estimates of the statutory minimums and standard schedules. Your payslip can
+      legitimately differ — company policies more generous than the law, retroactive adjustments,
+      loans, or special arrangements. For anything binding, rely on your employer's payroll and
+      the government agency's own records. See the <a href="/disclaimer/">Disclaimer</a>.
+    </p>
+    <h2>Corrections</h2>
+    <p>
+      If any figure here disagrees with an official source, email
+      <a href={`mailto:${SITE.contactEmail}`}>{SITE.contactEmail}</a> with a link to the issuance.
+      Verified corrections are published as fast as we can build the page.
+    </p>
+  </article>
+</BaseLayout>

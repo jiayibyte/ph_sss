@@ -1,0 +1,42 @@
+{
+ "meta": {
+  "rule_version": "Labor Code of the Philippines / PD 851 / DOLE Handbook on Workers' Statutory Monetary Benefits",
+  "effective_from": "2026-01-01",
+  "effective_to": null,
+  "last_verified": "2026-08-19",
+  "official_source_url": "https://bwc.dole.gov.ph/",
+  "official_source_label": "DOLE — Bureau of Working Conditions (bwc.dole.gov.ph)"
+ },
+ "worked_multiplier": {
+  "ordinary": 1.0,
+  "rest-day": 1.3,
+  "special": 1.3,
+  "special-rest-day": 1.5,
+  "regular-holiday": 2.0,
+  "regular-holiday-rest-day": 2.6
+ },
+ "unworked_multiplier": {
+  "ordinary": 0,
+  "rest-day": 0,
+  "special": 0,
+  "special-rest-day": 0,
+  "regular-holiday": 1.0,
+  "regular-holiday-rest-day": 1.0
+ },
+ "ot_factor": {
+  "ordinary": 1.25,
+  "rest-day": 1.3,
+  "special": 1.3,
+  "special-rest-day": 1.3,
+  "regular-holiday": 1.3,
+  "regular-holiday-rest-day": 1.3
+ },
+ "night_diff": { "rate": 0.1, "start_hour": 22, "end_hour": 6 },
+ "thirteenth_month": {
+  "divisor": 12,
+  "min_service_months": 1,
+  "deadline": "December 24",
+  "tax_exempt_cap": 90000
+ },
+ "final_pay": { "release_days": 30, "coe_days": 3 }
+}

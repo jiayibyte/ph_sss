@@ -1,0 +1,57 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE, NOT_AFFILIATED } from '../../site.config';
+---
+
+<BaseLayout
+  title="Disclaimer – AyTool"
+  description="AyTool provides independent estimates based on official schedules. It is not affiliated with any Philippine government agency and its results are not official determinations."
+  path="/disclaimer/"
+>
+  <article class="content-prose mx-auto max-w-content px-4 pt-8">
+    <h1 class="text-2xl font-bold text-ink sm:text-3xl">Disclaimer</h1>
+    <p class="mt-4"><em>Last updated: August 19, 2026</em></p>
+
+    <h2>Independence</h2>
+    <p>{NOT_AFFILIATED}</p>
+    <p>
+      We use the agencies' names (SSS, PhilHealth, Pag-IBIG, BIR, DOLE, DMW, PRC) only to describe
+      what each calculator computes. All trademarks belong to their owners. Official transactions —
+      paying contributions, checking records, filing applications, viewing exam results — happen
+      only on the agencies' own websites, which we link on every page.
+    </p>
+
+    <h2>Estimates, not determinations</h2>
+    <p>
+      Every result on AyTool is an <strong>estimate</strong> computed from the official published
+      schedules and the statutory minimums. Your actual payroll figures can differ for legitimate
+      reasons: company policies more generous than the law, collective bargaining agreements,
+      retroactive rate adjustments, loan deductions, special employment arrangements, or agency
+      billing particulars. The results here do not replace your employer's payroll computation, an
+      agency's official assessment, or professional advice.
+    </p>
+
+    <h2>No legal, tax or financial advice</h2>
+    <p>
+      Content on this site is general information about published rules. It is not legal, tax,
+      accounting or financial advice. For decisions that depend on your specific situation,
+      consult the relevant agency or a qualified professional.
+    </p>
+
+    <h2>Accuracy</h2>
+    <p>
+      We verify every rate against official sources and show the verification date on each page
+      (see <a href="/methodology/">Methodology</a> and <a href="/sources/">Sources</a>). Rules
+      change; if an agency issues a new schedule before we update, the official issuance prevails.
+      Found a discrepancy? Please tell us:
+      <a href={`mailto:${SITE.contactEmail}`}>{SITE.contactEmail}</a>.
+    </p>
+
+    <h2>Limitation of liability</h2>
+    <p>
+      AyTool is provided "as is", free of charge. To the maximum extent permitted by law, we accept
+      no liability for losses arising from reliance on the estimates or from decisions made based
+      on this site's content.
+    </p>
+  </article>
+</BaseLayout>

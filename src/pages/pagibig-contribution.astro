@@ -1,0 +1,137 @@
+---
+import ToolPageLayout from '../layouts/ToolPageLayout.astro';
+import PagibigCalculator from '../islands/PagibigCalculator';
+import pagibigRules from '../data/pagibig/2026.json';
+
+const meta = pagibigRules.meta;
+const faqs = [
+  {
+    q: 'How much is the Pag-IBIG contribution in 2026?',
+    a: 'In 2026, employees contribute 2% of their monthly fund salary (1% if earning ₱1,500 or below) and employers add another 2%. The fund salary is capped at ₱10,000, so the maximum mandatory contribution is ₱200 from the employee plus ₱200 from the employer — ₱400 total per month.',
+  },
+  {
+    q: 'How do I compute my Pag-IBIG contribution?',
+    a: 'Take your monthly compensation up to the ₱10,000 ceiling, then multiply by 2% (or 1% if you earn ₱1,500 or below). Example: ₱8,000 salary → ₱160 employee share + ₱160 employer share. Any salary of ₱10,000 or more → ₱200 + ₱200.',
+  },
+  {
+    q: 'Why is my Pag-IBIG deduction ₱200 even though I earn more than ₱10,000?',
+    a: 'Because contributions are computed on a Maximum Fund Salary of ₱10,000 (HDMF Circular No. 460, effective February 2024). Whatever your actual salary, the mandatory employee share tops out at 2% × ₱10,000 = ₱200. You can voluntarily save more through upgraded savings or MP2.',
+  },
+  {
+    q: 'Can I contribute more than the mandatory amount?',
+    a: 'Yes. You may increase your monthly savings voluntarily, and the MP2 program accepts additional savings of at least ₱500 per remittance with its own dividend rate. The employer is only required to match up to the mandatory 2% of the ₱10,000 fund salary.',
+  },
+  {
+    q: 'Do self-employed and OFW members pay Pag-IBIG?',
+    a: 'Yes — Pag-IBIG membership is mandatory for virtually all Filipino workers, including self-employed earners and OFWs. Self-employed members shoulder the contribution themselves (commonly both the 2% member and 2% employer counterpart, i.e. up to ₱400). Payments go through Virtual Pag-IBIG and accredited partners.',
+  },
+];
+---
+
+<ToolPageLayout
+  title="Pag-IBIG Contribution Calculator & Table 2026"
+  description="Pag-IBIG (HDMF) contribution for 2026: 2% employee + 2% employer on a fund salary capped at ₱10,000 — max ₱400/month total. Calculator and full table."
+  path="/pagibig-contribution/"
+  h1="Pag-IBIG Contribution Calculator 2026"
+  updated="August 2026"
+  faqs={faqs}
+  related={['takeHome', 'sssCalculator', 'philhealth', 'thirteenth']}
+>
+  <Fragment slot="answer">
+    <p>
+      As of 2026, the Pag-IBIG (HDMF) contribution is <strong>2% of your monthly fund salary from
+      you and 2% from your employer</strong>, computed on a fund salary capped at ₱10,000 — so the
+      mandatory maximum is <strong>₱200 + ₱200 = ₱400 per month</strong>. Employees earning ₱1,500
+      or below contribute 1% instead (employer still 2%). This has been the schedule since HDMF
+      Circular No. 460 took effect in February 2024.
+    </p>
+  </Fragment>
+
+  <Fragment slot="calculator">
+    <PagibigCalculator client:idle />
+  </Fragment>
+
+  <h2>Pag-IBIG Contribution Table 2026</h2>
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>Monthly Compensation</th>
+          <th>Employee Rate</th>
+          <th>Employer Rate</th>
+          <th>Example — Employee</th>
+          <th>Example — Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>₱1,500 and below</td>
+          <td>1%</td>
+          <td>2%</td>
+          <td>₱1,500 → ₱15</td>
+          <td>₱45</td>
+        </tr>
+        <tr>
+          <td>Over ₱1,500 to ₱10,000</td>
+          <td>2%</td>
+          <td>2%</td>
+          <td>₱8,000 → ₱160</td>
+          <td>₱320</td>
+        </tr>
+        <tr>
+          <td>₱10,000 and above (capped)</td>
+          <td>2% of ₱10,000</td>
+          <td>2% of ₱10,000</td>
+          <td>₱200 (maximum)</td>
+          <td>₱400 (maximum)</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>How It Is Calculated</h2>
+  <ol>
+    <li>Take your monthly compensation, capped at the ₱10,000 Maximum Fund Salary.</li>
+    <li>Employee share: 2% of that amount (1% if your compensation is ₱1,500 or below).</li>
+    <li>Employer share: 2% of the same amount — employers may not pass this cost to you.</li>
+  </ol>
+
+  <h2>Example Computations</h2>
+  <div class="example-card">
+    <p><strong>Example 1 — ₱6,000 salary:</strong> fund salary ₱6,000 → employee ₱120 + employer
+    ₱120 = <strong>₱240 total</strong>.</p>
+  </div>
+  <div class="example-card">
+    <p><strong>Example 2 — ₱25,000 salary:</strong> fund salary capped at ₱10,000 → employee
+    <strong>₱200</strong> + employer ₱200 = ₱400 total.</p>
+  </div>
+  <div class="example-card">
+    <p><strong>Example 3 — kasambahay earning ₱1,400:</strong> employee rate is 1% → ₱14; employer
+    adds 2% → ₱28. (Household employers shoulder the full savings of kasambahays earning below
+    ₱5,000.)</p>
+  </div>
+
+  <h2>Who This Applies To</h2>
+  <p>
+    Pag-IBIG membership is mandatory for private and government employees, kasambahays,
+    self-employed workers and OFWs. Your mandatory savings earn annual dividends and unlock
+    eligibility for Pag-IBIG housing, multi-purpose and calamity loans. Voluntary top-ups and the
+    MP2 savings program are optional extras on top of the amounts computed here.
+  </p>
+
+  <h2>How to Pay</h2>
+  <p>
+    Employees are auto-deducted through payroll. Self-employed members and OFWs can pay through
+    <a href="https://www.pagibigfund.gov.ph/" target="_blank" rel="noopener">Virtual Pag-IBIG</a>
+    and accredited collecting partners. Always transact only through official Pag-IBIG channels —
+    AyTool is independent and cannot access your Pag-IBIG records.
+  </p>
+
+  <h2>Official Source</h2>
+  <p>
+    Based on <strong>{meta.rule_version}</strong>, last verified
+    {new Date(meta.last_verified + 'T00:00:00').toLocaleDateString('en-PH', { month: 'long', day: 'numeric', year: 'numeric' })}
+    against the official circular:
+    <a href={meta.official_source_url} target="_blank" rel="noopener">{meta.official_source_label}</a>.
+  </p>
+</ToolPageLayout>

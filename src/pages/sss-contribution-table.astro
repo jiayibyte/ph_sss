@@ -1,0 +1,132 @@
+---
+import ToolPageLayout from '../layouts/ToolPageLayout.astro';
+import SssTable from '../islands/SssTable';
+import sssRules from '../data/sss/2026.json';
+
+const meta = sssRules.meta;
+const faqs = [
+  {
+    q: 'How much is the SSS contribution in 2026?',
+    a: 'The SSS contribution rate in 2026 is 15% of the Monthly Salary Credit (MSC). For employed members, the employer pays 10% and the employee pays 5%, plus a ₱10–₱30 Employees’ Compensation (EC) contribution paid by the employer. The MSC ranges from ₱5,000 to ₱35,000, so the total monthly contribution runs from ₱760 to ₱5,280 for employed members.',
+  },
+  {
+    q: 'Did the SSS contribution increase in 2026?',
+    a: 'No. The 15% rate took effect in January 2025 as the final scheduled increase under the Social Security Act of 2018 (RA 11199), and the same schedule remains in force for 2026. The minimum MSC is ₱5,000 and the maximum is ₱35,000.',
+  },
+  {
+    q: 'What is the maximum SSS contribution in 2026?',
+    a: 'For employed members, the maximum is ₱5,280 per month at the ₱35,000 MSC: ₱1,750 employee share, ₱3,500 employer share, plus ₱30 EC. Self-employed members pay up to ₱5,280 (including ₱30 EC they shoulder themselves), while voluntary and OFW members pay up to ₱5,250.',
+  },
+  {
+    q: 'What is the minimum SSS contribution for OFW members?',
+    a: 'Land-based OFW members have a minimum Monthly Salary Credit of ₱8,000, so the minimum OFW contribution is ₱1,200 per month (15% of ₱8,000). Other member types have a ₱5,000 minimum MSC, or ₱750 per month.',
+  },
+  {
+    q: 'What is the MPF or MySSS Pension Booster in the table?',
+    a: 'Contributions on the portion of the MSC above ₱20,000 go to the Mandatory Provident Fund (MPF), marketed as MySSS Pension Booster — an individual retirement savings account on top of the regular SSS program. It is collected automatically with the same 15% rate; you do not need to enroll separately.',
+  },
+  {
+    q: 'Magkano ang hulog sa SSS kung ₱20,000 ang sahod ko?',
+    a: 'At a ₱20,000 monthly salary, the MSC is ₱20,000. The employee share is ₱1,000 (5%), the employer pays ₱2,030 (10% plus ₱30 EC), and the total monthly contribution is ₱3,030.',
+  },
+];
+---
+
+<ToolPageLayout
+  title="SSS Contribution Table 2026 – Employee, Self-Employed & OFW"
+  description="Complete SSS contribution table for 2026: Employee, Self-Employed, Voluntary and OFW schedules with salary lookup. 15% of MSC, verified against official SSS circulars."
+  path="/sss-contribution-table/"
+  h1="SSS Contribution Table 2026"
+  updated="August 2026"
+  faqs={faqs}
+  related={['sssCalculator', 'philhealth', 'pagibig', 'thirteenth', 'takeHome']}
+>
+  <Fragment slot="answer">
+    <p>
+      As of January 2026, the SSS contribution rate is <strong>15% of the Monthly Salary Credit
+      (MSC)</strong> — 10% employer and 5% employee for employed members — with the MSC ranging
+      from ₱5,000 to ₱35,000. This schedule, in force since January 2025 under RA 11199, is
+      unchanged for 2026; the full table for all member types is below, verified against the
+      <a href={meta.official_source_url} target="_blank" rel="noopener" class="underline"
+        >official SSS Schedule of Contributions</a
+      >.
+    </p>
+  </Fragment>
+
+  <Fragment slot="calculator">
+    <SssTable client:idle />
+  </Fragment>
+
+  <h2>Current SSS Contribution Summary (2026)</h2>
+  <ul>
+    <li><strong>Contribution rate:</strong> 15% of the MSC (final tranche under RA 11199).</li>
+    <li><strong>Employed members:</strong> employer 10% + employee 5%, plus ₱10 (MSC below ₱15,000) or ₱30 (MSC ₱15,000 and up) Employees' Compensation paid by the employer.</li>
+    <li><strong>Self-employed members:</strong> full 15% plus the ₱10/₱30 EC, paid by the member.</li>
+    <li><strong>Voluntary members and non-working spouses:</strong> full 15%, no EC.</li>
+    <li><strong>Land-based OFW members:</strong> full 15%, minimum MSC ₱8,000, no EC.</li>
+    <li><strong>MSC range:</strong> ₱5,000 minimum to ₱35,000 maximum, in ₱500 steps. The portion above ₱20,000 goes to the Mandatory Provident Fund (MySSS Pension Booster).</li>
+  </ul>
+
+  <h2>How the SSS Contribution Is Computed</h2>
+  <p>
+    Your monthly salary is matched to a salary range in the official schedule, and that range maps
+    to a Monthly Salary Credit. The contribution is always computed on the MSC — not on your exact
+    salary. For a step-by-step computation with your own numbers, use the
+    <a href="/sss-contribution-calculator/">SSS Contribution Calculator</a>.
+  </p>
+
+  <h2>What Is the Monthly Salary Credit (MSC)?</h2>
+  <p>
+    The MSC is the standardized salary base SSS uses for both contributions and benefits. Salary
+    ranges step in ₱500 increments: for example, a salary between ₱19,750 and ₱20,249.99 maps to an
+    MSC of ₱20,000. Salaries below ₱5,250 use the ₱5,000 minimum MSC; salaries of ₱34,750 and above
+    use the ₱35,000 maximum. A higher MSC means higher contributions but also higher pensions,
+    sickness, maternity and other benefits, which are all computed from your MSC history.
+  </p>
+
+  <h2>Employee vs Employer Share</h2>
+  <p>
+    For employed members the split is fixed by law: the employer shoulders 10% of the MSC plus the
+    entire EC contribution, and the employee shoulders 5%, deducted from payroll. Your payslip
+    deduction should equal the Employee column in the table above. Self-employed, voluntary and OFW
+    members pay the whole contribution themselves.
+  </p>
+
+  <h2>Example Computations</h2>
+  <div class="example-card">
+    <p><strong>Example 1 — Employee earning ₱15,000:</strong> MSC = ₱15,000. Employee share ₱750,
+    employer share ₱1,500 + ₱30 EC = ₱1,530. Total: <strong>₱2,280</strong> per month.</p>
+  </div>
+  <div class="example-card">
+    <p><strong>Example 2 — Self-employed earning ₱12,300:</strong> the range ₱12,250–₱12,749.99
+    maps to MSC ₱12,500. Contribution = 15% × ₱12,500 + ₱10 EC = <strong>₱1,885</strong>, paid
+    fully by the member.</p>
+  </div>
+  <div class="example-card">
+    <p><strong>Example 3 — OFW earning ₱60,000:</strong> above the ₱34,750 threshold, so MSC =
+    ₱35,000 (the maximum). Contribution = 15% × ₱35,000 = <strong>₱5,250</strong>, of which ₱2,250
+    goes to the MPF (MySSS Pension Booster).</p>
+  </div>
+
+  <h2>Who This Applies To</h2>
+  <p>
+    This table covers private-sector employees, kasambahays (with special sharing rules for
+    salaries below ₱5,000), self-employed professionals and informal-sector workers, voluntary
+    members continuing their coverage, and land-based OFWs. Government employees are covered by
+    GSIS, not SSS. Sea-based OFWs (seafarers) are treated as employed members with their manning
+    agency as employer.
+  </p>
+
+  <h2>Official Source &amp; Effective Date</h2>
+  <p>
+    This page reproduces the schedule in <strong>{meta.rule_version}</strong>, effective
+    {new Date(meta.effective_from + 'T00:00:00').toLocaleDateString('en-PH', { month: 'long', year: 'numeric' })}
+    and still current for 2026. Last verified on
+    {new Date(meta.last_verified + 'T00:00:00').toLocaleDateString('en-PH', { month: 'long', day: 'numeric', year: 'numeric' })}
+    against
+    <a href={meta.official_source_url} target="_blank" rel="noopener">{meta.official_source_label}</a>.
+    For contribution payments and member records, always use the official
+    <a href="https://www.sss.gov.ph/" target="_blank" rel="noopener">My.SSS portal</a> — AyTool is
+    independent and cannot look up your SSS records.
+  </p>
+</ToolPageLayout>

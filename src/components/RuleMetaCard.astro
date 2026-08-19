@@ -1,0 +1,32 @@
+---
+import type { RuleMeta } from '../lib/rules/types';
+
+interface Props {
+  meta: RuleMeta;
+}
+const { meta } = Astro.props;
+const fmt = (d: string) =>
+  new Date(d + 'T00:00:00').toLocaleDateString('en-PH', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  });
+---
+
+<div class="mt-4 rounded-lg border border-line bg-surface-soft px-4 py-3 text-xs text-ink-soft">
+  <p><strong class="text-ink">Schedule used:</strong> {meta.rule_version}</p>
+  <p class="mt-1">
+    <strong class="text-ink">Effective from:</strong>
+    {fmt(meta.effective_from)} · <strong class="text-ink">Last verified:</strong>
+    {fmt(meta.last_verified)}
+  </p>
+  <p class="mt-1">
+    <strong class="text-ink">Official source:</strong>
+    <a
+      href={meta.official_source_url}
+      target="_blank"
+      rel="noopener"
+      class="underline hover:text-accent-strong">{meta.official_source_label}</a
+    >
+  </p>
+</div>

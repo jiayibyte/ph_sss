@@ -1,0 +1,112 @@
+---
+import ToolPageLayout from '../layouts/ToolPageLayout.astro';
+import OvertimeCalculator from '../islands/OvertimeCalculator';
+import laborRules from '../data/labor/2026.json';
+
+const meta = laborRules.meta;
+const faqs = [
+  {
+    q: 'How is overtime pay computed in the Philippines?',
+    a: 'Overtime — work beyond 8 hours a day — is paid at your hourly rate plus at least 25% on an ordinary day (125%). On a rest day, special day or holiday, overtime is the day’s premium rate plus 30%. Example: ₱100/hour on an ordinary day → ₱125 per OT hour.',
+  },
+  {
+    q: 'What are the overtime rates per day type?',
+    a: 'Ordinary day: 125%. Rest day or special day: 169% (130% × 130%). Special day falling on a rest day: 195%. Regular holiday: 260% (200% × 130%). Regular holiday falling on a rest day: 338%. All rates are per hour beyond 8 hours, as percentages of the ordinary hourly rate.',
+  },
+  {
+    q: 'How do I get my hourly rate from my monthly salary?',
+    a: 'Divide your daily rate by 8. If you only know your monthly salary, the usual conversion is (monthly salary × 12) ÷ number of paid working days per year ÷ 8 — commonly 313 days for Mon–Sat schedules or 261 for Mon–Fri. Your HR’s divisor governs; the calculator’s monthly option uses 313 as an approximation.',
+  },
+  {
+    q: 'Is overtime on a night shift paid more?',
+    a: 'Yes. Overtime hours that fall between 10 PM and 6 AM also earn the 10% night differential on top of the OT rate. An ordinary-day night OT hour pays 125% × 110% = 137.5% of the ordinary hourly rate.',
+  },
+  {
+    q: 'Can my employer refuse to pay overtime?',
+    a: 'Statutory overtime pay is mandatory for covered employees who are required or permitted to work beyond 8 hours. However, managerial employees, field personnel and certain other categories are excluded from hours-of-work rules. Undertime on another day cannot be offset against overtime.',
+  },
+];
+---
+
+<ToolPageLayout
+  title="Overtime Pay Calculator Philippines 2026 – OT Rates & Computation"
+  description="Compute Philippine overtime pay: 125% on ordinary days, 169% on rest days, 260% on regular holidays — with night differential handling and full breakdown."
+  path="/overtime-pay-calculator/"
+  h1="Overtime Pay Calculator Philippines"
+  updated="August 2026"
+  faqs={faqs}
+  related={['nightDiff', 'holidayPay', 'takeHome', 'finalPay']}
+>
+  <Fragment slot="answer">
+    <p>
+      Overtime pay in the Philippines is your hourly rate <strong>plus at least 25% for work
+      beyond 8 hours on an ordinary day (125%)</strong>, and the day's premium rate
+      <strong>plus 30%</strong> on rest days, special days and holidays — e.g., 169% on a rest
+      day and 260% on a regular holiday. Enter your rate, day type and OT hours below for the
+      exact breakdown.
+    </p>
+  </Fragment>
+
+  <Fragment slot="calculator">
+    <OvertimeCalculator client:idle />
+  </Fragment>
+
+  <h2>Overtime Rates by Day Type (per OT hour)</h2>
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Day Type</th><th>First 8 Hours</th><th>OT Rate (beyond 8h)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Ordinary day</td><td>100%</td><td>125%</td></tr>
+        <tr><td>Rest day</td><td>130%</td><td>169%</td></tr>
+        <tr><td>Special (non-working) day</td><td>130%</td><td>169%</td></tr>
+        <tr><td>Special day + rest day</td><td>150%</td><td>195%</td></tr>
+        <tr><td>Regular holiday</td><td>200%</td><td>260%</td></tr>
+        <tr><td>Regular holiday + rest day</td><td>260%</td><td>338%</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="text-sm text-ink-soft">
+    Percentages are of the ordinary hourly rate. Holiday scenarios are an input dimension here; for
+    the full day's pay including the first 8 hours, use the
+    <a href="/holiday-pay-calculator/">Holiday Pay Calculator</a>.
+  </p>
+
+  <h2>How It Is Calculated</h2>
+  <ol>
+    <li><strong>Base hourly rate</strong> — daily rate ÷ 8, or from your monthly salary via your company's divisor.</li>
+    <li><strong>Day-type multiplier</strong> — 100% ordinary, 130% rest/special day, 200% regular holiday, etc.</li>
+    <li><strong>OT factor</strong> — +25% on ordinary days, +30% on all premium days, applied on the day-type rate.</li>
+    <li><strong>Night differential</strong> — OT hours between 10 PM and 6 AM add 10% on the OT rate.</li>
+  </ol>
+
+  <h2>Example Computations</h2>
+  <div class="example-card">
+    <p><strong>Example 1 — 2 OT hours on an ordinary day, ₱100/hour:</strong> ₱100 × 125% × 2 =
+    <strong>₱250</strong> additional pay.</p>
+  </div>
+  <div class="example-card">
+    <p><strong>Example 2 — 3 OT hours on a rest day, ₱80/hour:</strong> ₱80 × 169% × 3 =
+    <strong>₱405.60</strong>.</p>
+  </div>
+  <div class="example-card">
+    <p><strong>Example 3 — 2 OT hours on a regular holiday, both at night, ₱100/hour:</strong> OT
+    rate ₱260/hour; night differential adds ₱26/hour → (₱260 + ₱26) × 2 = <strong>₱572</strong>.</p>
+  </div>
+
+  <h2>Who This Applies To</h2>
+  <p>
+    Covered rank-and-file employees under the Labor Code's hours-of-work rules. Managerial
+    employees, field personnel, family members dependent on the employer for support, domestic
+    helpers and workers paid by results are generally excluded. Compressed workweek arrangements
+    approved by DOLE may treat hours differently — check your company's registered scheme.
+  </p>
+
+  <h2>Official Source</h2>
+  <p>
+    Labor Code of the Philippines, Arts. 87–90, as summarized in the
+    <a href={meta.official_source_url} target="_blank" rel="noopener">DOLE Handbook on Workers' Statutory Monetary Benefits</a>.
+    Last verified {new Date(meta.last_verified + 'T00:00:00').toLocaleDateString('en-PH', { month: 'long', day: 'numeric', year: 'numeric' })}.
+  </p>
+</ToolPageLayout>

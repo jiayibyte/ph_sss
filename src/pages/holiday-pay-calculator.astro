@@ -1,0 +1,147 @@
+---
+import ToolPageLayout from '../layouts/ToolPageLayout.astro';
+import HolidayPayCalculator from '../islands/HolidayPayCalculator';
+import holidaysJson from '../data/holidays/2026.json';
+
+const holidays = holidaysJson.holidays;
+const meta = holidaysJson.meta;
+const typeLabel: Record<string, string> = {
+  regular: 'Regular Holiday',
+  'special-non-working': 'Special (Non-Working) Day',
+  'special-working': 'Special (Working) Day',
+};
+const fmt = (d: string) =>
+  new Date(d + 'T00:00:00').toLocaleDateString('en-PH', {
+    month: 'long',
+    day: 'numeric',
+    weekday: 'short',
+  });
+const faqs = [
+  {
+    q: 'How much is holiday pay on a regular holiday?',
+    a: 'If you work on a regular holiday, you are paid 200% of your daily wage for the first 8 hours. If you do not work, you still receive 100% of your daily wage, provided you were present or on paid leave on the workday before the holiday. If the holiday falls on your rest day and you work, the rate is 260%.',
+  },
+  {
+    q: 'How much is the pay on a special non-working day?',
+    a: 'Special non-working days follow "no work, no pay": if you do not work, you get nothing unless company policy says otherwise. If you work, you get 130% of your daily wage for the first 8 hours, or 150% if the special day also falls on your rest day.',
+  },
+  {
+    q: 'What is double pay and when do I get it?',
+    a: '"Double pay" refers to the 200% rate for working on a regular holiday. In 2026 there are 12 regular holidays, including New Year’s Day, Maundy Thursday, Good Friday, Araw ng Kagitingan, Labor Day, Eid’l Fitr (Mar 20), Eid’l Adha (May 27), Independence Day, National Heroes Day, Bonifacio Day, Christmas Day and Rizal Day.',
+  },
+  {
+    q: 'How is overtime paid on a holiday?',
+    a: 'Hours beyond 8 on a regular holiday are paid at the holiday hourly rate plus 30% — that is 200% × 130% = 260% of the ordinary hourly rate per OT hour. On a special day, OT is 130% × 130% = 169%.',
+  },
+  {
+    q: 'Am I paid for a regular holiday if I was absent the day before?',
+    a: 'To receive the unworked regular-holiday pay, you must have worked or been on paid leave on the workday immediately before the holiday. If you were absent without pay the day before, the employer may lawfully withhold the holiday pay.',
+  },
+  {
+    q: 'Is February 25 (EDSA anniversary) a paid holiday in 2026?',
+    a: 'No. In 2026, the EDSA People Power Revolution Anniversary is a special working day — work proceeds normally with no premium pay.',
+  },
+];
+---
+
+<ToolPageLayout
+  title="Holiday Pay Calculator Philippines 2026 – Rates & Holiday List"
+  description="Compute holiday pay for regular holidays (200%), special days (130%) and rest-day combinations, with the complete official 2026 Philippine holiday calendar."
+  path="/holiday-pay-calculator/"
+  h1="Holiday Pay Calculator Philippines"
+  updated="August 2026"
+  faqs={faqs}
+  related={['overtime', 'nightDiff', 'thirteenth', 'takeHome']}
+>
+  <Fragment slot="answer">
+    <p>
+      In the Philippines, working on a <strong>regular holiday pays 200%</strong> of your daily
+      wage (100% even if unworked), while a <strong>special non-working day pays 130%</strong> if
+      worked and nothing if unworked ("no work, no pay"). If the day is also your rest day, the
+      rates rise to 260% and 150%. These DOLE multipliers and the official 2026 holiday list from
+      Proclamation No. 1006 are built into the calculator below.
+    </p>
+  </Fragment>
+
+  <Fragment slot="calculator">
+    <HolidayPayCalculator client:idle />
+  </Fragment>
+
+  <h2>Holiday Pay Rates (DOLE Rules)</h2>
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Scenario</th><th>First 8 Hours</th><th>Overtime (per hour)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Regular holiday — not worked</td><td>100%</td><td>—</td></tr>
+        <tr><td>Regular holiday — worked</td><td>200%</td><td>260% (200% × 130%)</td></tr>
+        <tr><td>Regular holiday on rest day — worked</td><td>260%</td><td>338% (260% × 130%)</td></tr>
+        <tr><td>Special day — not worked</td><td>No pay*</td><td>—</td></tr>
+        <tr><td>Special day — worked</td><td>130%</td><td>169% (130% × 130%)</td></tr>
+        <tr><td>Special day on rest day — worked</td><td>150%</td><td>195% (150% × 130%)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="text-sm text-ink-soft">
+    *Unless a company policy, practice, or collective bargaining agreement grants payment. Night
+    work between 10 PM and 6 AM adds a further 10% on the applicable hourly rate — see the
+    <a href="/night-differential-calculator/">Night Differential Calculator</a>.
+  </p>
+
+  <h2>Philippine Holidays 2026 (Official List)</h2>
+  <p>
+    Declared by <strong>Proclamation No. 1006, s. 2025</strong>, with Eid'l Fitr and Eid'l Adha
+    fixed by Proclamations 1189 and 1264, s. 2026. Pay rules are implemented by DOLE Labor
+    Advisory No. 12-25.
+  </p>
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Date</th><th>Holiday</th><th>Type</th></tr>
+      </thead>
+      <tbody>
+        {
+          holidays.map((h) => (
+            <tr>
+              <td class="whitespace-nowrap">{fmt(h.date)}</td>
+              <td>{h.name}</td>
+              <td>{typeLabel[h.type]}</td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Example Computations</h2>
+  <div class="example-card">
+    <p><strong>Example 1 — Worked 8h on Christmas Day (regular holiday), ₱610 daily wage:</strong>
+    pay = ₱610 × 200% = <strong>₱1,220</strong>.</p>
+  </div>
+  <div class="example-card">
+    <p><strong>Example 2 — Worked 10h on a special day, ₱75/hour:</strong> first 8h = ₱75 × 8 ×
+    130% = ₱780; OT = 2h × ₱75 × 169% = ₱253.50. Total: <strong>₱1,033.50</strong>.</p>
+  </div>
+  <div class="example-card">
+    <p><strong>Example 3 — Regular holiday falling on your rest day, worked 8h, ₱100/hour:</strong>
+    pay = ₱100 × 8 × 260% = <strong>₱2,080</strong>.</p>
+  </div>
+
+  <h2>Who This Applies To</h2>
+  <p>
+    These are the statutory minimums for covered private-sector employees under the Labor Code.
+    Some workers are excluded from holiday-pay coverage (e.g., certain managerial employees,
+    kasambahays under separate rules, field personnel whose hours cannot be determined). Monthly-paid
+    employees may already have unworked regular holidays factored into their monthly rate —
+    check your employment contract or HR policy.
+  </p>
+
+  <h2>Official Source</h2>
+  <p>
+    Holiday list: <a href={meta.official_source_url} target="_blank" rel="noopener">{meta.official_source_label}</a>.
+    Pay rules: DOLE Labor Advisory No. 12-25 and the
+    <a href="https://bwc.dole.gov.ph/" target="_blank" rel="noopener">DOLE Handbook on Workers' Statutory Monetary Benefits</a>.
+    Last verified {new Date(meta.last_verified + 'T00:00:00').toLocaleDateString('en-PH', { month: 'long', day: 'numeric', year: 'numeric' })}.
+  </p>
+</ToolPageLayout>

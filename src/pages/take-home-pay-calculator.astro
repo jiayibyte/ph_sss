@@ -1,0 +1,122 @@
+---
+import ToolPageLayout from '../layouts/ToolPageLayout.astro';
+import TakeHomeCalculator from '../islands/TakeHomeCalculator';
+import taxRules from '../data/tax/2026.json';
+
+const meta = taxRules.meta;
+const faqs = [
+  {
+    q: 'How do I compute my take-home pay in the Philippines?',
+    a: 'Start with your monthly gross salary, deduct your employee shares of SSS (5% of your Monthly Salary Credit), PhilHealth (2.5% of basic salary, floor ₱10,000 / ceiling ₱100,000) and Pag-IBIG (2% of fund salary, max ₱200), then apply the BIR withholding tax table to the remainder. What is left is your take-home (net) pay.',
+  },
+  {
+    q: 'How much is the take-home pay for a ₱30,000 salary in 2026?',
+    a: 'At ₱30,000 gross monthly: SSS ₱1,500 + PhilHealth ₱750 + Pag-IBIG ₱200 = ₱2,450 in contributions. Taxable income is ₱27,550, giving ₱1,007.55 withholding tax. Estimated take-home pay: ₱26,542.45.',
+  },
+  {
+    q: 'What monthly salary is tax-free in the Philippines?',
+    a: 'Under the TRAIN law, annual taxable income of ₱250,000 or less is exempt — that is monthly taxable income up to ₱20,833. Because mandatory contributions are deducted first, a gross salary of roughly ₱23,000–₱23,500 per month can still result in zero withholding tax.',
+  },
+  {
+    q: 'Are SSS, PhilHealth and Pag-IBIG deducted before or after tax?',
+    a: 'Before. Your mandatory contributions (employee shares only) are excluded from taxable compensation, so the withholding tax is computed on gross salary minus those contributions.',
+  },
+  {
+    q: 'Is the 13th month pay included in this computation?',
+    a: 'No — this calculator estimates your regular monthly net pay. The 13th month pay is a separate annual benefit, tax-exempt up to ₱90,000 combined with other benefits. Use the 13th Month Pay Calculator for that.',
+  },
+];
+---
+
+<ToolPageLayout
+  title="Take-Home Pay Calculator Philippines 2026 – Net Salary After Tax"
+  description="Compute your monthly take-home pay in the Philippines: gross salary minus SSS, PhilHealth, Pag-IBIG and BIR withholding tax, with each deduction fully itemized."
+  path="/take-home-pay-calculator/"
+  h1="Take-Home Pay Calculator Philippines"
+  updated="August 2026"
+  faqs={faqs}
+  related={['sssCalculator', 'philhealth', 'pagibig', 'thirteenth']}
+>
+  <Fragment slot="answer">
+    <p>
+      Your take-home pay is your <strong>gross monthly salary minus four deductions</strong>: your
+      employee shares of SSS, PhilHealth and Pag-IBIG contributions, and the BIR withholding tax
+      computed on what remains. This calculator applies the exact 2026 schedules for all four —
+      the same tables used by payroll — and itemizes every line.
+    </p>
+  </Fragment>
+
+  <Fragment slot="calculator">
+    <TakeHomeCalculator client:idle />
+  </Fragment>
+
+  <h2>How It Is Calculated</h2>
+  <ol>
+    <li>
+      <strong><a href="/sss-contribution-calculator/">SSS</a>:</strong> 5% of your Monthly Salary
+      Credit (MSC ₱5,000–₱35,000), per the official schedule — max ₱1,750.
+    </li>
+    <li>
+      <strong><a href="/philhealth-contribution/">PhilHealth</a>:</strong> half of the 5% premium
+      on basic salary (floor ₱10,000 / ceiling ₱100,000) — you pay 2.5%, max ₱2,500.
+    </li>
+    <li>
+      <strong><a href="/pagibig-contribution/">Pag-IBIG</a>:</strong> 2% of fund salary capped at
+      ₱10,000 — max ₱200.
+    </li>
+    <li>
+      <strong>Withholding tax:</strong> BIR's monthly table (TRAIN law, 2023-onwards schedule)
+      applied to gross salary minus the three contributions above.
+    </li>
+  </ol>
+
+  <h2>BIR Monthly Withholding Tax Table (2023 onwards, in force 2026)</h2>
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Monthly Taxable Income</th><th>Withholding Tax</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>₱20,833 and below</td><td>₱0</td></tr>
+        <tr><td>₱20,833 – ₱33,332</td><td>15% of excess over ₱20,833</td></tr>
+        <tr><td>₱33,333 – ₱66,666</td><td>₱1,875 + 20% of excess over ₱33,333</td></tr>
+        <tr><td>₱66,667 – ₱166,666</td><td>₱8,541.80 + 25% of excess over ₱66,667</td></tr>
+        <tr><td>₱166,667 – ₱666,666</td><td>₱33,541.80 + 30% of excess over ₱166,667</td></tr>
+        <tr><td>₱666,667 and above</td><td>₱183,541.80 + 35% of excess over ₱666,667</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Example Computations</h2>
+  <div class="example-card">
+    <p><strong>Example 1 — ₱20,000 gross:</strong> SSS ₱1,000 + PhilHealth ₱500 + Pag-IBIG ₱200 =
+    ₱1,700. Taxable ₱18,300 → tax ₱0. Take-home: <strong>₱18,300</strong>.</p>
+  </div>
+  <div class="example-card">
+    <p><strong>Example 2 — ₱30,000 gross:</strong> contributions ₱2,450; taxable ₱27,550 → tax
+    ₱1,007.55. Take-home: <strong>₱26,542.45</strong>.</p>
+  </div>
+  <div class="example-card">
+    <p><strong>Example 3 — ₱60,000 gross:</strong> SSS ₱1,750 (capped) + PhilHealth ₱1,500 +
+    Pag-IBIG ₱200 = ₱3,450. Taxable ₱56,550 → tax ₱1,875 + 20% × ₱23,217 = ₱6,518.40. Take-home:
+    <strong>₱50,031.60</strong>.</p>
+  </div>
+
+  <h2>Who This Applies To</h2>
+  <p>
+    Private-sector employees paid monthly, with mandatory contributions deducted through payroll.
+    It assumes the standard graduated withholding table — not the 8% flat option for self-employed
+    taxpayers, government GSIS deductions, de minimis benefits, or company-specific deductions
+    (loans, HMO top-ups, tardiness). Your payslip may differ where those apply; treat this result
+    as the statutory baseline.
+  </p>
+
+  <h2>Official Source</h2>
+  <p>
+    Withholding tax: <strong>{meta.rule_version}</strong> —
+    <a href={meta.official_source_url} target="_blank" rel="noopener">{meta.official_source_label}</a>.
+    Contribution schedules: SSS Circular 2024-006, PhilHealth Advisory 2026-0042, HDMF Circular
+    460 — each linked on its own calculator page. Last verified
+    {new Date(meta.last_verified + 'T00:00:00').toLocaleDateString('en-PH', { month: 'long', day: 'numeric', year: 'numeric' })}.
+  </p>
+</ToolPageLayout>
