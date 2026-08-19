@@ -98,4 +98,4 @@
 - [x] 8.7 slogan 仅出现在 hero/页脚/OG 图，SEO 位全部为描述性定位语
 - [ ] 8.8 （上线后）slogan 与页面英文/Taglish 文案找 1–2 位母语者校验
 - [ ] 8.9 上线收尾走查：404 页可达、favicon/manifest 在位、安全响应头生效（securityheaders.com 测 A 档）、结构化数据过 Rich Results 测试、uptime 探针绿、contact@ 邮箱收发通、回滚演练一次（切软链回上一版再切回）
-- [ ] 8.10 运营交接：design.md §9 年度日历设为日历提醒（12–1 月缴费表 / Q3–Q4 节假日 / 10 月 13th month / 11 月 PRC / Q2 税表 / 每月 GSC 十分钟）
+- [x] 8.10 运营交接：design.md §9 年度日历设为日历提醒（12–1 月缴费表 / Q3–Q4 节假日 / 10 月 13th month / 11 月 PRC / Q2 税表 / 每月 GSC 十分钟）

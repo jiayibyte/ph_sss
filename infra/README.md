@@ -25,7 +25,7 @@
 9. **Uptime**：UptimeRobot 免费档，监控 `/` 与 `/sss-contribution-table/`，邮件告警。
 10. **logrotate**：确认 `/var/log/nginx/aytool.*.log` 在 logrotate 配置内；每月跑一次 nginx-aytool.conf 尾部注释里的 AI bot 统计命令。
 11. **回滚演练**：`make rollback` 切回上一版再 `make deploy` 切回来（验收 8.9）。
-12. **日历提醒**（验收 8.10，design.md §9）：12–1 月核查 SSS/PhilHealth/Pag-IBIG 次年费率 → 更新 `src/data/*/2027.json`；Q3–Q4 节假日 Proclamation → holidays；10 月中 13th month 页核验；11 月 PRC 次年日历；Q2 BIR 税表核查；每月 10 分钟 GSC + GA4 看板。
+12. **日历提醒**（验收 8.10）：完整节点与动作见 [docs/ops-calendar.md](../docs/ops-calendar.md)；双击导入 [aytool-ops-calendar.ics](aytool-ops-calendar.ics) 即可把全部年度循环提醒加进 Apple/Google 日历。
 
 ## 年度数据更新流程
 

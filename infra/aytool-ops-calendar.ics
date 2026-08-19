@@ -1,0 +1,109 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//AyTool//Ops Calendar//EN
+CALSCALE:GREGORIAN
+X-WR-CALNAME:AyTool 运营日历
+X-WR-TIMEZONE:Asia/Shanghai
+BEGIN:VEVENT
+UID:aytool-monthly-dashboard@aytool.com
+DTSTART;VALUE=DATE:20260901
+RRULE:FREQ=MONTHLY;BYMONTHDAY=1
+SUMMARY:AyTool 月检：GSC + GA4 + AI bot 抓取 + Uptime（10分钟）
+DESCRIPTION:① GSC 收录/impressions/新query ② GA4 流量+AI渠道 ③ ssh 139 查 AI bot 抓取统计 ④ UptimeRobot 告警记录。详见 docs/ops-calendar.md
+END:VEVENT
+BEGIN:VEVENT
+UID:aytool-dec-rates@aytool.com
+DTSTART;VALUE=DATE:20261210
+RRULE:FREQ=YEARLY
+SUMMARY:AyTool：核查次年 SSS/PhilHealth/Pag-IBIG 费率
+DESCRIPTION:查 sss.gov.ph 次年 circular（12月中发布、1月生效）、philhealth.gov.ph advisory、pagibigfund.gov.ph circular。
+END:VEVENT
+BEGIN:VEVENT
+UID:aytool-jan-rollover@aytool.com
+DTSTART;VALUE=DATE:20270105
+RRULE:FREQ=YEARLY
+SUMMARY:AyTool：新年度规则生效复核 + 全站换年部署
+DESCRIPTION:新建 src/data/*/<新年>.json、页面 Title/答案句年份+1、llms.txt 同步、make deploy、GSC 请求重新抓取。
+END:VEVENT
+BEGIN:VEVENT
+UID:aytool-eid-fitr@aytool.com
+DTSTART;VALUE=DATE:20270220
+RRULE:FREQ=YEARLY
+SUMMARY:AyTool：核查 Eid'l Fitr 日期 Proclamation
+DESCRIPTION:查 Official Gazette/PCO，更新 holidays JSON（2026年为 Proc. 1189，3月12日签）。
+END:VEVENT
+BEGIN:VEVENT
+UID:aytool-bir-check@aytool.com
+DTSTART;VALUE=DATE:20270415
+RRULE:FREQ=YEARLY
+SUMMARY:AyTool：BIR 预扣税表年检
+DESCRIPTION:核对是否有新 Revenue Regulation 变更 TRAIN 税档与 ₱90,000 免税上限（bir.gov.ph）。
+END:VEVENT
+BEGIN:VEVENT
+UID:aytool-eid-adha@aytool.com
+DTSTART;VALUE=DATE:20270510
+RRULE:FREQ=YEARLY
+SUMMARY:AyTool：核查 Eid'l Adha 日期 Proclamation
+DESCRIPTION:查 Official Gazette/PCO，更新 holidays JSON（2026年为 Proc. 1264，5月21日签）。
+END:VEVENT
+BEGIN:VEVENT
+UID:aytool-aug-holidays@aytool.com
+DTSTART;VALUE=DATE:20260820
+RRULE:FREQ=YEARLY
+SUMMARY:AyTool：8月末节日簇刷新（Ninoy 8/21 + National Heroes）
+DESCRIPTION:holiday 页刷新 Updated 日期 + FB 倍率提醒图卡。
+END:VEVENT
+BEGIN:VEVENT
+UID:aytool-sep-proclamation@aytool.com
+DTSTART;VALUE=DATE:20260905
+RRULE:FREQ=YEARLY
+SUMMARY:AyTool：查次年节假日 Proclamation
+DESCRIPTION:Malacañang 通常9–11月发布（2026年的 Proc. 1006 于 2025-09-03 签署）。查到即录入 holidays/<次年>.json；没查到则 10/15 复查。
+END:VEVENT
+BEGIN:VEVENT
+UID:aytool-oct-13th@aytool.com
+DTSTART;VALUE=DATE:20261012
+RRULE:FREQ=YEARLY
+SUMMARY:AyTool：13th Month 页大促前全面核验（重要）
+DESCRIPTION:11–12月全年最大流量脉冲前：核对 DOLE 年度 Labor Advisory、补 FAQ、刷新 Updated、FB 图卡最佳窗口。
+END:VEVENT
+BEGIN:VEVENT
+UID:aytool-oct-undas@aytool.com
+DTSTART;VALUE=DATE:20261020
+RRULE:FREQ=YEARLY
+SUMMARY:AyTool：Undas（11/1–2）+ Bonifacio 节前刷新
+DESCRIPTION:holiday 页刷新 + FB 图卡。
+END:VEVENT
+BEGIN:VEVENT
+UID:aytool-nov-prc@aytool.com
+DTSTART;VALUE=DATE:20261115
+RRULE:FREQ=YEARLY
+SUMMARY:AyTool：录入 PRC 次年考试日历
+DESCRIPTION:PRC Resolution 通常10月下旬签、11月中挂网（Res. 2113 为 10/23 签、11/17 发布）。更新 prc/<次年>.json + 页面年份。
+END:VEVENT
+BEGIN:VEVENT
+UID:aytool-dec-xmas@aytool.com
+DTSTART;VALUE=DATE:20261215
+RRULE:FREQ=YEARLY
+SUMMARY:AyTool：圣诞季节日簇刷新（12/24–25、30–31）
+DESCRIPTION:holiday 页刷新 + "double pay this Christmas" FB 图卡。
+END:VEVENT
+BEGIN:VEVENT
+UID:aytool-d30@aytool.com
+DTSTART;VALUE=DATE:20260919
+SUMMARY:AyTool D30 复盘：索引与 impressions 趋势
+DESCRIPTION:低流量≠失败，只看趋势。详见 docs/ops-calendar.md 里程碑节点。
+END:VEVENT
+BEGIN:VEVENT
+UID:aytool-d60@aytool.com
+DTSTART;VALUE=DATE:20261019
+SUMMARY:AyTool D60 复盘：只扩有 impression 的集群
+DESCRIPTION:检查 holiday / "for X salary" 词群是否出信号（程序化扩页开闸条件）。
+END:VEVENT
+BEGIN:VEVENT
+UID:aytool-d90@aytool.com
+DTSTART;VALUE=DATE:20261118
+SUMMARY:AyTool D90 决策：Go / Pivot / Stop
+DESCRIPTION:Go=扩60–80页/复制第二市场；Pivot=改意图强化工具；Stop=停簇不恋战。
+END:VEVENT
+END:VCALENDAR
