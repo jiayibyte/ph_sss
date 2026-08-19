@@ -43,7 +43,7 @@ export const SITE = {
    * GA4 measurement ID. Leave empty to disable analytics injection entirely
    * (no GA script is emitted when empty). Fill in e.g. 'G-XXXXXXXXXX' before launch.
    */
-  ga4Id: '',
+  ga4Id: 'G-DLZNSD7T6C',
   palette: PALETTES[ACCENT_PALETTE],
 } as const;
 
