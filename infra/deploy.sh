@@ -9,7 +9,7 @@
 # Configure via environment or edit the defaults below.
 set -euo pipefail
 
-DEPLOY_HOST="${AYTOOL_HOST:-user@your-server}"          # TODO: set your server
+DEPLOY_HOST="${AYTOOL_HOST:-139}"                        # SSH config alias for 43.160.196.139
 RELEASES_DIR="${AYTOOL_RELEASES:-/var/www/aytool-releases}"
 LIVE_LINK="${AYTOOL_LINK:-/var/www/aytool}"
 KEEP_RELEASES=5
