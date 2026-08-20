@@ -44,6 +44,9 @@ BOT_PATTERNS = [
 ]
 
 ASSET_RE = re.compile(r'\.(js|css|png|jpg|svg|ico|xml|txt|webmanifest|gz|map|woff2?)($|\?)|^/_astro/|^/~partytown/')
+# 真实渲染证据：只有真实浏览器渲染页面才会加载构建产物 JS。
+# 不能用 ASSET_RE 代替——扫描器也抓 robots.txt/favicon.ico，会把扫描器误判成真人。
+RENDER_RE = re.compile(r'^/_astro/|^/~partytown/')
 BROWSERISH_RE = re.compile(r'Mozilla/')
 
 AI_BOTS = {'GPTBot (OpenAI 训练)', 'OAI-SearchBot (ChatGPT搜索)', 'ChatGPT-User (用户实时引用)',
@@ -79,7 +82,7 @@ def main():
                         continue
                     d = m.groupdict()
                     rows.append(d)
-                    if ASSET_RE.search(d['path']) and BROWSERISH_RE.search(d['ua']) and not classify_bot(d['ua']):
+                    if RENDER_RE.search(d['path']) and BROWSERISH_RE.search(d['ua']) and not classify_bot(d['ua']):
                         asset_loaders.add(d['ip'])
         except OSError:
             continue
