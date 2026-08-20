@@ -11,12 +11,17 @@ Basic Auth 保护）。由 cron 每 10 分钟执行一次。
 import glob
 import gzip
 import html
+import json
+import os
 import re
+import urllib.request
 from collections import Counter, defaultdict
-from datetime import datetime
+from datetime import datetime, timedelta
 
 LOG_FILES = sorted(glob.glob('/var/log/nginx/aytool.access.log*'))
 OUT = '/var/www/aytool-stats/index.html'
+GEO_CACHE = '/var/lib/aytool-stats/geo-cache.json'
+SESSION_GAP = timedelta(minutes=30)
 
 LINE_RE = re.compile(
     r'^(?P<ip>\S+) \S+ \S+ \[(?P<time>[^\]]+)\] "(?P<method>\S+) (?P<path>\S+)[^"]*" '
@@ -70,6 +75,69 @@ def parse_time(s):
     return datetime.strptime(s.split(' ')[0], '%d/%b/%Y:%H:%M:%S')
 
 
+def geo_lookup(ips):
+    """ip-api.com 免费批量查询（每 IP 只查一次，结果持久缓存）。"""
+    try:
+        cache = json.load(open(GEO_CACHE)) if os.path.exists(GEO_CACHE) else {}
+    except Exception:
+        cache = {}
+    missing = [ip for ip in ips if ip not in cache]
+    for i in range(0, len(missing), 100):
+        chunk = missing[i:i + 100]
+        try:
+            req = urllib.request.Request(
+                'http://ip-api.com/batch?fields=status,country,countryCode,isp,hosting,mobile,query',
+                data=json.dumps(chunk).encode(),
+                headers={'Content-Type': 'application/json'})
+            with urllib.request.urlopen(req, timeout=10) as resp:
+                for r in json.load(resp):
+                    if r.get('status') == 'success':
+                        cache[r['query']] = {
+                            'country': r.get('country', '?'),
+                            'cc': r.get('countryCode', ''),
+                            'isp': r.get('isp', ''),
+                            'hosting': bool(r.get('hosting')),
+                            'mobile': bool(r.get('mobile')),
+                        }
+                    else:
+                        cache[r.get('query', '')] = {'country': '未知', 'cc': '', 'isp': '', 'hosting': False, 'mobile': False}
+        except Exception:
+            break  # 查询失败不阻塞看板生成，下次 cron 再试
+    os.makedirs(os.path.dirname(GEO_CACHE), exist_ok=True)
+    with open(GEO_CACHE, 'w') as fh:
+        json.dump(cache, fh)
+    return cache
+
+
+def ua_short(ua):
+    os_m = ('iPhone' if 'iPhone' in ua else 'iPad' if 'iPad' in ua else
+            'Android' if 'Android' in ua else 'Windows' if 'Windows' in ua else
+            'macOS' if 'Macintosh' in ua else 'Linux' if 'Linux' in ua else '?')
+    br = ('Edge' if 'Edg/' in ua else 'Samsung' if 'SamsungBrowser' in ua else
+          'Firefox' if 'Firefox/' in ua else 'Chrome' if 'Chrome/' in ua else
+          'Safari' if 'Safari/' in ua else '?')
+    return f'{os_m}·{br}'
+
+
+def dwell(times):
+    """按 30 分钟间隔切会话，累计每个会话的首尾跨度。"""
+    if len(times) < 2:
+        return None
+    times = sorted(times)
+    total = timedelta()
+    start = prev = times[0]
+    for t in times[1:]:
+        if t - prev > SESSION_GAP:
+            total += prev - start
+            start = t
+        prev = t
+    total += prev - start
+    secs = int(total.total_seconds())
+    if secs < 1:
+        return None
+    return f'{secs // 60}分{secs % 60:02d}秒' if secs >= 60 else f'{secs}秒'
+
+
 def main():
     rows = []
     asset_loaders = set()
@@ -94,6 +162,9 @@ def main():
     human_pages = Counter()
     human_ips = set()
     referrers = Counter()
+    ip_times = defaultdict(list)   # 每个真人IP的全部请求时间（含资源，用于停留估算）
+    ip_pages = defaultdict(list)   # 每个真人IP的页面访问序列 (时间, 路径)
+    ip_ua = {}
 
     for d in rows:
         t = parse_time(d['time'])
@@ -110,9 +181,12 @@ def main():
         elif BROWSERISH_RE.search(d['ua']) and d['ip'] in asset_loaders:
             day_counts[day]['human'] += 1
             human_ips.add(d['ip'])
+            ip_times[d['ip']].append(t)
+            ip_ua[d['ip']] = d['ua']
             if not is_asset and d['status'] == '200':
                 human_pages[d['path']] += 1
                 human_hits.append(d | {'dt': t})
+                ip_pages[d['ip']].append((t, d['path']))
                 ref = d['ref']
                 if ref and ref != '-' and 'aytool.com' not in ref and '43.160.196.139' not in ref:
                     referrers[ref] += 1
@@ -122,6 +196,11 @@ def main():
 
     days = sorted(day_counts.keys())[-14:]
     maxday = max((sum(day_counts[d].values()) for d in days), default=1)
+
+    geo = geo_lookup(sorted(human_ips))
+    countries = Counter(geo.get(ip, {}).get('country', '未知') for ip in human_ips)
+    # 机房IP即使执行了JS也大概率是自动化（无头浏览器/拨测/验证器）
+    verified_humans = [ip for ip in human_ips if not geo.get(ip, {}).get('hosting')]
 
     ai_req = sum(v['req'] for k, v in bot_stats.items() if k in AI_BOTS)
     search_req = sum(v['req'] for k, v in bot_stats.items() if k in SEARCH_BOTS)
@@ -167,6 +246,28 @@ def main():
         f'<tr><td>{e(r[:70])}</td><td class="num">{c}</td></tr>' for r, c in referrers.most_common(15)) \
         or '<tr><td colspan="2" class="empty">暂无外部来源（还没开始分发，正常）</td></tr>'
 
+    country_chips = ' '.join(
+        f'<span class="chip">{e(c)} × {n}</span>' for c, n in countries.most_common(12))
+
+    visitor_rows = ''
+    for ip in sorted(human_ips, key=lambda i: max(ip_times[i]), reverse=True):
+        g = geo.get(ip, {})
+        pages = ip_pages.get(ip, [])
+        seq = ' → '.join(p for _, p in sorted(pages)[:6]) + (' …' if len(pages) > 6 else '')
+        stay = dwell(ip_times[ip]) or '—'
+        first = min(ip_times[ip]).strftime('%m-%d %H:%M')
+        last = max(ip_times[ip]).strftime('%m-%d %H:%M')
+        flag = ('<em class="dc">机房IP·疑似自动化</em>' if g.get('hosting')
+                else '<em class="hu">真人</em>')
+        net = '📱' if g.get('mobile') else ''
+        visitor_rows += (
+            f'<tr><td>{e(ip)}<br><span class="sub">{e(g.get("isp", "")[:28])}</span></td>'
+            f'<td>{e(g.get("country", "未知"))}{net}<br>{flag}</td>'
+            f'<td class="num">{first}<br>{last}</td>'
+            f'<td class="num">{stay}</td>'
+            f'<td class="num">{len(pages)}</td>'
+            f'<td>{e(seq) or "(仅资源请求)"}<br><span class="sub">{e(ua_short(ip_ua.get(ip, "")))}</span></td></tr>')
+
     page = f'''<!doctype html>
 <html lang="zh"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -190,6 +291,10 @@ def main():
  .h{{background:#0f766e}} .b{{background:#93b8b4}} .s{{background:#dde4ea}}
  em.ai{{background:#eef;color:#4338ca;font-style:normal;font-size:10px;padding:1px 5px;border-radius:8px}}
  em.se{{background:#e6f6f3;color:#0f766e;font-style:normal;font-size:10px;padding:1px 5px;border-radius:8px}}
+ em.dc{{background:#fdf0ef;color:#b4413c;font-style:normal;font-size:10px;padding:1px 5px;border-radius:8px}}
+ em.hu{{background:#e6f6f3;color:#0f766e;font-style:normal;font-size:10px;padding:1px 5px;border-radius:8px}}
+ .chip{{display:inline-block;background:#fff;border:1px solid #e3e8ee;border-radius:12px;padding:2px 9px;font-size:12px;margin:2px}}
+ .sub{{color:#8a97a5;font-size:11px}}
  .legend{{font-size:11px;color:#5b6b7b;margin:6px 0}}
  .legend i{{display:inline-block;width:10px;height:10px;border-radius:2px;margin:0 4px 0 10px;vertical-align:-1px}}
  .empty{{color:#8a97a5;text-align:center}}
@@ -197,7 +302,8 @@ def main():
 <h1>AyTool 流量看板</h1>
 <p class="meta">生成于 {now}（每 10 分钟自动更新）· 数据源：nginx 访问日志（含归档，约 14 天窗口）</p>
 <div class="cards">
-{card('真人访客 (独立IP)', len(human_ips), '加载过JS的真实浏览器')}
+{card('确认真人 (独立IP)', len(verified_humans), '加载JS且非机房IP')}
+{card('机房IP访客', len(human_ips) - len(verified_humans), '执行了JS但来自数据中心')}
 {card('真人页面浏览', sum(human_pages.values()))}
 {card('搜索引擎爬虫请求', search_req, 'Google/Bing/Apple等')}
 {card('AI 爬虫请求', ai_req, 'GPTBot/Claude/Perplexity等')}
@@ -209,6 +315,10 @@ def main():
 <table><tr><th>日期</th><th>分布</th><th class="num">真人</th><th class="num">爬虫</th><th class="num">扫描器</th><th class="num">合计</th></tr>{trend_rows}</table>
 <h2>爬虫明细（AI 爬虫抓取量是被 AI 引用的前置信号）</h2>
 <table><tr><th>爬虫</th><th class="num">请求数</th><th class="num">抓取页面数</th><th class="num">最近来访</th></tr>{bots_rows}</table>
+<h2>访客国家分布</h2>
+<div>{country_chips or '<span class="chip">暂无</span>'}</div>
+<h2>访客明细（判定依据：加载JS + 是否机房IP + 停留行为）</h2>
+<table><tr><th>IP / 运营商</th><th>国家 / 判定</th><th class="num">首次<br>最近</th><th class="num">停留估算</th><th class="num">页面数</th><th>访问路径 / 设备</th></tr>{visitor_rows}</table>
 <h2>真人访问的页面 Top 20</h2>
 <table><tr><th>页面</th><th class="num">浏览次数</th></tr>{pages_rows}</table>
 <h2>外部流量来源（referrer）</h2>
