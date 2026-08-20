@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1080px; height: 1080px;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    background: linear-gradient(160deg, #f0fdfa 0%, #ffffff 45%, #f0fdfa 100%);
+    padding: 72px; display: flex; flex-direction: column; position: relative;
+  }
+  .band { position: absolute; top: 0; left: 0; right: 0; height: 18px; background: #0f766e; }
+  .kicker { font-size: 34px; font-weight: 700; color: #0f766e; letter-spacing: 2px; text-transform: uppercase; }
+  h1 { font-size: 78px; font-weight: 800; color: #1c2733; line-height: 1.1; margin-top: 14px; }
+  .date { font-size: 42px; font-weight: 700; color: #5b6b7b; margin-top: 10px; }
+  .q { margin-top: 40px; font-size: 40px; font-weight: 700; color: #115e59; font-style: italic; }
+  table { width: 100%; border-collapse: collapse; margin-top: 36px; background: #fff;
+          border-radius: 20px; overflow: hidden; box-shadow: 0 6px 24px rgba(15,118,110,.12); }
+  th { background: #0f766e; color: #fff; font-size: 34px; padding: 22px 30px; text-align: left; }
+  td { font-size: 38px; padding: 24px 30px; border-top: 2px solid #e3e8ee; color: #1c2733; }
+  td.pct { font-size: 52px; font-weight: 800; color: #0f766e; text-align: right; white-space: nowrap; }
+  .note { margin-top: 28px; font-size: 28px; color: #5b6b7b; line-height: 1.45; }
+  .footer { margin-top: auto; display: flex; align-items: center; justify-content: space-between; }
+  .brand { display: flex; align-items: center; gap: 18px; }
+  .brand .name { font-size: 44px; font-weight: 800; color: #1c2733; }
+  .cta { font-size: 32px; font-weight: 700; color: #0f766e; text-align: right; line-height: 1.35; }
+</style>
+</head>
+<body>
+  <div class="band"></div>
+  <div class="kicker">Philippine Holiday Pay Reminder</div>
+  <h1>National Heroes Day<br>= DOUBLE PAY if you work</h1>
+  <div class="date">Monday, August 31, 2026 · Regular Holiday</div>
+  <div class="q">Papasok ka ba? Here's what you should be paid:</div>
+  <table>
+    <tr><th>Scenario</th><th style="text-align:right">Your pay</th></tr>
+    <tr><td>Did not work</td><td class="pct">100%</td></tr>
+    <tr><td>Worked (first 8 hours)</td><td class="pct">200%</td></tr>
+    <tr><td>Worked + it's your rest day</td><td class="pct">260%</td></tr>
+    <tr><td>Overtime (per extra hour)</td><td class="pct">260%</td></tr>
+  </table>
+  <div class="note">Per DOLE pay rules (Labor Advisory 12-25) &amp; Proclamation No. 1006. Unworked 100% requires
+  presence or paid leave on the workday before the holiday.</div>
+  <div class="footer">
+    <div class="brand">
+      <svg width="76" height="76" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><rect width="32" height="32" rx="7" fill="#0f766e"/><path d="M12 6 h7.2 a5.8 5.8 0 0 1 0 11.6 H15 V24 h-3 Z M15 9 v5.6 h4.2 a2.8 2.8 0 0 0 0-5.6 Z" fill="#fff"/><rect x="9" y="10" width="14" height="1.9" fill="#fff"/><rect x="9" y="13.4" width="14" height="1.9" fill="#fff"/><rect x="12" y="26" width="3.4" height="3.4" rx="0.8" fill="#fff"/><rect x="17" y="26" width="3.4" height="3.4" rx="0.8" fill="#fff"/><rect x="22" y="26" width="3.4" height="3.4" rx="0.8" fill="#fff"/></svg>
+      <div class="name">AyTool</div>
+    </div>
+    <div class="cta">Compute your exact pay free:<br>aytool.com/holiday-pay-calculator</div>
+  </div>
+</body>
+</html>
