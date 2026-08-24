@@ -66,6 +66,21 @@ body {
   @apply -mx-1 overflow-x-auto px-1;
 }
 
+/* PRC per-profession sections: chip jump-nav + muted alias line.
+   Declared after .content-prose so the chip links beat its underlined <a>. */
+.prc-jump ul {
+  @apply mb-5 ml-0 flex list-none flex-wrap gap-2;
+}
+.prc-jump a {
+  @apply block rounded-full border border-line bg-surface-soft px-3 py-1 text-sm text-ink-soft no-underline hover:border-accent hover:text-accent-strong;
+}
+.content-prose .prc-aka {
+  @apply mb-2 text-sm text-ink-soft;
+}
+.prc-note {
+  @apply text-sm font-normal text-ink-soft;
+}
+
 /* Example / callout card */
 .example-card {
   @apply mb-4 rounded-lg border border-line bg-surface-soft p-4 text-[15px];

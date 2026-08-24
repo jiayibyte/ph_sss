@@ -1,0 +1,78 @@
+---
+/**
+ * Per-profession schedule blocks for the PRC page.
+ *
+ * Every date comes from the PRC rule JSON — nothing is hardcoded here. An
+ * unresolved matcher in PRC_PROFESSIONS throws, so next year's data cannot
+ * silently drop a section.
+ */
+import prcRules from '../data/prc/2026.json';
+import { PRC_PROFESSIONS, resolveGroup, type ProfessionGroup } from '../lib/prcProfessions';
+import type { PrcExamEntry } from '../lib/rules/types';
+
+const exams = prcRules.exams as PrcExamEntry[];
+const byName = new Map(exams.map((e) => [e.exam, e]));
+
+function fmt(d: string | null | undefined): string {
+  if (!d) return 'to be announced';
+  return new Date(d + 'T00:00:00').toLocaleDateString('en-PH', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
+  });
+}
+
+interface ResolvedGroup extends ProfessionGroup {
+  entries: PrcExamEntry[];
+}
+
+const groups: ResolvedGroup[] = PRC_PROFESSIONS.map((g) => ({
+  ...g,
+  entries: resolveGroup(g, byName, prcRules.year),
+}));
+---
+
+<h2 id="by-profession">Board Exam Schedule by Profession</h2>
+<p>
+  The {prcRules.year} dates for the most-searched licensure examinations, pulled from the same
+  resolution as the table above. Each entry shows the exam days, the filing window, and PRC's
+  target release date for results.
+</p>
+
+<nav class="prc-jump" aria-label="Jump to a profession">
+  <ul>
+    {
+      groups.map((g) => (
+        <li>
+          <a href={`#${g.id}`}>{g.navLabel}</a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+{
+  groups.map((g) => (
+    <section>
+      <h3 id={g.id}>{g.heading}</h3>
+      <p class="prc-aka">Also searched as: {g.aka.join(', ')}.</p>
+      <ul>
+        {g.entries.map((e) => (
+          <li>
+            <strong>{e.exam}</strong>
+            {e.note && <span class="prc-note"> ({e.note})</span>} — {e.dates_display}. Filing:{' '}
+            {fmt(e.application_start)} to {fmt(e.application_deadline)}. Results (target):{' '}
+            {fmt(e.results_target)}.
+          </li>
+        ))}
+      </ul>
+    </section>
+  ))
+}
+
+<p>
+  Filing for every exam above goes through PRC's LERIS portal at
+  <a href="https://online.prc.gov.ph/" target="_blank" rel="noopener">online.prc.gov.ph</a>. Result
+  dates are the targets printed in the resolution, not guarantees — PRC announces actual releases on
+  its own site.
+</p>
