@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE } from '../../site.config';
+import { TOOL_PAGES } from '../lib/pages';
 import sss from '../data/sss/2026.json';
 import ph from '../data/philhealth/2026.json';
 import pagibig from '../data/pagibig/2026.json';
@@ -9,14 +10,15 @@ import holidays from '../data/holidays/2026.json';
 import tax from '../data/tax/2026.json';
 import prc from '../data/prc/2026.json';
 
+const t = TOOL_PAGES;
 const datasets = [
-  { name: 'SSS contribution schedule', meta: sss.meta },
-  { name: 'PhilHealth premium rules', meta: ph.meta },
-  { name: 'Pag-IBIG (HDMF) contribution rules', meta: pagibig.meta },
-  { name: 'Labor Code pay rules (holiday/OT/ND/13th month)', meta: labor.meta },
-  { name: '2026 holiday calendar', meta: holidays.meta },
-  { name: 'BIR withholding tax table', meta: tax.meta },
-  { name: 'PRC 2026 exam schedule', meta: prc.meta },
+  { name: 'SSS contribution schedule', meta: sss.meta, usedBy: [t.sssTable, t.sssCalculator, t.takeHome] },
+  { name: 'PhilHealth premium rules', meta: ph.meta, usedBy: [t.philhealth, t.takeHome] },
+  { name: 'Pag-IBIG (HDMF) contribution rules', meta: pagibig.meta, usedBy: [t.pagibig, t.takeHome] },
+  { name: 'Labor Code pay rules (holiday/OT/ND/13th month)', meta: labor.meta, usedBy: [t.thirteenth, t.holidayPay, t.nightDiff, t.overtime, t.finalPay] },
+  { name: '2026 holiday calendar', meta: holidays.meta, usedBy: [t.holidayPay] },
+  { name: 'BIR withholding tax table', meta: tax.meta, usedBy: [t.takeHome] },
+  { name: 'PRC 2026 exam schedule', meta: prc.meta, usedBy: [t.prc, t.nursingSchedule] },
 ];
 const fmt = (d: string) =>
   new Date(d + 'T00:00:00').toLocaleDateString('en-PH', { year: 'numeric', month: 'long', day: 'numeric' });
@@ -42,7 +44,7 @@ const fmt = (d: string) =>
     <div class="table-scroll">
       <table>
         <thead>
-          <tr><th>Dataset</th><th>Basis</th><th>Effective</th><th>Last verified</th></tr>
+          <tr><th>Dataset</th><th>Basis</th><th>Effective</th><th>Last verified</th><th>Used by</th></tr>
         </thead>
         <tbody>
           {
@@ -56,6 +58,14 @@ const fmt = (d: string) =>
                 </td>
                 <td>{fmt(d.meta.effective_from)}</td>
                 <td>{fmt(d.meta.last_verified)}</td>
+                <td>
+                  {d.usedBy.map((p, i) => (
+                    <>
+                      {i > 0 && ', '}
+                      <a href={p.href}>{p.short}</a>
+                    </>
+                  ))}
+                </td>
               </tr>
             ))
           }

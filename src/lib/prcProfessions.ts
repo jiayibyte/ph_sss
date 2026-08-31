@@ -23,6 +23,8 @@ export interface ProfessionGroup {
   exams: string[];
   /** Other names this exam is searched under. */
   aka: string[];
+  /** Dedicated page for this profession, when one exists. */
+  href?: string;
 }
 
 export const PRC_PROFESSIONS: ProfessionGroup[] = [
@@ -32,6 +34,7 @@ export const PRC_PROFESSIONS: ProfessionGroup[] = [
     navLabel: 'Nursing (PNLE)',
     exams: ['Nurses (PNLE)', 'Nurses (PNLE, 2nd exam)'],
     aka: ['NLE', 'PNLE', 'nurse licensure exam', 'nursing board exam'],
+    href: '/nursing-board-exam-schedule/',
   },
   {
     id: 'teachers-let',

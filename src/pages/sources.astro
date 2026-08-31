@@ -1,6 +1,8 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { TOOL_PAGES } from '../lib/pages';
 
+const t = TOOL_PAGES;
 const agencies = [
   {
     name: 'SSS — Social Security System',
@@ -9,7 +11,7 @@ const agencies = [
       { label: '2025 Schedule of Contributions PDF (Circulars 2024-006 to 2024-010, in force 2026)', url: 'https://www.sss.gov.ph/wp-content/uploads/2024/12/2025-SSS-Contribution-Table-rev.pdf' },
       { label: 'SSS main site / My.SSS portal', url: 'https://www.sss.gov.ph/' },
     ],
-    used: 'SSS Contribution Table & Calculator, Take-Home Pay Calculator',
+    usedBy: [t.sssTable, t.sssCalculator, t.takeHome],
   },
   {
     name: 'PhilHealth — Philippine Health Insurance Corporation',
@@ -18,7 +20,7 @@ const agencies = [
       { label: 'PhilHealth Circular 2020-0005 Rev. 1 (premium schedule under the UHC Act)', url: 'https://www.philhealth.gov.ph/circulars/2020/circ2020-0005.pdf' },
       { label: 'PhilHealth main site', url: 'https://www.philhealth.gov.ph/' },
     ],
-    used: 'PhilHealth Contribution page, Take-Home Pay Calculator',
+    usedBy: [t.philhealth, t.takeHome],
   },
   {
     name: 'Pag-IBIG Fund — Home Development Mutual Fund (HDMF)',
@@ -26,7 +28,7 @@ const agencies = [
       { label: 'HDMF Circular No. 460 (MFS increase to ₱10,000, Feb 2024)', url: "https://www.pagibigfund.gov.ph/document/pdf/circulars/provident/Circular%20No.%20460%20-%20Guidelines%20on%20the%20Pag-IBIG%20Fund's%20Implementation%20of%20Increase%20in%20the%20MFS%20Effective%20February%202024.pdf" },
       { label: 'Pag-IBIG Fund main site / Virtual Pag-IBIG', url: 'https://www.pagibigfund.gov.ph/' },
     ],
-    used: 'Pag-IBIG Contribution page, Take-Home Pay Calculator',
+    usedBy: [t.pagibig, t.takeHome],
   },
   {
     name: 'BIR — Bureau of Internal Revenue',
@@ -34,7 +36,7 @@ const agencies = [
       { label: 'Revised Withholding Tax Table, Annex E of RR 11-2018 (effective Jan 1, 2023 onwards)', url: 'https://bir-cdn.bir.gov.ph/local/pdf/Annex%20E%20RR%2011-2018.pdf' },
       { label: 'BIR main site', url: 'https://www.bir.gov.ph/' },
     ],
-    used: 'Take-Home Pay Calculator',
+    usedBy: [t.takeHome],
   },
   {
     name: 'DOLE — Department of Labor and Employment / Bureau of Working Conditions',
@@ -43,7 +45,7 @@ const agencies = [
       { label: 'Labor Advisory No. 12-25 (2026 holiday pay rules)', url: 'https://bwc.dole.gov.ph/wp-content/uploads/2025/10/Labor-Advisory-No.-12-25-Payment-of-Wages-for-the-Regular-Holidays-Special-Non-Working-Days-and-Special-Working-Day-for-the-Year-2026-1.pdf' },
       { label: 'DOLE on final pay & COE (Labor Advisory No. 06-20)', url: 'https://dole.gov.ph/final-pay-coe-must-be-released-on-time-dole/' },
     ],
-    used: '13th Month Pay, Holiday Pay, Night Differential, Overtime, Final Pay calculators',
+    usedBy: [t.thirteenth, t.holidayPay, t.nightDiff, t.overtime, t.finalPay],
   },
   {
     name: 'Malacañang / Presidential Communications Office',
@@ -51,7 +53,7 @@ const agencies = [
       { label: 'Proclamation No. 1006, s. 2025 (2026 holidays)', url: 'https://pco.gov.ph/issuances/proclamation-no-1006-declaring-the-regular-holidays-and-special-non-working-days-for-the-year-2026/' },
       { label: 'Proclamation No. 1264, s. 2026 (Eid’l Adha 2026)', url: 'https://www.officialgazette.gov.ph/2026/05/21/proclamation-no-1264-s-2026/' },
     ],
-    used: 'Holiday Pay Calculator (2026 holiday calendar)',
+    usedBy: [t.holidayPay],
   },
   {
     name: 'DMW — Department of Migrant Workers',
@@ -60,7 +62,7 @@ const agencies = [
       { label: 'DMW official OEC Exemption Q&A', url: 'https://dmw.gov.ph/archives/poea/files/OECExemption.pdf' },
       { label: 'DMW main site', url: 'https://dmw.gov.ph/' },
     ],
-    used: 'OEC Exemption Guide',
+    usedBy: [t.oec],
   },
   {
     name: 'PRC — Professional Regulation Commission',
@@ -68,7 +70,7 @@ const agencies = [
       { label: 'Schedule of Licensure Examinations for 2026 (Resolution No. 2113, s. 2025)', url: 'https://www.prc.gov.ph/article/schedule-licensure-examinations-year-2026' },
       { label: 'PRC main site / LERIS', url: 'https://www.prc.gov.ph/' },
     ],
-    used: 'PRC Board Exam Schedule 2026',
+    usedBy: [t.prc, t.nursingSchedule],
   },
 ];
 ---
@@ -98,7 +100,15 @@ const agencies = [
               </li>
             ))}
           </ul>
-          <p class="text-sm text-ink-soft">Used by: {a.used}</p>
+          <p class="text-sm text-ink-soft">
+            Used by:{' '}
+            {a.usedBy.map((pg, i) => (
+              <>
+                {i > 0 && ', '}
+                <a href={pg.href}>{pg.label}</a>
+              </>
+            ))}
+          </p>
         </section>
       ))
     }

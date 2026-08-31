@@ -1,0 +1,158 @@
+---
+import ToolPageLayout from '../layouts/ToolPageLayout.astro';
+import prcRules from '../data/prc/2026.json';
+import { PRC_PROFESSIONS, resolveGroup, scheduleSentence } from '../lib/prcProfessions';
+import type { PrcExamEntry } from '../lib/rules/types';
+import { SITE } from '../../site.config';
+
+const meta = prcRules.meta;
+const byName = new Map((prcRules.exams as PrcExamEntry[]).map((e) => [e.exam, e]));
+const nursing = PRC_PROFESSIONS.find((g) => g.id === 'nursing');
+if (!nursing) throw new Error('PRC_PROFESSIONS no longer has a "nursing" group.');
+const rounds = resolveGroup(nursing, byName, prcRules.year);
+const [first, second] = rounds;
+
+/* Every date on this page comes from the PRC rule JSON — next year's
+   resolution updates the copy without anyone re-typing a date. */
+const fmt = (d: string | null | undefined): string =>
+  d
+    ? new Date(d + 'T00:00:00').toLocaleDateString('en-PH', {
+        month: 'long',
+        day: 'numeric',
+        year: 'numeric',
+      })
+    : 'to be announced';
+
+const datasetSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Dataset',
+  name: 'Nursing Board Exam Schedule 2026 (PNLE)',
+  description: `PNLE ${prcRules.year} schedule per PRC Resolution No. 2113, s. 2025: exam dates, application windows and target result dates for both rounds.`,
+  url: `${SITE.url}/nursing-board-exam-schedule/`,
+  creator: { '@type': 'Organization', name: 'Professional Regulation Commission (source data)' },
+  isBasedOn: meta.official_source_url,
+  dateModified: meta.last_verified,
+};
+
+const faqs = [
+  {
+    q: 'When is the nursing board exam in 2026?',
+    a: `The Philippine Nurse Licensure Examination (PNLE) has two rounds in 2026: ${scheduleSentence(rounds)} Both rounds run for two days each.`,
+  },
+  {
+    q: 'When will the PNLE August 2026 results be released?',
+    a: `PRC's target release date for the ${second.dates_display} exam is ${fmt(second.results_target)}. That is the target printed in Resolution No. 2113, s. 2025 — not a guarantee; the actual release is announced on prc.gov.ph.`,
+  },
+  {
+    q: 'How do I apply for the PNLE?',
+    a: 'File online through LERIS (online.prc.gov.ph) within the application window: create or log in to your account, choose the Nurses licensure examination, upload your documents, pay the fee, and book an appointment at your chosen PRC office. Applications after the deadline are not accepted except in justifiable cases defined by PRC rules.',
+  },
+  {
+    q: 'How many times a year is the PNLE given?',
+    a: `Twice. In ${prcRules.year} the rounds are ${first.dates_display} and ${second.dates_display}, so a candidate who misses the first filing window can target the second round.`,
+  },
+  {
+    q: 'What happens if I fail the PNLE three times?',
+    a: 'Under the Philippine Nursing Act of 2002 (RA 9173), an examinee who fails the nurse licensure examination three consecutive times must complete a refresher course before being allowed to retake the exam.',
+  },
+  {
+    q: 'Is this schedule official?',
+    a: 'The dates are transcribed from PRC Resolution No. 2113, s. 2025 — the official Schedule of Licensure Examinations for 2026. Always confirm on prc.gov.ph before booking travel or review classes; PRC can move dates by later resolution.',
+  },
+];
+---
+
+<ToolPageLayout
+  title="Nursing Board Exam Schedule 2026 – PNLE Dates & Deadlines"
+  description={`PNLE ${prcRules.year} schedule: ${first.dates_display} and ${second.dates_display}, with application deadlines, LERIS filing steps and PRC's target result dates.`}
+  path="/nursing-board-exam-schedule/"
+  h1="Nursing Board Exam Schedule 2026 (PNLE)"
+  updated="August 2026"
+  faqs={faqs}
+  related={['prc', 'takeHome', 'thirteenth', 'sssCalculator']}
+  isApp={false}
+  extraSchema={[datasetSchema]}
+>
+  <Fragment slot="answer">
+    <p>
+      The <strong>Philippine Nurse Licensure Examination (PNLE)</strong> is given twice in
+      {prcRules.year}: <strong>{first.dates_display}</strong> (filing {fmt(first.application_start)}
+      to {fmt(first.application_deadline)}) and <strong>{second.dates_display}</strong> (filing
+      {fmt(second.application_start)} to {fmt(second.application_deadline)}), per PRC Resolution
+      No. 2113, s. 2025. Target result dates: {fmt(first.results_target)} and
+      {fmt(second.results_target)}.
+    </p>
+  </Fragment>
+
+  <h2>PNLE {prcRules.year} Exam Dates and Deadlines</h2>
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>Round</th>
+          <th>Exam dates</th>
+          <th>Application window</th>
+          <th>Results (target)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          rounds.map((r, i) => (
+            <tr>
+              <td>{i + 1}</td>
+              <td>
+                <strong>{r.dates_display}</strong>
+              </td>
+              <td>
+                {fmt(r.application_start)} – {fmt(r.application_deadline)}
+              </td>
+              <td>{fmt(r.results_target)}</td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+  <p>
+    Looking for another profession? See the complete
+    <a href="/prc-board-exam-schedule/">PRC Board Exam Schedule {prcRules.year}</a> — all
+    {prcRules.exams.length} licensure exams, searchable, with the same filing windows and result
+    targets.
+  </p>
+
+  <h2>How to Apply for the PNLE (LERIS)</h2>
+  <ol>
+    <li>Create or log in to your account on <strong>LERIS</strong>, PRC's Licensure Examination and Registration Information System, at <a href="https://online.prc.gov.ph/" target="_blank" rel="noopener">online.prc.gov.ph</a>.</li>
+    <li>Select the <strong>Nurses</strong> licensure examination and your preferred exam center.</li>
+    <li>Upload your documents and ID photo, then pay the examination fee through the available payment channels.</li>
+    <li>Book an appointment and submit your requirements at your chosen PRC office before the deadline.</li>
+    <li>File <strong>within the application window</strong> shown above — late applications are not accepted except in justifiable cases defined by PRC rules.</li>
+  </ol>
+
+  <h2>PNLE Results</h2>
+  <p>
+    PRC's target release dates are <strong>{fmt(first.results_target)}</strong> for the
+    {first.dates_display} exam and <strong>{fmt(second.results_target)}</strong> for the
+    {second.dates_display} exam. These are the targets printed in the resolution — actual releases
+    can move and are announced only on
+    <a href="https://www.prc.gov.ph/" target="_blank" rel="noopener">prc.gov.ph</a>. AyTool does
+    not host exam results.
+  </p>
+
+  <h2>Retakes</h2>
+  <p>
+    Under the Philippine Nursing Act of 2002 (RA 9173), an examinee who fails the PNLE three
+    consecutive times must complete a refresher course before retaking the exam. Since the PNLE is
+    offered twice a year, the next chance after a failed round is normally about six months later.
+  </p>
+
+  <h2>Official Source</h2>
+  <p>
+    <a href={meta.official_source_url} target="_blank" rel="noopener">{meta.official_source_label}</a>
+    — Resolution No. 2113, Series of 2025, signed October 23, 2025. Last verified
+    {new Date(meta.last_verified + 'T00:00:00').toLocaleDateString('en-PH', { month: 'long', day: 'numeric', year: 'numeric' })}.
+    Apply, verify results and process your license only on the official
+    <a href="https://www.prc.gov.ph/" target="_blank" rel="noopener">PRC website</a> and LERIS
+    portal — AyTool is independent, does not host exam results, and cannot process applications.
+  </p>
+</ToolPageLayout>

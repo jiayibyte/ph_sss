@@ -93,6 +93,13 @@ export const TOOL_PAGES: Record<string, PageRef> = {
     blurb: 'Searchable 2026 PRC licensure exam calendar with application deadlines.',
     priority: 'P2',
   },
+  nursingSchedule: {
+    href: '/nursing-board-exam-schedule/',
+    label: 'Nursing Board Exam Schedule 2026',
+    short: 'Nursing (PNLE)',
+    blurb: 'PNLE 2026 exam dates, application deadlines, LERIS filing steps and target result dates.',
+    priority: 'P2',
+  },
 };
 
 export const TRUST_PAGES: Array<{ href: string; label: string }> = [

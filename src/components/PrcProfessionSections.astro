@@ -66,6 +66,11 @@ const groups: ResolvedGroup[] = PRC_PROFESSIONS.map((g) => ({
           </li>
         ))}
       </ul>
+      {g.href && (
+        <p>
+          <a href={g.href}>Full guide: {g.heading} — filing steps, deadlines and results →</a>
+        </p>
+      )}
     </section>
   ))
 }

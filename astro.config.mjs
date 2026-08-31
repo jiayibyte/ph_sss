@@ -20,7 +20,7 @@ export default defineConfig({
     preact(),
     tailwind({ applyBaseStyles: false }),
     sitemap({
-      // 404 is excluded via robots meta; sitemap must contain exactly the 18 indexable URLs
+      // 404 is excluded via robots meta; sitemap must contain exactly the 19 indexable URLs
       filter: (page) => !page.includes('/404'),
     }),
     partytown({

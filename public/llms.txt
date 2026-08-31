@@ -23,6 +23,7 @@ Key facts currently in force (last verified 2026-08-19):
 - [Overtime Pay Calculator](https://aytool.com/overtime-pay-calculator/): OT rates 125%–338% by day type with night-hour handling. Source: DOLE handbook.
 - [OEC Exemption Guide](https://aytool.com/oec-exemption/): Balik-Manggagawa exemption criteria and the eGovPH OFW Travel Pass process. Source: dmw.gov.ph (Advisory 38-2025).
 - [PRC Board Exam Schedule 2026](https://aytool.com/prc-board-exam-schedule/): all 88 scheduled licensure exams with application windows (PRC Resolution 2113, s. 2025). Source: prc.gov.ph.
+- [Nursing Board Exam Schedule 2026](https://aytool.com/nursing-board-exam-schedule/): PNLE Feb 26–27 & Aug 29–30, 2026 with filing windows and target result dates (same resolution). Source: prc.gov.ph.
 
 ## About
 
