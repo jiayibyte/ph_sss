@@ -25,12 +25,20 @@ const faqs = [
     q: 'Is the 13th month pay included in this computation?',
     a: 'No — this calculator estimates your regular monthly net pay. The 13th month pay is a separate annual benefit, tax-exempt up to ₱90,000 combined with other benefits. Use the 13th Month Pay Calculator for that.',
   },
+  {
+    q: 'Magkano ang take-home pay sa ₱25,000 na sahod?',
+    a: 'Deductions: SSS ₱1,250 (5% of the ₱25,000 MSC), PhilHealth ₱625 (2.5%), Pag-IBIG ₱200 — total ₱2,075. Taxable income is ₱22,925, so withholding tax is 15% of the excess over ₱20,833 = ₱313.80. Take-home pay: ₱25,000 − ₱2,075 − ₱313.80 = ₱22,611.20.',
+  },
+  {
+    q: 'Bakit walang tax ang ₱20,000 na sahod?',
+    a: 'Because withholding tax is computed after the contributions: ₱20,000 minus SSS ₱1,000, PhilHealth ₱500 and Pag-IBIG ₱200 leaves ₱18,300, which is below the ₱20,833 monthly threshold (₱250,000 a year) where tax starts under the TRAIN table. Take-home pay is therefore ₱18,300.',
+  },
 ];
 ---
 
 <ToolPageLayout
   title="Take-Home Pay Calculator Philippines 2026 – Net Salary After Tax"
-  description="Compute your monthly take-home pay in the Philippines: gross salary minus SSS, PhilHealth, Pag-IBIG and BIR withholding tax, with each deduction fully itemized."
+  description="Compute your monthly take-home pay in the Philippines: gross salary minus SSS, PhilHealth, Pag-IBIG and BIR withholding tax, every deduction itemized."
   path="/take-home-pay-calculator/"
   h1="Take-Home Pay Calculator Philippines"
   updated="August 2026"
@@ -100,6 +108,22 @@ const faqs = [
     <p><strong>Example 3 — ₱60,000 gross:</strong> SSS ₱1,750 (capped) + PhilHealth ₱1,500 +
     Pag-IBIG ₱200 = ₱3,450. Taxable ₱56,550 → tax ₱1,875 + 20% × ₱23,217 = ₱6,518.40. Take-home:
     <strong>₱50,031.60</strong>.</p>
+  </div>
+
+  <h2>Semi-Monthly, Daily and Hourly Equivalents</h2>
+  <p>
+    Payroll usually pays twice a month, so each cutoff is roughly <strong>half of the monthly
+    take-home</strong>. Employers may deduct the full SSS, PhilHealth and Pag-IBIG contributions on
+    one cutoff or split them; the monthly total is the same either way. To convert a monthly
+    salary to a daily rate, DOLE's formula is <strong>monthly rate × 12 ÷ factor</strong>, where
+    the factor is the number of paid days in a year: 365 if you are paid every day including rest
+    days and holidays, 313 for a six-day work week not paid on rest days, or 261 for a five-day
+    week. Hourly rate = daily rate ÷ 8.
+  </p>
+  <div class="example-card">
+    <p><strong>Example — ₱30,000 monthly, five-day week:</strong> daily rate = ₱30,000 × 12 ÷ 261
+    = <strong>₱1,379.31</strong>; hourly rate = ₱1,379.31 ÷ 8 = <strong>₱172.41</strong>.
+    Semi-monthly take-home ≈ ₱26,542.45 ÷ 2 = <strong>₱13,271.23</strong> per cutoff.</p>
   </div>
 
   <h2>Who This Applies To</h2>

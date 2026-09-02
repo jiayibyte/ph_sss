@@ -29,6 +29,18 @@ const faqs = [
     q: 'Paano kung tumaas ang sahod ko sa kalagitnaan ng taon?',
     a: 'Add up what you actually earned each month at each salary level, then divide by 12. Example: 6 months at ₱20,000 plus 6 months at ₱25,000 = ₱270,000 total → ₱270,000 ÷ 12 = ₱22,500 13th month pay. The Accurate mode of the calculator above handles this month by month.',
   },
+  {
+    q: 'Does maternity leave count toward 13th month pay?',
+    a: 'Partly. The SSS maternity benefit itself is excluded because it is paid by SSS, not your employer, and is not basic salary. The salary differential paid by your employer under RA 11210 is included as basic salary under the DOLE guidelines, so it adds to the 13th month base. Months fully covered only by the SSS benefit contribute ₱0.',
+  },
+  {
+    q: 'Magkano ang 13th month pay ko kung ₱15,000 ang sahod at 8 buwan lang ako nagtrabaho?',
+    a: '₱15,000 × 8 months = ₱120,000 total basic salary earned; ÷ 12 = ₱10,000. The divisor stays 12 even if you worked fewer months — that is what makes the amount pro-rated.',
+  },
+  {
+    q: 'Kasama ba ang overtime at allowance sa 13th month pay?',
+    a: 'Hindi. Under PD 851 only basic salary counts: overtime pay, holiday and rest-day premiums, night differential and allowances not integrated into basic salary are excluded, unless your company policy or CBA includes them. Only the basic salary you actually earned in the year is divided by 12.',
+  },
 ];
 ---
 
@@ -89,6 +101,17 @@ const faqs = [
     <p><strong>Example 4 — Salary increase in July:</strong> 6 months at ₱20,000 + 6 months at
     ₱25,000 = ₱270,000. 13th month pay = ₱270,000 ÷ 12 = <strong>₱22,500</strong>.</p>
   </div>
+
+  <h2>Maternity Leave, Unpaid Leave and Other Gaps</h2>
+  <p>
+    <strong>Maternity leave:</strong> the SSS maternity benefit is paid by SSS, not by your
+    employer, so it is not basic salary and is excluded from the 13th month base. The
+    <strong>salary differential</strong> your employer pays on top of it under RA 11210 (Expanded
+    Maternity Leave Law) is treated as basic salary and does count. <strong>Leave without
+    pay:</strong> only salary actually paid counts, so a month of unpaid leave adds ₱0 to the
+    total. <strong>Paid leave</strong> you actually took (vacation or sick leave with pay) is paid
+    as salary and is counted; the cash conversion of <em>unused</em> leave credits is excluded.
+  </p>
 
   <h2>Who This Applies To</h2>
   <p>

@@ -59,6 +59,14 @@ const faqs = [
     q: 'Is this schedule official?',
     a: 'The dates are transcribed from PRC Resolution No. 2113, s. 2025 — the official Schedule of Licensure Examinations for 2026. Always confirm on prc.gov.ph before booking travel or review classes; PRC can move dates by later resolution.',
   },
+  {
+    q: 'Kailan ang PNLE 2026?',
+    a: `The Philippine Nurse Licensure Examination has two rounds in ${prcRules.year}: ${scheduleSentence(rounds)} Each round is a two-day exam.`,
+  },
+  {
+    q: 'Kailan lalabas ang result ng PNLE 2026?',
+    a: `PRC targets ${fmt(first.results_target)} for the ${first.dates_display} exam and ${fmt(second.results_target)} for the ${second.dates_display} exam (Resolution No. 2113, s. 2025). These are targets, not guarantees — the actual release is announced on prc.gov.ph.`,
+  },
 ];
 ---
 

@@ -21,7 +21,7 @@ Key facts currently in force (last verified 2026-08-19):
 - [Night Differential Calculator](https://aytool.com/night-differential-calculator/): 10% night shift differential (10 PM–6 AM) with holiday/OT stacking. Source: DOLE handbook.
 - [Final Pay Calculator](https://aytool.com/final-pay-calculator/): back pay estimate (unpaid salary, leave conversion, pro-rated 13th month, separation pay), DOLE 30-day release rule. Source: DOLE Labor Advisory 06-20.
 - [Overtime Pay Calculator](https://aytool.com/overtime-pay-calculator/): OT rates 125%–338% by day type with night-hour handling. Source: DOLE handbook.
-- [OEC Exemption Guide](https://aytool.com/oec-exemption/): Balik-Manggagawa exemption criteria and the eGovPH OFW Travel Pass process. Source: dmw.gov.ph (Advisory 38-2025).
+- [OEC Exemption Guide](https://aytool.com/oec-exemption/): Balik-Manggagawa exemption criteria, a 5-question eligibility checker, and the eGovPH OFW Travel Pass process. Source: dmw.gov.ph (Advisory 38-2025).
 - [PRC Board Exam Schedule 2026](https://aytool.com/prc-board-exam-schedule/): all 88 scheduled licensure exams with application windows (PRC Resolution 2113, s. 2025). Source: prc.gov.ph.
 - [Nursing Board Exam Schedule 2026](https://aytool.com/nursing-board-exam-schedule/): PNLE Feb 26–27 & Aug 29–30, 2026 with filing windows and target result dates (same resolution). Source: prc.gov.ph.
 

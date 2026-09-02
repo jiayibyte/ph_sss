@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import { SITE, NOT_AFFILIATED } from '../../site.config';
 import { TOOL_PAGES, TRUST_PAGES, ALL_TOOLS } from '../lib/pages';
+import { pageDates } from '../lib/lastmod.mjs';
 
 interface Props {
   title: string;
@@ -11,21 +12,80 @@ interface Props {
   noindex?: boolean;
   /** Extra JSON-LD objects (WebApplication, FAQPage, Dataset...). */
   schema?: Record<string, unknown>[];
+  /** Breadcrumb leaf name (defaults to the page title). */
+  pageName?: string;
+  /** Site-relative OG image path, e.g. "/og/sss-contribution-table.png". */
+  ogImage?: string;
 }
 
-const { title, description, path, noindex = false, schema = [] } = Astro.props;
+const {
+  title,
+  description,
+  path,
+  noindex = false,
+  schema = [],
+  pageName,
+  ogImage: ogImagePath,
+} = Astro.props;
 const canonical = `${SITE.url}${path}`;
-const ogImage = `${SITE.url}/og-default.png`;
+const ogImage = `${SITE.url}${ogImagePath ?? '/og-default.png'}`;
 const { accent, accentStrong, accentSoft } = SITE.palette;
+const { published, modified } = pageDates(path);
+const isHome = path === '/';
+
+const organizationRef = { '@type': 'Organization', name: SITE.name, url: SITE.url };
 
 const organizationSchema = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
   name: SITE.name,
   url: SITE.url,
+  logo: `${SITE.url}/icon-512.png`,
   email: SITE.contactEmail,
   description: `${SITE.tagline}. ${NOT_AFFILIATED}`,
+  sameAs: SITE.sameAs,
 };
+
+/* Machine-readable freshness for every page (dates come from git + rule data). */
+const webPageSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: title,
+  url: canonical,
+  description,
+  inLanguage: 'en-PH',
+  datePublished: published,
+  dateModified: modified,
+  isPartOf: { '@type': 'WebSite', name: SITE.name, url: SITE.url },
+  publisher: organizationRef,
+};
+
+const websiteSchema = isHome
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      name: SITE.name,
+      url: SITE.url,
+      description: SITE.description,
+      inLanguage: 'en-PH',
+      publisher: organizationRef,
+    }
+  : null;
+
+const breadcrumbSchema = isHome
+  ? null
+  : {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: 'Home', item: `${SITE.url}/` },
+        { '@type': 'ListItem', position: 2, name: pageName ?? title, item: canonical },
+      ],
+    };
+
+const allSchema = [organizationSchema, websiteSchema, webPageSchema, breadcrumbSchema, ...schema].filter(
+  (s): s is Record<string, unknown> => s !== null,
+);
 
 const navLinks = [
   TOOL_PAGES.sssTable,
@@ -64,11 +124,7 @@ const navLinks = [
     <meta name="twitter:image" content={ogImage} />
     <style set:html={`:root{--accent:${accent};--accent-strong:${accentStrong};--accent-soft:${accentSoft}}`}
     ></style>
-    <script
-      type="application/ld+json"
-      set:html={JSON.stringify(organizationSchema)}
-    />
-    {schema.map((s) => <script type="application/ld+json" set:html={JSON.stringify(s)} />)}
+    {allSchema.map((s) => <script type="application/ld+json" set:html={JSON.stringify(s)} />)}
     {
       SITE.ga4Id && (
         <>

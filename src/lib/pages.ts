@@ -83,7 +83,7 @@ export const TOOL_PAGES: Record<string, PageRef> = {
     href: '/oec-exemption/',
     label: 'OEC Exemption Guide',
     short: 'OEC Exemption',
-    blurb: 'Who qualifies for an OEC exemption and how to get it through official DMW channels.',
+    blurb: 'Check in five questions whether you qualify for an OEC exemption, and how to get it through official DMW channels.',
     priority: 'P2',
   },
   prc: {

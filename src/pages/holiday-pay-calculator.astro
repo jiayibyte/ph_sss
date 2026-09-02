@@ -2,8 +2,12 @@
 import ToolPageLayout from '../layouts/ToolPageLayout.astro';
 import HolidayPayCalculator from '../islands/HolidayPayCalculator';
 import holidaysJson from '../data/holidays/2026.json';
+import { longWeekends } from '../lib/longWeekends';
 
 const holidays = holidaysJson.holidays;
+const weekends = longWeekends(holidays);
+const fmtShort = (d: string) =>
+  new Date(d + 'T00:00:00').toLocaleDateString('en-PH', { weekday: 'short', month: 'short', day: 'numeric' });
 const meta = holidaysJson.meta;
 const typeLabel: Record<string, string> = {
   regular: 'Regular Holiday',
@@ -40,6 +44,14 @@ const faqs = [
   {
     q: 'Is February 25 (EDSA anniversary) a paid holiday in 2026?',
     a: 'No. In 2026, the EDSA People Power Revolution Anniversary is a special working day — work proceeds normally with no premium pay.',
+  },
+  {
+    q: 'Magkano ang bayad kung papasok ako sa holiday?',
+    a: 'On a regular holiday you are paid 200% of your daily wage for the first 8 hours (260% if it is also your rest day). On a special non-working day the rate is 130% (150% on your rest day). Overtime hours on either day get an additional 30% of the applicable hourly rate.',
+  },
+  {
+    q: 'May bayad ba ang special non-working holiday kung hindi ako papasok?',
+    a: 'Wala, as a rule. Special non-working days follow the "no work, no pay" principle, so you are paid only if you work, unless your company policy, practice or collective bargaining agreement grants pay for the day. Regular holidays are different: you receive 100% of your daily wage even if you do not work.',
   },
 ];
 ---
@@ -113,6 +125,30 @@ const faqs = [
       </tbody>
     </table>
   </div>
+
+  <h2>Long Weekends in {meta.effective_from.slice(0, 4)}</h2>
+  <p>
+    Every run of three or more consecutive days off — holidays plus the adjoining Saturday and
+    Sunday — computed from the official list above. Regular holidays inside a long weekend are
+    paid even if unworked; special (non-working) days follow "no work, no pay" unless company
+    policy says otherwise.
+  </p>
+  <ul>
+    {
+      weekends.map((w) => (
+        <li>
+          <strong>
+            {fmtShort(w.start)} – {fmtShort(w.end)}
+          </strong>{' '}
+          ({w.days} days): {w.holidays.map((h) => h.name).join(', ')}
+        </li>
+      ))
+    }
+  </ul>
+  <p class="text-sm text-ink-soft">
+    Counted within the calendar year only; a year-end run continues into New Year's Day of the
+    following year. Local holidays declared by cities or provinces are not included.
+  </p>
 
   <h2>Example Computations</h2>
   <div class="example-card">

@@ -39,6 +39,8 @@ export const SITE = {
   description:
     'Free, independent calculators for SSS, PhilHealth, Pag-IBIG, 13th month pay, take-home pay and other Philippine payroll computations.',
   contactEmail: 'contact@aytool.com',
+  /** Public profiles of the AyTool entity — emitted as Organization.sameAs (GEO §5.4). */
+  sameAs: ['https://github.com/jiayibyte/ph_sss'],
   /**
    * GA4 measurement ID. Leave empty to disable analytics injection entirely
    * (no GA script is emitted when empty). Fill in e.g. 'G-XXXXXXXXXX' before launch.

@@ -1,5 +1,6 @@
 ---
 import ToolPageLayout from '../layouts/ToolPageLayout.astro';
+import OecExemptionChecker from '../islands/OecExemptionChecker';
 
 const faqs = [
   {
@@ -30,18 +31,26 @@ const faqs = [
     q: 'Do I need a new OEC exemption every vacation?',
     a: 'Yes. The exemption/pass is per departure: the legacy OEC exemption was tied to your flight, and the OFW Travel Pass is valid for 90 days from issuance. Generate a new one each time you go home and return to your jobsite.',
   },
+  {
+    q: 'Exempted pa rin ba ako sa OEC kung lumipat ako ng employer?',
+    a: 'Hindi. The exemption is only for Balik-Manggagawa returning to the same employer at the same jobsite. A new employer or a new jobsite is treated as a new contract, so you need contract verification at the MWO and a regular OEC through DMW Online Services.',
+  },
+  {
+    q: 'Kailangan ko pa ba ng OEC kung may OFW Travel Pass na ako?',
+    a: 'Hindi na. The OFW Travel Pass generated in the eGovPH app is now the standard exit clearance for returning workers under DMW Advisory No. 38, s. 2025, and it is transmitted electronically to the Bureau of Immigration. The printed OEC/exemption from DMW Online Services is still accepted if that is what you have.',
+  },
 ];
 ---
 
 <ToolPageLayout
   title="OEC Exemption Guide 2026 – Who Qualifies & How to Get It"
-  description="OEC exemption for Balik-Manggagawa: who qualifies (same employer and jobsite) and the 2026 process via the eGovPH OFW Travel Pass and DMW Online Services (formerly BM Online)."
+  description="OEC exemption for Balik-Manggagawa: who qualifies (same employer, same jobsite), a 5-question eligibility check, and the 2026 eGovPH OFW Travel Pass process."
   path="/oec-exemption/"
   h1="OEC Exemption Guide for Returning OFWs"
   updated="August 2026"
   faqs={faqs}
   related={['prc', 'sssCalculator', 'philhealth', 'pagibig']}
-  isApp={false}
+  appCategory="UtilitiesApplication"
 >
   <Fragment slot="answer">
     <p>
@@ -52,6 +61,10 @@ const faqs = [
       Advisory No. 38, s. 2025) — free of charge, valid 90 days — or the DMW Online Services
       portal, the successor of BM Online.
     </p>
+  </Fragment>
+
+  <Fragment slot="calculator">
+    <OecExemptionChecker client:idle />
   </Fragment>
 
   <h2>Who May Qualify</h2>
@@ -94,6 +107,28 @@ const faqs = [
     <li>Select Balik-Manggagawa, enter your flight date, and confirm same employer / same jobsite / same position.</li>
     <li>The system issues your OEC / exemption — save or print it for the airport.</li>
   </ol>
+
+  <h2>OFW Travel Pass vs OEC Exemption: What Is the Difference?</h2>
+  <p>
+    Both prove to immigration that you are an exempt Balik-Manggagawa. The OFW Travel Pass is the
+    digital successor; the printed OEC/exemption from DMW Online Services is the legacy form and
+    is still accepted as of mid-2026.
+  </p>
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th></th><th>OFW Travel Pass</th><th>OEC exemption (legacy)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Where you get it</td><td>eGovPH app → DMW → Balik-Manggagawa</td><td>DMW Online Services portal (successor of BM Online)</td></tr>
+        <tr><td>Form</td><td>QR code on your phone</td><td>Printed OEC/exemption</td></tr>
+        <tr><td>Validity</td><td>90 days from issuance</td><td>Tied to the flight date you declared</td></tr>
+        <tr><td>Fee</td><td>Free</td><td>Free (since July 2023)</td></tr>
+        <tr><td>Shared with immigration</td><td>Sent electronically to the Bureau of Immigration and eTravel</td><td>You present the printout at the counter</td></tr>
+        <tr><td>Standard since</td><td>November 2025 (DMW Advisory No. 38, s. 2025)</td><td>Pre-2025 process, still honoured</td></tr>
+      </tbody>
+    </table>
+  </div>
 
   <h2>Common Errors and What They Mean</h2>
   <ul>
