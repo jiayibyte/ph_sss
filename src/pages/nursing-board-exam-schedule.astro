@@ -71,7 +71,7 @@ const faqs = [
 ---
 
 <ToolPageLayout
-  title="Nursing Board Exam Schedule 2026 – PNLE Dates & Deadlines"
+  title="PNLE 2026 Schedule – Nursing Board Exam Dates & Results Date"
   description={`PNLE ${prcRules.year} schedule: ${first.dates_display} and ${second.dates_display}, with application deadlines, LERIS filing steps and PRC's target result dates.`}
   path="/nursing-board-exam-schedule/"
   h1="Nursing Board Exam Schedule 2026 (PNLE)"
@@ -137,15 +137,32 @@ const faqs = [
     <li>File <strong>within the application window</strong> shown above — late applications are not accepted except in justifiable cases defined by PRC rules.</li>
   </ol>
 
-  <h2>PNLE Results</h2>
+  <h2>PNLE Results {prcRules.year}: When and Where They Come Out</h2>
   <p>
     PRC's target release dates are <strong>{fmt(first.results_target)}</strong> for the
     {first.dates_display} exam and <strong>{fmt(second.results_target)}</strong> for the
-    {second.dates_display} exam. These are the targets printed in the resolution — actual releases
-    can move and are announced only on
-    <a href="https://www.prc.gov.ph/" target="_blank" rel="noopener">prc.gov.ph</a>. AyTool does
-    not host exam results.
+    {second.dates_display} exam. These are the targets printed in the resolution — the actual
+    release can land a few days either side and is announced only by PRC. AyTool does not host
+    exam results or lists of passers.
   </p>
+  <h3>Where the results are published</h3>
+  <ol>
+    <li><strong>prc.gov.ph</strong> — the official list of passers (alphabetical) and the top 10, posted as a news release on <a href="https://www.prc.gov.ph/" target="_blank" rel="noopener">prc.gov.ph</a> and on PRC's official Facebook page.</li>
+    <li><strong>Verification of Rating</strong> — your own scores per subject, through LERIS at <a href="https://online.prc.gov.ph/" target="_blank" rel="noopener">online.prc.gov.ph</a> once PRC opens the verification service for that exam.</li>
+    <li>News sites and review centers republish the list within hours; treat anything not on prc.gov.ph as unofficial.</li>
+  </ol>
+  <h3>Passing score</h3>
+  <p>
+    Under RA 9173 you pass with a <strong>general average of at least 75%</strong> and
+    <strong>no subject rated below 60%</strong>. A general average of 75% or higher with one
+    subject below 60% is a conditional result — PRC will indicate the subject to be retaken.
+  </p>
+  <h3>After you pass</h3>
+  <ol>
+    <li>Watch for PRC's announcement of the <strong>online initial registration</strong> schedule for the new nurses; book your appointment through LERIS.</li>
+    <li>Attend the <strong>oath-taking</strong> organised by PRC and the Board of Nursing (dates are announced with the results).</li>
+    <li>Claim your professional ID and certificate of registration at the PRC office named in your appointment.</li>
+  </ol>
 
   <h2>Retakes</h2>
   <p>
