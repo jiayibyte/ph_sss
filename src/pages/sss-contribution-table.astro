@@ -26,6 +26,10 @@ const faqs = [
     a: 'Contributions on the portion of the MSC above ₱20,000 go to the Mandatory Provident Fund (MPF), marketed as MySSS Pension Booster — an individual retirement savings account on top of the regular SSS program. It is collected automatically with the same 15% rate; you do not need to enroll separately.',
   },
   {
+    q: 'Is the SSS contribution schedule the same as the SSS contribution table?',
+    a: 'Yes. SSS itself calls it the "Schedule of Contributions" (or contribution schedule) in its circulars, while payroll staff and members usually say contribution table. Both refer to the same matrix reproduced above: each salary range maps to a Monthly Salary Credit, with the employee, employer and EC amounts per row, plus separate columns for self-employed, voluntary and OFW members.',
+  },
+  {
     q: 'Magkano ang hulog sa SSS kung ₱20,000 ang sahod ko?',
     a: 'At a ₱20,000 monthly salary, the MSC is ₱20,000. The employee share is ₱1,000 (5%), the employer pays ₱2,030 (10% plus ₱30 EC), and the total monthly contribution is ₱3,030.',
   },
@@ -53,8 +57,8 @@ const faqs = [
     <p>
       As of January 2026, the SSS contribution rate is <strong>15% of the Monthly Salary Credit
       (MSC)</strong> — 10% employer and 5% employee for employed members — with the MSC ranging
-      from ₱5,000 to ₱35,000. This schedule, in force since January 2025 under RA 11199, is
-      unchanged for 2026; the full table for all member types is below, verified against the
+      from ₱5,000 to ₱35,000. This contribution schedule, in force since January 2025 under RA
+      11199, is unchanged for 2026; the full table for all member types is below, verified against the
       <a href={meta.official_source_url} target="_blank" rel="noopener" class="underline"
         >official SSS Schedule of Contributions</a
       >.
@@ -77,7 +81,7 @@ const faqs = [
 
   <h2>How the SSS Contribution Is Computed</h2>
   <p>
-    Your monthly salary is matched to a salary range in the official schedule, and that range maps
+    Your monthly salary is matched to a salary range in the official contribution schedule, and that range maps
     to a Monthly Salary Credit. The contribution is always computed on the MSC — not on your exact
     salary. For a step-by-step computation with your own numbers, use the
     <a href="/sss-contribution-calculator/">SSS Contribution Calculator</a>.

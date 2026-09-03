@@ -26,6 +26,10 @@ const faqs = [
     a: 'No — this calculator estimates your regular monthly net pay. The 13th month pay is a separate annual benefit, tax-exempt up to ₱90,000 combined with other benefits. Use the 13th Month Pay Calculator for that.',
   },
   {
+    q: 'What is the standard salary computation in the Philippines?',
+    a: 'Philippine payroll computes net salary in a fixed order: gross monthly salary, minus the employee shares of SSS, PhilHealth and Pag-IBIG, then BIR withholding tax on the remainder using the monthly table under the TRAIN law. Premiums such as overtime, night differential and holiday pay form part of gross pay; the 13th month pay is a separate annual computation. The calculator above follows this exact order.',
+  },
+  {
     q: 'Magkano ang take-home pay sa ₱25,000 na sahod?',
     a: 'Deductions: SSS ₱1,250 (5% of the ₱25,000 MSC), PhilHealth ₱625 (2.5%), Pag-IBIG ₱200 — total ₱2,075. Taxable income is ₱22,925, so withholding tax is 15% of the excess over ₱20,833 = ₱313.80. Take-home pay: ₱25,000 − ₱2,075 − ₱313.80 = ₱22,611.20.',
   },
@@ -49,8 +53,9 @@ const faqs = [
     <p>
       Your take-home pay is your <strong>gross monthly salary minus four deductions</strong>: your
       employee shares of SSS, PhilHealth and Pag-IBIG contributions, and the BIR withholding tax
-      computed on what remains. This calculator applies the exact 2026 schedules for all four —
-      the same tables used by payroll — and itemizes every line.
+      computed on what remains. This calculator follows the standard salary computation used by
+      Philippine payroll — the exact 2026 schedules for all four deductions — and itemizes every
+      line.
     </p>
   </Fragment>
 
@@ -58,7 +63,7 @@ const faqs = [
     <TakeHomeCalculator client:idle />
   </Fragment>
 
-  <h2>How It Is Calculated</h2>
+  <h2>How the Salary Computation Works</h2>
   <ol>
     <li>
       <strong><a href="/sss-contribution-calculator/">SSS</a>:</strong> 5% of your Monthly Salary
