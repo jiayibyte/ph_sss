@@ -14,9 +14,9 @@
 | **2 月 20 日** | Eid'l Fitr 日期核查 | 斋月相关假日由单独 Proclamation 定（2026 年是 Proc. 1189，3 月 12 日才签）；查到后更新 `holidays/<年>.json` | Official Gazette / PCO / DOLE |
 | **4 月 15 日** | BIR 税表年检 | 核对预扣税表是否有新 Revenue Regulation（TRAIN 2023 档是长期档，变动概率低）；顺带核对 ₱90,000 免税上限 | bir.gov.ph |
 | **5 月 10 日** | Eid'l Adha 日期核查 | 同 Eid'l Fitr（2026 年是 Proc. 1264，5 月 21 日签） | Official Gazette / PCO |
-| **8 月 20 日** | 8 月末节日簇 | Ninoy Aquino Day（8/21，SNW）+ National Heroes Day（8 月最后一个周一，RH）前刷新 holiday 页 `Updated` 日期；发 FB 倍率提醒图卡 | — |
+| **8 月 20 日** | 8 月末节日簇 | Ninoy Aquino Day（8/21，SNW）+ National Heroes Day（8 月最后一个周一，RH）前更新 holidays JSON 的 `last_verified` 并部署（页面 `Updated` 日期自动取 lastmod，不再手改）；发 FB 倍率提醒图卡 | — |
 | **9 月 5 日** | 次年节假日 Proclamation | Malacañang 通常 9–11 月发布次年节假日总 Proclamation（2026 年的 Proc. 1006 是 2025-09-03 签署）；发布即录入 `holidays/<次年>.json`；**若 9 月没查到，10 月 15 日复查一次** | PCO / Official Gazette |
-| **10 月 12 日** | 13th month 页大促前核验 | 全年最大流量脉冲（11–12 月）前：核对 DOLE 年度 Labor Advisory（13th month 指引每年 10–11 月重申）、补充 FAQ、刷新 `Updated`、重点检查计算器与示例；这也是发 FB 图卡的最佳窗口 | dole.gov.ph / bwc.dole.gov.ph |
+| **10 月 12 日** | 13th month 页大促前核验 | 全年最大流量脉冲（11–12 月）前：核对 DOLE 年度 Labor Advisory（13th month 指引每年 10–11 月重申）、补充 FAQ、更新 labor JSON `last_verified`（页面 `Updated` 自动跟随）、重点检查计算器与示例；这也是发 FB 图卡的最佳窗口 | dole.gov.ph / bwc.dole.gov.ph |
 | **10 月 20 日** | Undas + 年末前节日簇 | All Saints/Souls（11/1–2）、Bonifacio（11/30）前刷新 holiday 页；FB 图卡 | — |
 | **11 月 15 日** | PRC 次年考试日历 | PRC Resolution 通常 10 月下旬签署、11 月中挂网（2026 年的 Res. 2113 是 10/23 签、11/17 发布）；录入 `prc/<次年>.json`，页面 Title 年份 +1 | prc.gov.ph |
 | **12 月 15 日** | 圣诞季节日簇 | Christmas Eve/Day（12/24–25）、Rizal（12/30）、年末（12/31）前刷新 holiday 页；FB 图卡（"double pay this Christmas" 是天然爆款选题） | — |

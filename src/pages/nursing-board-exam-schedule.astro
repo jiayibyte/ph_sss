@@ -32,6 +32,17 @@ const datasetSchema = {
   creator: { '@type': 'Organization', name: 'Professional Regulation Commission (source data)' },
   isBasedOn: meta.official_source_url,
   dateModified: meta.last_verified,
+  keywords: ['PNLE', 'nursing board exam schedule 2026', 'PRC', 'Philippines'],
+  distribution: [
+    {
+      '@type': 'DataDownload',
+      encodingFormat: 'application/json',
+      contentUrl: `${SITE.url}/data/prc-board-exam-schedule-2026.json`,
+    },
+  ],
+  temporalCoverage: `${meta.effective_from}/${meta.effective_to}`,
+  spatialCoverage: { '@type': 'Place', name: 'Philippines' },
+  isPartOf: `${SITE.url}/prc-board-exam-schedule/`,
 };
 
 const faqs = [
@@ -75,7 +86,6 @@ const faqs = [
   description={`PNLE ${prcRules.year} schedule: ${first.dates_display} and ${second.dates_display}, with application deadlines, LERIS filing steps and PRC's target result dates.`}
   path="/nursing-board-exam-schedule/"
   h1="Nursing Board Exam Schedule 2026 (PNLE)"
-  updated="August 2026"
   faqs={faqs}
   related={['prc', 'takeHome', 'thirteenth', 'sssCalculator']}
   isApp={false}

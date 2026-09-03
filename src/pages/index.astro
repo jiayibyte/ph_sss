@@ -2,6 +2,65 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE } from '../../site.config';
 import { ALL_TOOLS } from '../lib/pages';
+import { datasetLastVerified } from '../lib/lastmod.mjs';
+import sss from '../data/sss/2026.json';
+import philhealth from '../data/philhealth/2026.json';
+import pagibig from '../data/pagibig/2026.json';
+import tax from '../data/tax/2026.json';
+import labor from '../data/labor/2026.json';
+import holidays from '../data/holidays/2026.json';
+
+/* "At a glance" facts — every number comes from the rule JSON so the yearly
+   data refresh updates this block without anyone editing prose. */
+const peso = (n: number) => '₱' + n.toLocaleString('en-PH');
+const pct = (r: number) => `${Math.round(r * 1000) / 10}%`;
+const lastVerified = ['sss', 'philhealth', 'pagibig', 'tax', 'labor', 'holidays']
+  .map(datasetLastVerified)
+  .sort()
+  .at(-1)!;
+const verifiedLabel = new Date(lastVerified + 'T00:00:00').toLocaleDateString('en-PH', {
+  month: 'long',
+  day: 'numeric',
+  year: 'numeric',
+});
+const facts = [
+  {
+    label: 'SSS',
+    text: `${pct(sss.rate.total)} of the Monthly Salary Credit (${peso(sss.msc.min)}–${peso(sss.msc.max)}): employee ${pct(sss.rate.employee)}, employer ${pct(sss.rate.employer)} plus EC. Rate unchanged since January 2025 under RA 11199.`,
+    href: '/sss-contribution-table/',
+    link: 'SSS contribution table',
+  },
+  {
+    label: 'PhilHealth',
+    text: `${pct(philhealth.rate)} of monthly basic salary, floor ${peso(philhealth.income_floor)} and ceiling ${peso(philhealth.income_ceiling)}, shared equally by employee and employer. PhilHealth Advisory 2026-0042.`,
+    href: '/philhealth-contribution/',
+    link: 'PhilHealth contribution',
+  },
+  {
+    label: 'Pag-IBIG',
+    text: `${pct(pagibig.employee_rate)} employee + ${pct(pagibig.employer_rate)} employer on salary up to ${peso(pagibig.mfs_ceiling)}, so at most ${peso(pagibig.mfs_ceiling * pagibig.employee_rate)} each per month. HDMF Circular 460.`,
+    href: '/pagibig-contribution/',
+    link: 'Pag-IBIG contribution',
+  },
+  {
+    label: 'Withholding tax',
+    text: `No tax on monthly taxable income up to ${peso(tax.brackets[0].up_to)} (${peso(250000)} a year); ${pct(tax.brackets[1].rate)} on the excess up to ${peso(tax.brackets[1].up_to)}. BIR TRAIN monthly table, 2023 onwards.`,
+    href: '/take-home-pay-calculator/',
+    link: 'take-home pay calculator',
+  },
+  {
+    label: 'Holiday pay',
+    text: `${pct(labor.worked_multiplier['regular-holiday'])} of the daily rate on a regular holiday, ${pct(labor.worked_multiplier['special'])} on a special non-working day; ${holidays.holidays.length} declared dates in ${holidays.year}. DOLE Labor Advisory 12-25.`,
+    href: '/holiday-pay-calculator/',
+    link: 'holiday pay calculator',
+  },
+  {
+    label: '13th month pay',
+    text: `Total basic salary earned in the year ÷ ${labor.thirteenth_month.divisor}, due on or before ${labor.thirteenth_month.deadline}, tax-exempt up to ${peso(labor.thirteenth_month.tax_exempt_cap)} together with other benefits. PD 851.`,
+    href: '/13th-month-pay-calculator/',
+    link: '13th month pay calculator',
+  },
+];
 
 const p0 = ALL_TOOLS.filter((t) => t.priority === 'P0');
 const p1 = ALL_TOOLS.filter((t) => t.priority === 'P1');
@@ -28,6 +87,28 @@ const p2 = ALL_TOOLS.filter((t) => t.priority === 'P2');
   </div>
 
   <div class="mx-auto max-w-wide px-4" id="all-calculators">
+    <section aria-labelledby="at-a-glance" class="mt-8 rounded-xl border border-line bg-surface p-5">
+      <h2 id="at-a-glance" class="text-xl font-bold text-ink">
+        2026 Philippine payroll rates at a glance
+      </h2>
+      <p class="mt-1 text-xs text-ink-soft">
+        Rates currently in force, last verified
+        <time datetime={lastVerified}>{verifiedLabel}</time> against the official issuance.
+      </p>
+      <ul class="mt-3 grid gap-x-6 gap-y-3 text-sm leading-relaxed text-ink sm:grid-cols-2">
+        {
+          facts.map((f) => (
+            <li>
+              <strong>{f.label}:</strong> {f.text}{' '}
+              <a href={f.href} class="text-accent-strong underline">
+                {f.link}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
     <section aria-labelledby="core-tools">
       <h2 id="core-tools" class="mt-10 text-xl font-bold text-ink">Contribution Calculators</h2>
       <ul class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

@@ -26,6 +26,7 @@ export const DATASETS = ['sss', 'philhealth', 'pagibig', 'labor', 'tax', 'holida
 
 /** Rule datasets rendered by each page (path → dataset keys). */
 export const PAGE_DATA = {
+  '/': ['sss', 'philhealth', 'pagibig', 'tax', 'labor', 'holidays'], // "at a glance" block
   '/sss-contribution-table/': ['sss'],
   '/sss-contribution-calculator/': ['sss'],
   '/philhealth-contribution/': ['philhealth'],

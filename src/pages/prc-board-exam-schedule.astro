@@ -27,6 +27,16 @@ const datasetSchema = {
   creator: { '@type': 'Organization', name: 'Professional Regulation Commission (source data)' },
   isBasedOn: meta.official_source_url,
   dateModified: meta.last_verified,
+  keywords: ['PRC', 'board exam schedule 2026', 'licensure examination', 'schedule of examination', 'Philippines'],
+  distribution: [
+    {
+      '@type': 'DataDownload',
+      encodingFormat: 'application/json',
+      contentUrl: `${SITE.url}/data/prc-board-exam-schedule-2026.json`,
+    },
+  ],
+  temporalCoverage: `${meta.effective_from}/${meta.effective_to}`,
+  spatialCoverage: { '@type': 'Place', name: 'Philippines' },
 };
 const faqs = [
   {
@@ -85,7 +95,6 @@ const faqs = [
   description="Complete 2026 PRC board exam schedule: dates, application deadlines and target results for all 88 licensure exams. Searchable and filterable."
   path="/prc-board-exam-schedule/"
   h1="PRC Board Exam Schedule 2026"
-  updated="August 2026"
   faqs={faqs}
   related={['nursingSchedule', 'oec', 'takeHome', 'sssTable']}
   isApp={false}

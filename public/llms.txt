@@ -25,6 +25,10 @@ Key facts currently in force (last verified 2026-08-19):
 - [PRC Board Exam Schedule 2026](https://aytool.com/prc-board-exam-schedule/): all 88 scheduled licensure exams with application windows (PRC Resolution 2113, s. 2025). Source: prc.gov.ph.
 - [Nursing Board Exam Schedule 2026](https://aytool.com/nursing-board-exam-schedule/): PNLE Feb 26–27 & Aug 29–30, 2026 with filing windows and target result dates (same resolution). Source: prc.gov.ph.
 
+## Data
+
+- [PRC Board Exam Schedule 2026 (JSON)](https://aytool.com/data/prc-board-exam-schedule-2026.json): all 88 exams with dates, application windows and target result dates, as rendered on the page. Source: prc.gov.ph.
+
 ## About
 
 - [Methodology](https://aytool.com/methodology/): how rules are versioned and verified.
