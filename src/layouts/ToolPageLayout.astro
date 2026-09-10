@@ -69,7 +69,7 @@ if (isApp) {
     datePublished: published,
     dateModified: modified,
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'PHP' },
-    publisher: { '@type': 'Organization', name: SITE.name, url: SITE.url },
+    publisher: { '@type': 'Organization', name: SITE.name, url: `${SITE.url}/` },
   });
 }
 if (faqs.length > 0) {

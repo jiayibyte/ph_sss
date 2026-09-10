@@ -11,6 +11,7 @@ check:
 
 build: test
 	npm run build
+	npm run audit
 
 deploy:
 	bash infra/deploy.sh

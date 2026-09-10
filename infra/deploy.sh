@@ -37,6 +37,12 @@ npm test
 echo "==> Build"
 npm run build
 
+# Crawl-facing invariants (canonical URLs, sitemap == indexable set, no dead or
+# redirecting internal links). Blocks the upload rather than the Search Console
+# report finding it three weeks later.
+echo "==> Audit dist"
+npm run audit
+
 TS=$(date +%Y%m%d%H%M%S)
 echo "==> Upload to $RELEASES_DIR/$TS"
 ssh "$DEPLOY_HOST" "mkdir -p $RELEASES_DIR/$TS"

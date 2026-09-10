@@ -3,18 +3,24 @@
 
 User-agent: *
 Allow: /
+# Private, basic-auth traffic dashboard — crawling it only produces 401s in GSC.
+Disallow: /stats/
 
 # Explicitly allow AI/LLM crawlers (design.md §5 / §5.4)
 User-agent: GPTBot
 Allow: /
+Disallow: /stats/
 
 User-agent: ClaudeBot
 Allow: /
+Disallow: /stats/
 
 User-agent: PerplexityBot
 Allow: /
+Disallow: /stats/
 
 User-agent: Google-Extended
 Allow: /
+Disallow: /stats/
 
 Sitemap: https://aytool.com/sitemap-index.xml
