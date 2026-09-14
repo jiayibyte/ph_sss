@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import holidaysJson from '../data/holidays/2026.json';
+import holidays2027 from '../data/holidays/2027.json';
 import { longWeekends } from './longWeekends';
 
 describe('longWeekends', () => {
@@ -36,5 +37,16 @@ describe('longWeekends', () => {
     expect(starts).toContain('2026-04-02'); // Holy Week
     expect(starts).toContain('2026-10-31'); // Undas (Sat 31 → Mon Nov 2)
     expect(starts).toContain('2026-12-24'); // Christmas (Thu 24 → Sun 27)
+  });
+
+  it('derives the six 2027 long weekends from Proclamation No. 1427', () => {
+    expect(longWeekends(holidays2027.holidays).map((w) => [w.start, w.end, w.days])).toEqual([
+      ['2027-01-01', '2027-01-03', 3], // New Year (Fri → Sun)
+      ['2027-03-25', '2027-03-28', 4], // Holy Week (Maundy Thu → Easter Sun)
+      ['2027-04-09', '2027-04-11', 3], // Araw ng Kagitingan (Fri → Sun)
+      ['2027-08-28', '2027-08-30', 3], // National Heroes Day (Sat → Mon)
+      ['2027-10-30', '2027-11-02', 4], // Undas (Sat → Tue)
+      ['2027-12-24', '2027-12-26', 3], // Christmas (Fri → Sun)
+    ]);
   });
 });

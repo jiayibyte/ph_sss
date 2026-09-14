@@ -1,0 +1,384 @@
+---
+import ToolPageLayout from '../layouts/ToolPageLayout.astro';
+import laborJson from '../data/labor/2026.json';
+import type { HolidayRules, LaborRules } from '../lib/rules/types';
+import { longWeekends } from '../lib/longWeekends';
+import { TYPE_LABEL, byType, holidayDiff, sortYears, weekendHolidays } from '../lib/holidays';
+import { SITE } from '../../site.config';
+
+/* The featured year is always the newest proclamation on file: dropping in
+   src/data/holidays/<year>.json flips this page to that year, and the year
+   before it becomes the "what changed" baseline. No copy edits needed. */
+const years = sortYears(
+  Object.values(import.meta.glob<{ default: HolidayRules }>('../data/holidays/*.json', { eager: true })).map(
+    (m) => m.default,
+  ),
+);
+const [featured, previous] = years;
+if (!featured?.proclamation) throw new Error('philippine-holidays: newest holidays JSON lacks a proclamation block.');
+
+const { year, meta, holidays, proclamation } = featured;
+const labor = laborJson as unknown as LaborRules;
+const pending = featured.pending ?? [];
+const regular = byType(holidays, 'regular');
+const special = byType(holidays, 'special-non-working');
+const working = byType(holidays, 'special-working');
+const weekends = longWeekends(holidays);
+const onWeekend = weekendHolidays(holidays);
+const diff = previous ? holidayDiff(previous, featured) : null;
+const sameSet = diff !== null && diff.added.length + diff.removed.length + diff.retyped.length === 0;
+
+const procLabel = `Proclamation No. ${proclamation.number}, s. ${proclamation.series}`;
+const procShort = `Proclamation No. ${proclamation.number}`;
+
+const byName = (name: string) => holidays.find((h) => h.name === name);
+const goodFriday = byName('Good Friday');
+const maundy = byName('Maundy Thursday');
+const blackSat = byName('Black Saturday');
+const cny = byName('Chinese New Year');
+const edsa = working[0];
+const easter = goodFriday
+  ? new Date(new Date(goodFriday.date + 'T00:00:00Z').getTime() + 2 * 86_400_000).toISOString().slice(0, 10)
+  : null;
+/* Last year's date of each still-pending holiday, so the page can say where it fell. */
+const pendingLastYear = pending.map((p) => ({
+  ...p,
+  lastYear: previous?.holidays.find((h) => h.name === p.name) ?? null,
+}));
+
+const long = (d: string) =>
+  new Date(d + 'T00:00:00').toLocaleDateString('en-PH', { month: 'long', day: 'numeric', year: 'numeric' });
+const longDow = (d: string) =>
+  `${long(d)} (${new Date(d + 'T00:00:00').toLocaleDateString('en-PH', { weekday: 'long' })})`;
+const monthDay = (d: string) =>
+  new Date(d + 'T00:00:00').toLocaleDateString('en-PH', { month: 'long', day: 'numeric' });
+const dow = (d: string) => new Date(d + 'T00:00:00').toLocaleDateString('en-PH', { weekday: 'long' });
+const short = (d: string) =>
+  new Date(d + 'T00:00:00').toLocaleDateString('en-PH', { weekday: 'short', month: 'short', day: 'numeric' });
+const isWeekend = (d: string) => [0, 6].includes(new Date(d + 'T00:00:00').getDay());
+const pct = (m: number) => `${Math.round(m * 100)}%`;
+const list = (names: string[], and = 'and') =>
+  names.length <= 1 ? names.join('') : `${names.slice(0, -1).join(', ')} ${and} ${names.at(-1)}`;
+const plain = (name: string) => name.replace(/ \(.*\)$/, ''); // "Eid'l Fitr (Feast of Ramadhan)" → "Eid'l Fitr"
+/* Sentence fragments assembled here so the template never leaves stray spaces before punctuation. */
+const workingClause = working.length > 0 ? `, with ${list(working.map((h) => `${h.name} (${monthDay(h.date)})`))} as a special working day` : '';
+const workingAgain = working.length > 0 ? `, and ${list(working.map((h) => h.name))} again a special working day` : '';
+const pendingNames = list(pending.map((p) => plain(p.name)));
+const pendingSentence =
+  pending.length > 0
+    ? `${pendingNames} ${pending.length === 1 ? 'is a regular holiday whose date' : 'are regular holidays whose dates'} a later proclamation will fix.`
+    : '';
+
+const datasetSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Dataset',
+  name: `Philippine Holidays ${year} (${procLabel})`,
+  description: `Official list of ${year} Philippine regular holidays, special non-working days and special working days declared by ${procLabel}, signed ${long(proclamation.signed)}.`,
+  url: `${SITE.url}/philippine-holidays/`,
+  creator: { '@type': 'Organization', name: 'Office of the President of the Philippines (source data)' },
+  isBasedOn: meta.official_source_url,
+  dateModified: meta.last_verified,
+  keywords: [`Philippine holidays ${year}`, `holidays ${year} Philippines`, `regular holidays ${year}`, `special non-working days ${year}`, procShort],
+  distribution: [
+    {
+      '@type': 'DataDownload',
+      encodingFormat: 'application/json',
+      contentUrl: `${SITE.url}/data/philippine-holidays-${year}.json`,
+    },
+  ],
+  temporalCoverage: `${meta.effective_from}/${meta.effective_to}`,
+  spatialCoverage: { '@type': 'Place', name: 'Philippines' },
+};
+
+const faqs = [
+  {
+    q: `How many holidays are there in the Philippines in ${year}?`,
+    a: `${procLabel} declares ${regular.length} regular holidays and ${special.length} special non-working days for ${year}${working.length > 0 ? `, plus ${working.length} special working day (${list(working.map((h) => `${h.name}, ${monthDay(h.date)}`))})` : ''}.${pending.length > 0 ? ` ${pendingNames} will be added as ${pending.length === 1 ? 'a regular holiday' : 'regular holidays'} by separate proclamation, bringing the regular holidays to ${regular.length + pending.length}.` : ''}`,
+  },
+  ...(maundy && goodFriday && easter
+    ? [
+        {
+          q: `When is Holy Week ${year}?`,
+          a: `Maundy Thursday is ${longDow(maundy.date)} and Good Friday is ${longDow(goodFriday.date)} — both regular holidays.${blackSat ? ` Black Saturday, ${long(blackSat.date)}, is a special non-working day.` : ''} Easter Sunday falls on ${long(easter)}.`,
+        },
+      ]
+    : []),
+  ...(edsa
+    ? [
+        {
+          q: `Is ${monthDay(edsa.date)}, ${year} (${edsa.name.replace(' Anniversary', '')}) a holiday?`,
+          a: `No. ${procLabel} lists the ${edsa.name} on ${longDow(edsa.date)} as a special working day: offices and businesses operate normally and no holiday premium is due for working that day.`,
+        },
+      ]
+    : []),
+  ...(cny
+    ? [
+        {
+          q: `When is the Chinese New Year holiday in ${year}?`,
+          a: `Chinese New Year is ${longDow(cny.date)}, a special non-working day.${isWeekend(cny.date) ? ` Because it lands on a weekend, most employees do not get an extra day off; if it is your rest day and you work, the rate is ${pct(labor.worked_multiplier['special-rest-day'])}.` : ''}`,
+        },
+      ]
+    : []),
+  ...(pending.length > 0
+    ? [
+        {
+          q: `When are ${pendingNames} in ${year}?`,
+          a: `Not yet fixed. ${procLabel} declares ${pending.length === 1 ? 'it' : 'them'} as ${pending.length === 1 ? 'a regular holiday' : 'regular holidays'} but leaves the exact ${pending.length === 1 ? 'date' : 'dates'} to a later proclamation, issued once the Islamic calendar date is determined.${pendingLastYear.some((p) => p.lastYear) ? ` In ${previous?.year}, ${list(pendingLastYear.filter((p) => p.lastYear).map((p) => `${plain(p.name)} fell on ${monthDay(p.lastYear!.date)}`))}; Islamic holidays move about 11 days earlier each year.` : ''} This page is updated as soon as the proclamations are signed.`,
+        },
+      ]
+    : []),
+  {
+    q: `Do I get paid if a ${year} holiday falls on a Saturday or Sunday?`,
+    a: `${onWeekend.length > 0 ? `${onWeekend.length} of the ${year} holidays land on a weekend: ${list(onWeekend.map((h) => `${plain(h.name)} on ${short(h.date)}`))}.` : `None of the ${year} holidays lands on a weekend.`} The Philippines does not move a holiday to the next Monday. If a regular holiday falls on your rest day and you do not work, you still receive 100% of your daily wage (subject to the usual attendance rule); if you work, the rate is ${pct(labor.worked_multiplier['regular-holiday-rest-day'])}. A special non-working day on your rest day is "no work, no pay", or ${pct(labor.worked_multiplier['special-rest-day'])} if you work.`,
+  },
+  {
+    q: 'What is the difference between a regular holiday and a special non-working day?',
+    a: `On a regular holiday you are paid ${pct(labor.unworked_multiplier['regular-holiday'])} of your daily wage even if you do not work, and ${pct(labor.worked_multiplier['regular-holiday'])} if you do. A special non-working day follows "no work, no pay": nothing if you stay home (unless company policy grants it) and ${pct(labor.worked_multiplier['special'])} if you work. A special working day is an ordinary working day with no premium.`,
+  },
+  {
+    q: `Ano ang mga holiday sa ${year}?`,
+    a: `Ayon sa ${procLabel}, may ${regular.length} regular holidays sa ${year}: ${list(regular.map((h) => `${plain(h.name)} (${short(h.date)})`), 'at')}. May ${special.length} special non-working days: ${list(special.map((h) => `${plain(h.name)} (${short(h.date)})`), 'at')}.${pending.length > 0 ? ` Ang ${list(pending.map((p) => plain(p.name)), 'at')} ay idadagdag kapag lumabas na ang hiwalay na proclamation.` : ''}`,
+  },
+  {
+    q: `May long weekend ba sa ${year}?`,
+    a: `Oo — ${weekends.length} sa ${year}, counting runs of three or more days off: ${list(weekends.map((w) => `${short(w.start)} to ${short(w.end)} (${w.days} days, ${w.holidays.map((h) => plain(h.name)).join(' + ')})`), 'at')}. Regular holidays inside a long weekend are paid even if unworked; special non-working days are not, unless company policy says otherwise.`,
+  },
+];
+---
+
+<ToolPageLayout
+  title={`Philippine Holidays ${year} – Official List & Long Weekends`}
+  description={`Official ${year} Philippine holidays under ${procShort}: ${regular.length} regular holidays, ${special.length} special non-working days, long weekends and what changed from ${previous?.year ?? year - 1}.`}
+  path="/philippine-holidays/"
+  h1={`Philippine Holidays ${year} (Official List)`}
+  faqs={faqs}
+  related={['holidayPay', 'overtime', 'thirteenth', 'takeHome']}
+  isApp={false}
+  extraSchema={[datasetSchema]}
+>
+  <Fragment slot="answer">
+    <p>
+      <strong>{procLabel}</strong>, signed on {long(proclamation.signed)}, declares
+      <strong>{regular.length} regular holidays</strong> and
+      <strong>{special.length} special (non-working) days</strong> for {year}{workingClause}.
+      {pendingSentence && <>{pendingSentence}{' '}</>}
+      {onWeekend.length} holidays fall on a weekend and there are {weekends.length} long weekends.
+      Every date below is transcribed from the official proclamation.
+    </p>
+  </Fragment>
+
+  <h2>Regular Holidays {year}</h2>
+  <p>
+    Paid at {pct(labor.unworked_multiplier['regular-holiday'])} of the daily wage even if unworked and
+    {pct(labor.worked_multiplier['regular-holiday'])} if worked ("double pay").
+  </p>
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Date</th><th>Day</th><th>Holiday</th></tr>
+      </thead>
+      <tbody>
+        {
+          regular.map((h) => (
+            <tr>
+              <td class="whitespace-nowrap">{monthDay(h.date)}</td>
+              <td>{dow(h.date)}</td>
+              <td>{h.name}</td>
+            </tr>
+          ))
+        }
+        {
+          pending.map((p) => (
+            <tr>
+              <td class="whitespace-nowrap">To be announced</td>
+              <td>—</td>
+              <td>{p.name}</td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Special (Non-Working) Days {year}</h2>
+  <p>
+    "No work, no pay" unless company policy grants it; {pct(labor.worked_multiplier['special'])} of the
+    daily wage if worked ({pct(labor.worked_multiplier['special-rest-day'])} on your rest day).
+  </p>
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Date</th><th>Day</th><th>Holiday</th></tr>
+      </thead>
+      <tbody>
+        {
+          special.map((h) => (
+            <tr>
+              <td class="whitespace-nowrap">{monthDay(h.date)}</td>
+              <td>{dow(h.date)}</td>
+              <td>{h.name}</td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+
+  {
+    working.length > 0 && (
+      <>
+        <h2>Special (Working) Day{working.length === 1 ? '' : 's'} {year}</h2>
+        <ul>
+          {working.map((h) => (
+            <li>
+              <strong>{longDow(h.date)}</strong> — {h.name}. {h.note ?? 'Work proceeds; no wage premium.'}
+            </li>
+          ))}
+        </ul>
+      </>
+    )
+  }
+
+  {
+    pending.length > 0 && (
+      <>
+        <h2>{pendingNames} {year}</h2>
+        <p>
+          {procLabel} declares {list(pending.map((p) => p.name))} as {pending.length === 1 ? 'a regular holiday' : 'regular holidays'} but
+          leaves the exact {pending.length === 1 ? 'date' : 'dates'} to a separate proclamation, issued once the
+          Islamic calendar date is determined.
+          {pendingLastYear.some((p) => p.lastYear) && (
+            <>
+              {' '}In {previous?.year}, {list(pendingLastYear.filter((p) => p.lastYear).map((p) => `${plain(p.name)} fell on ${monthDay(p.lastYear!.date)}`))};
+              Islamic holidays move about 11 days earlier each year, so expect the {year} dates roughly a
+              week and a half before those. They are added here the day the proclamations are signed.
+            </>
+          )}
+        </p>
+      </>
+    )
+  }
+
+  <h2>Long Weekends in {year}</h2>
+  <p>
+    Every run of three or more consecutive days off — holidays plus the adjoining Saturday and
+    Sunday — computed from the official list above.
+  </p>
+  <ul>
+    {
+      weekends.map((w) => (
+        <li>
+          <strong>
+            {short(w.start)} – {short(w.end)}
+          </strong>{' '}
+          ({w.days} days): {w.holidays.map((h) => h.name).join(', ')}
+        </li>
+      ))
+    }
+  </ul>
+  <p class="text-sm text-ink-soft">
+    Counted within the calendar year only; local holidays declared by cities or provinces are not
+    included.
+  </p>
+
+  <h2>{year} Holidays That Fall on a Weekend</h2>
+  <p>
+    The Philippines observes a holiday on its actual date — nothing moves to the following Monday.
+    {onWeekend.length} of the {year} holidays land on a Saturday or Sunday:
+  </p>
+  <ul>
+    {
+      onWeekend.map((h) => (
+        <li>
+          <strong>{longDow(h.date)}</strong> — {h.name} ({TYPE_LABEL[h.type]})
+        </li>
+      ))
+    }
+  </ul>
+  <p>
+    If the day is your rest day: an unworked <strong>regular holiday</strong> is still paid at
+    {pct(labor.unworked_multiplier['regular-holiday'])} (subject to the attendance rule for the
+    preceding workday) and a worked one at
+    {pct(labor.worked_multiplier['regular-holiday-rest-day'])}; a <strong>special non-working day</strong>
+    is unpaid if unworked and {pct(labor.worked_multiplier['special-rest-day'])} if worked. Run the
+    numbers in the <a href="/holiday-pay-calculator/">Holiday Pay Calculator</a>.
+  </p>
+
+  {
+    diff && previous && (
+      <>
+        <h2>What Changed From {previous.year}</h2>
+        {sameSet ? (
+          <p>
+            {procShort} keeps the same set of holidays as {previous.year}: {regular.length} regular holidays,
+            {' '}{special.length} special non-working days{workingAgain}. No holiday was added, dropped or
+            reclassified — only the movable dates shift:
+          </p>
+        ) : (
+          <>
+            {diff.added.length > 0 && (
+              <p>
+                <strong>New in {year}:</strong> {list(diff.added.map((h) => `${h.name} (${monthDay(h.date)}, ${TYPE_LABEL[h.type]})`))}.
+              </p>
+            )}
+            {diff.removed.length > 0 && (
+              <p>
+                <strong>Dropped from the {previous.year} list:</strong> {list(diff.removed.map((h) => h.name))}.
+              </p>
+            )}
+            {diff.retyped.length > 0 && (
+              <p>
+                <strong>Reclassified:</strong> {list(diff.retyped.map((r) => `${r.name} (${TYPE_LABEL[r.from]} → ${TYPE_LABEL[r.to]})`))}.
+              </p>
+            )}
+            {diff.moved.length > 0 && <p>Movable dates:</p>}
+          </>
+        )}
+        {diff.moved.length > 0 && (
+          <ul>
+            {diff.moved.map((m) => (
+              <li>
+                <strong>{m.name}</strong>: {monthDay(m.from)}, {previous.year} → {monthDay(m.to)}, {year}
+              </li>
+            ))}
+          </ul>
+        )}
+      </>
+    )
+  }
+
+  <h2>Holiday Pay Rules for {year}</h2>
+  <p>
+    The multipliers come from the Labor Code and DOLE's yearly labor advisory on holiday pay; they do
+    not change with the proclamation.
+  </p>
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Scenario</th><th>First 8 hours</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Regular holiday — not worked</td><td>{pct(labor.unworked_multiplier['regular-holiday'])}</td></tr>
+        <tr><td>Regular holiday — worked</td><td>{pct(labor.worked_multiplier['regular-holiday'])}</td></tr>
+        <tr><td>Regular holiday on rest day — worked</td><td>{pct(labor.worked_multiplier['regular-holiday-rest-day'])}</td></tr>
+        <tr><td>Special non-working day — not worked</td><td>No pay*</td></tr>
+        <tr><td>Special non-working day — worked</td><td>{pct(labor.worked_multiplier['special'])}</td></tr>
+        <tr><td>Special non-working day on rest day — worked</td><td>{pct(labor.worked_multiplier['special-rest-day'])}</td></tr>
+        <tr><td>Special working day</td><td>{pct(labor.worked_multiplier['ordinary'])} (ordinary day)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="text-sm text-ink-soft">
+    *Unless a company policy, practice or collective bargaining agreement grants payment. Overtime
+    and night-shift stacking are covered in the
+    <a href="/holiday-pay-calculator/">Holiday Pay Calculator</a> and the
+    <a href="/overtime-pay-calculator/">Overtime Pay Calculator</a>.
+  </p>
+
+  <h2>Official Source</h2>
+  <p>
+    Holiday list: <a href={meta.official_source_url} target="_blank" rel="noopener">{meta.official_source_label}</a>,
+    signed {long(proclamation.signed)}. Local holidays declared by provinces, cities and
+    municipalities are not included. Last verified {long(meta.last_verified)}.
+  </p>
+</ToolPageLayout>

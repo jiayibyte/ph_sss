@@ -115,10 +115,20 @@ export interface HolidayEntry {
   note?: string;
 }
 
+/** A holiday the proclamation declares but whose date a later proclamation fixes (Eid'l Fitr / Eid'l Adha). */
+export interface PendingHoliday {
+  name: string;
+  type: HolidayType;
+  note: string;
+}
+
 export interface HolidayRules {
   meta: RuleMeta;
   year: number;
+  /** The year's omnibus proclamation (number, series year, signing date). */
+  proclamation?: { number: number; series: number; signed: string };
   holidays: HolidayEntry[];
+  pending?: PendingHoliday[];
 }
 
 /* ----------------------------------- Tax --------------------------------- */

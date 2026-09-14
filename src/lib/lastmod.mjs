@@ -34,6 +34,7 @@ export const PAGE_DATA = {
   '/take-home-pay-calculator/': ['sss', 'philhealth', 'pagibig', 'tax'],
   '/13th-month-pay-calculator/': ['labor'],
   '/holiday-pay-calculator/': ['holidays', 'labor'],
+  '/philippine-holidays/': ['holidays', 'labor'],
   '/night-differential-calculator/': ['labor'],
   '/overtime-pay-calculator/': ['labor'],
   '/final-pay-calculator/': ['labor'],

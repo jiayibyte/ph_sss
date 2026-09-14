@@ -2,13 +2,30 @@
 import ToolPageLayout from '../layouts/ToolPageLayout.astro';
 import HolidayPayCalculator from '../islands/HolidayPayCalculator';
 import holidaysJson from '../data/holidays/2026.json';
+import type { HolidayRules } from '../lib/rules/types';
 import { longWeekends } from '../lib/longWeekends';
+import { byType } from '../lib/holidays';
+import { SITE } from '../../site.config';
 
 const holidays = holidaysJson.holidays;
 const weekends = longWeekends(holidays);
+/* Next year's proclamation, once its JSON is on file — the calendar below stays on the
+   calculator's year; this only powers the "next year's list is out" pointer. */
+const next = Object.values(
+  import.meta.glob<{ default: HolidayRules }>('../data/holidays/*.json', { eager: true }),
+)
+  .map((m) => m.default)
+  .find((y) => y.year === holidaysJson.year + 1);
+const nextProc = next?.proclamation ? `Proclamation No. ${next.proclamation.number}, s. ${next.proclamation.series}` : null;
+const nextPending = (next?.pending ?? []).map((p) => p.name.replace(/ \(.*\)$/, '')).join(' and ');
+const nextCounts = next
+  ? `${byType(next.holidays, 'regular').length} regular holidays and ${byType(next.holidays, 'special-non-working').length} special (non-working) days${nextPending ? `, with ${nextPending} to be dated by separate proclamation` : ''}`
+  : '';
 const fmtShort = (d: string) =>
   new Date(d + 'T00:00:00').toLocaleDateString('en-PH', { weekday: 'short', month: 'short', day: 'numeric' });
 const meta = holidaysJson.meta;
+const fmtLong = (d: string) =>
+  new Date(d + 'T00:00:00').toLocaleDateString('en-PH', { month: 'long', day: 'numeric', year: 'numeric' });
 const typeLabel: Record<string, string> = {
   regular: 'Regular Holiday',
   'special-non-working': 'Special (Non-Working) Day',
@@ -53,7 +70,36 @@ const faqs = [
     q: 'May bayad ba ang special non-working holiday kung hindi ako papasok?',
     a: 'Wala, as a rule. Special non-working days follow the "no work, no pay" principle, so you are paid only if you work, unless your company policy, practice or collective bargaining agreement grants pay for the day. Regular holidays are different: you receive 100% of your daily wage even if you do not work.',
   },
+  ...(next && nextProc
+    ? [
+        {
+          q: `Has the list of holidays for ${next.year} been released?`,
+          a: `Yes. ${nextProc}, signed ${fmtLong(next.proclamation!.signed)}, declares ${nextCounts} for ${next.year}. The full ${next.year} list, long weekends and what changed from ${holidaysJson.year} are on the Philippine Holidays ${next.year} page.`,
+        },
+      ]
+    : []),
 ];
+
+const datasetSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Dataset',
+  name: `Philippine Holidays ${holidaysJson.year} (${meta.official_source_label.replace(/ \(.*\)$/, '')})`,
+  description: `Official list of ${holidaysJson.year} Philippine regular holidays, special non-working days and special working days, as declared by ${meta.rule_version}.`,
+  url: `${SITE.url}/holiday-pay-calculator/`,
+  creator: { '@type': 'Organization', name: 'Office of the President of the Philippines (source data)' },
+  isBasedOn: meta.official_source_url,
+  dateModified: meta.last_verified,
+  keywords: [`Philippine holidays ${holidaysJson.year}`, `regular holidays ${holidaysJson.year}`, `special non-working days ${holidaysJson.year}`, 'holiday pay'],
+  distribution: [
+    {
+      '@type': 'DataDownload',
+      encodingFormat: 'application/json',
+      contentUrl: `${SITE.url}/data/philippine-holidays-${holidaysJson.year}.json`,
+    },
+  ],
+  temporalCoverage: `${meta.effective_from}/${meta.effective_to}`,
+  spatialCoverage: { '@type': 'Place', name: 'Philippines' },
+};
 ---
 
 <ToolPageLayout
@@ -62,7 +108,8 @@ const faqs = [
   path="/holiday-pay-calculator/"
   h1="Holiday Pay Calculator Philippines"
   faqs={faqs}
-  related={['overtime', 'nightDiff', 'thirteenth', 'takeHome']}
+  related={['holidays', 'overtime', 'nightDiff', 'thirteenth']}
+  extraSchema={[datasetSchema]}
 >
   <Fragment slot="answer">
     <p>
@@ -148,6 +195,20 @@ const faqs = [
     Counted within the calendar year only; a year-end run continues into New Year's Day of the
     following year. Local holidays declared by cities or provinces are not included.
   </p>
+
+  {
+    next && nextProc && (
+      <>
+        <h2>Philippine Holidays {next.year}: {nextProc}</h2>
+        <p>
+          The {next.year} list is already out. <strong>{nextProc}</strong>, signed {fmtLong(next.proclamation!.signed)},
+          declares {nextCounts}. See the full calendar, long weekends and what changed from {holidaysJson.year} on the
+          {' '}<a href="/philippine-holidays/">Philippine Holidays {next.year}</a> page. The calculator
+          above applies the same DOLE multipliers to either year.
+        </p>
+      </>
+    )
+  }
 
   <h2>Example Computations</h2>
   <div class="example-card">

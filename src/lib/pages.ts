@@ -6,6 +6,8 @@ export interface PageRef {
   short: string;
   blurb: string;
   priority: 'P0' | 'P1' | 'P2';
+  /** Kicker line on the OG card (scripts/generate-og.mjs); defaults to the site-wide rates line. */
+  ogKicker?: string;
 }
 
 export const TOOL_PAGES: Record<string, PageRef> = {
@@ -78,6 +80,14 @@ export const TOOL_PAGES: Record<string, PageRef> = {
     short: 'Overtime Pay',
     blurb: 'Overtime rates for ordinary days, rest days, special days and regular holidays.',
     priority: 'P1',
+  },
+  holidays: {
+    href: '/philippine-holidays/',
+    label: 'Philippine Holidays 2027',
+    short: 'Holidays 2027',
+    blurb: 'Official 2027 holiday list under Proclamation No. 1427: regular holidays, special non-working days, long weekends and what changed from 2026.',
+    priority: 'P2',
+    ogKicker: 'Official list · Proclamation No. 1427, s. 2026',
   },
   oec: {
     href: '/oec-exemption/',

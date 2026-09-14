@@ -75,7 +75,7 @@ const jobs = [
   },
   ...Object.values(TOOL_PAGES).map((t) => ({
     slug: t.href.replace(/\//g, ''),
-    kicker: 'Free · Independent · Official 2026 rates',
+    kicker: t.ogKicker ?? 'Free · Independent · Official 2026 rates',
     title: t.label,
     blurb: t.blurb,
     url: `${SITE.domain}${t.href}`,

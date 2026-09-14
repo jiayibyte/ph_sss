@@ -8,6 +8,7 @@ Key facts currently in force (last verified 2026-08-19):
 - Pag-IBIG: employee 2% (1% if ≤₱1,500) + employer 2% on fund salary capped ₱10,000 (max ₱200+₱200). Basis: HDMF Circular 460.
 - Withholding tax: BIR TRAIN monthly table effective 2023 onwards (Annex E, RR 11-2018).
 - 2026 holidays: Proclamation No. 1006, s. 2025 (+1189/1264 for Eid); pay rules per DOLE Labor Advisory 12-25.
+- 2027 holidays: Proclamation No. 1427, s. 2026 (signed 2026-09-08) — 10 regular holidays, 8 special non-working days, EDSA anniversary (Feb 25) a special working day; Eid'l Fitr and Eid'l Adha dates to follow by separate proclamation.
 
 ## Calculators
 
@@ -18,6 +19,7 @@ Key facts currently in force (last verified 2026-08-19):
 - [Pag-IBIG Contribution](https://aytool.com/pagibig-contribution/): HDMF savings calculator + table (2% + 2%, ₱10,000 MFS cap). Source: pagibigfund.gov.ph.
 - [Take-Home Pay Calculator](https://aytool.com/take-home-pay-calculator/): net monthly salary after SSS + PhilHealth + Pag-IBIG + BIR withholding tax, itemized. Sources: sss.gov.ph, philhealth.gov.ph, pagibigfund.gov.ph, bir.gov.ph.
 - [Holiday Pay Calculator](https://aytool.com/holiday-pay-calculator/): 200%/130% holiday multipliers + official 2026 Philippine holiday calendar. Sources: pco.gov.ph, dole.gov.ph.
+- [Philippine Holidays 2027](https://aytool.com/philippine-holidays/): official 2027 list under Proclamation No. 1427 — regular holidays, special non-working days, long weekends, holidays falling on weekends, and what changed from 2026. Source: pco.gov.ph.
 - [Night Differential Calculator](https://aytool.com/night-differential-calculator/): 10% night shift differential (10 PM–6 AM) with holiday/OT stacking. Source: DOLE handbook.
 - [Final Pay Calculator](https://aytool.com/final-pay-calculator/): back pay estimate (unpaid salary, leave conversion, pro-rated 13th month, separation pay), DOLE 30-day release rule. Source: DOLE Labor Advisory 06-20.
 - [Overtime Pay Calculator](https://aytool.com/overtime-pay-calculator/): OT rates 125%–338% by day type with night-hour handling. Source: DOLE handbook.
@@ -28,6 +30,8 @@ Key facts currently in force (last verified 2026-08-19):
 ## Data
 
 - [PRC Board Exam Schedule 2026 (JSON)](https://aytool.com/data/prc-board-exam-schedule-2026.json): all 88 exams with dates, application windows and target result dates, as rendered on the page. Source: prc.gov.ph.
+- [Philippine Holidays 2027 (JSON)](https://aytool.com/data/philippine-holidays-2027.json): every 2027 holiday with date and type (regular / special non-working / special working), plus the Eid holidays still awaiting a date. Source: pco.gov.ph.
+- [Philippine Holidays 2026 (JSON)](https://aytool.com/data/philippine-holidays-2026.json): the 2026 list in the same format, Eid dates included. Source: pco.gov.ph.
 
 ## About
 

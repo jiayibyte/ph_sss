@@ -9,11 +9,19 @@ import pagibig from '../data/pagibig/2026.json';
 import tax from '../data/tax/2026.json';
 import labor from '../data/labor/2026.json';
 import holidays from '../data/holidays/2026.json';
+import type { HolidayRules } from '../lib/rules/types';
+import { byType } from '../lib/holidays';
 
 /* "At a glance" facts — every number comes from the rule JSON so the yearly
    data refresh updates this block without anyone editing prose. */
 const peso = (n: number) => '₱' + n.toLocaleString('en-PH');
 const pct = (r: number) => `${Math.round(r * 1000) / 10}%`;
+/* Next year's holiday proclamation, once its JSON is on file (Q3–Q4 each year). */
+const nextHolidays = Object.values(
+  import.meta.glob<{ default: HolidayRules }>('../data/holidays/*.json', { eager: true }),
+)
+  .map((m) => m.default)
+  .find((y) => y.year === holidays.year + 1 && y.proclamation);
 const lastVerified = ['sss', 'philhealth', 'pagibig', 'tax', 'labor', 'holidays']
   .map(datasetLastVerified)
   .sort()
@@ -44,7 +52,7 @@ const facts = [
   },
   {
     label: 'Withholding tax',
-    text: `No tax on monthly taxable income up to ${peso(tax.brackets[0].up_to)} (${peso(250000)} a year); ${pct(tax.brackets[1].rate)} on the excess up to ${peso(tax.brackets[1].up_to)}. BIR TRAIN monthly table, 2023 onwards.`,
+    text: `No tax on monthly taxable income up to ${peso(tax.brackets[0].up_to!)} (${peso(250000)} a year); ${pct(tax.brackets[1].rate)} on the excess up to ${peso(tax.brackets[1].up_to!)}. BIR TRAIN monthly table, 2023 onwards.`,
     href: '/take-home-pay-calculator/',
     link: 'take-home pay calculator',
   },
@@ -54,6 +62,16 @@ const facts = [
     href: '/holiday-pay-calculator/',
     link: 'holiday pay calculator',
   },
+  ...(nextHolidays
+    ? [
+        {
+          label: `Holidays ${nextHolidays.year}`,
+          text: `Proclamation No. ${nextHolidays.proclamation!.number}, s. ${nextHolidays.proclamation!.series} (signed ${new Date(nextHolidays.proclamation!.signed + 'T00:00:00').toLocaleDateString('en-PH', { month: 'long', day: 'numeric', year: 'numeric' })}): ${byType(nextHolidays.holidays, 'regular').length} regular holidays and ${byType(nextHolidays.holidays, 'special-non-working').length} special non-working days${(nextHolidays.pending ?? []).length > 0 ? `; ${(nextHolidays.pending ?? []).map((p) => p.name.replace(/ \(.*\)$/, '')).join(' and ')} dates to follow` : ''}.`,
+          href: '/philippine-holidays/',
+          link: `${nextHolidays.year} holiday list`,
+        },
+      ]
+    : []),
   {
     label: '13th month pay',
     text: `Total basic salary earned in the year ÷ ${labor.thirteenth_month.divisor}, due on or before ${labor.thirteenth_month.deadline}, tax-exempt up to ${peso(labor.thirteenth_month.tax_exempt_cap)} together with other benefits. PD 851.`,

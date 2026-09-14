@@ -1,0 +1,37 @@
+{
+ "meta": {
+  "rule_version": "Proclamation No. 1427, s. 2026 (signed 2026-09-08); Eid'l Fitr and Eid'l Adha to be fixed by separate proclamations",
+  "effective_from": "2027-01-01",
+  "effective_to": "2027-12-31",
+  "last_verified": "2026-09-14",
+  "official_source_url": "https://pco.gov.ph/issuances/proclamation-no-1427-declaring-the-regular-holidays-and-special-non-working-days-for-the-year-2027/",
+  "official_source_label": "Proclamation No. 1427, s. 2026 (pco.gov.ph)"
+ },
+ "year": 2027,
+ "proclamation": { "number": 1427, "series": 2026, "signed": "2026-09-08" },
+ "holidays": [
+  { "date": "2027-01-01", "name": "New Year's Day", "type": "regular" },
+  { "date": "2027-02-06", "name": "Chinese New Year", "type": "special-non-working" },
+  { "date": "2027-02-25", "name": "EDSA People Power Revolution Anniversary", "type": "special-working", "note": "Work proceeds; no wage premium." },
+  { "date": "2027-03-25", "name": "Maundy Thursday", "type": "regular" },
+  { "date": "2027-03-26", "name": "Good Friday", "type": "regular" },
+  { "date": "2027-03-27", "name": "Black Saturday", "type": "special-non-working" },
+  { "date": "2027-04-09", "name": "Araw ng Kagitingan (Day of Valor)", "type": "regular" },
+  { "date": "2027-05-01", "name": "Labor Day", "type": "regular" },
+  { "date": "2027-06-12", "name": "Independence Day", "type": "regular" },
+  { "date": "2027-08-21", "name": "Ninoy Aquino Day", "type": "special-non-working" },
+  { "date": "2027-08-30", "name": "National Heroes Day", "type": "regular" },
+  { "date": "2027-11-01", "name": "All Saints' Day", "type": "special-non-working" },
+  { "date": "2027-11-02", "name": "All Souls' Day", "type": "special-non-working" },
+  { "date": "2027-11-30", "name": "Bonifacio Day", "type": "regular" },
+  { "date": "2027-12-08", "name": "Feast of the Immaculate Conception of Mary", "type": "special-non-working" },
+  { "date": "2027-12-24", "name": "Christmas Eve", "type": "special-non-working" },
+  { "date": "2027-12-25", "name": "Christmas Day", "type": "regular" },
+  { "date": "2027-12-30", "name": "Rizal Day", "type": "regular" },
+  { "date": "2027-12-31", "name": "Last Day of the Year", "type": "special-non-working" }
+ ],
+ "pending": [
+  { "name": "Eid'l Fitr (Feast of Ramadhan)", "type": "regular", "note": "Declared a national holiday by Proclamation No. 1427; the date will be fixed by a separate proclamation once the Islamic calendar date is determined." },
+  { "name": "Eid'l Adha (Feast of Sacrifice)", "type": "regular", "note": "Declared a national holiday by Proclamation No. 1427; the date will be fixed by a separate proclamation once the Islamic calendar date is determined." }
+ ]
+}
