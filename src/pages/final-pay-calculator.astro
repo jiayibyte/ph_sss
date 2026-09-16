@@ -26,6 +26,22 @@ const faqs = [
     a: 'Generally no — voluntary resignation does not entitle you to separation pay unless your company policy, contract, or CBA grants it. Separation pay is required for authorized causes such as retrenchment, redundancy, closure not due to serious losses, or disease (½ to 1 month pay per year of service depending on the cause).',
   },
   {
+    q: 'How is separation pay computed?',
+    a: 'It depends on the authorized cause. Redundancy or installation of labor-saving devices: one month pay per year of service. Retrenchment, closure not due to serious losses, or disease: one-half month pay per year of service. In every case the minimum is one month pay, and a fraction of at least six months counts as a full year (Labor Code Arts. 298–299). No separation pay is required for resignation, just-cause dismissal or closure due to serious losses.',
+  },
+  {
+    q: 'How do I compute final pay for a resigned employee?',
+    a: 'Add (1) unpaid salary for days worked since the last payroll — daily rate × days; (2) unused Service Incentive Leave and other convertible leave × daily rate; (3) pro-rated 13th month pay — basic salary earned this year ÷ 12; and (4) any tax refund or returnable deposit. Then subtract loan balances and documented accountabilities. Separation pay is not included on resignation unless policy or a CBA grants it. The employer must release the result within 30 days of your last day.',
+  },
+  {
+    q: 'How is unused service incentive leave converted to cash?',
+    a: 'Employees who have worked at least one year are entitled to five days of Service Incentive Leave per year (Labor Code Art. 95). Unused SIL is convertible to cash at the end of the year, and any remaining balance is paid in your final pay: unused days × your daily rate. Company vacation or sick leave beyond the five statutory days follows company policy.',
+  },
+  {
+    q: 'Paano kinukwenta ang back pay?',
+    a: 'Idagdag ang (1) hindi pa bayad na sahod para sa mga araw na pumasok ka — daily rate × araw; (2) cash conversion ng hindi nagamit na Service Incentive Leave; (3) pro-rated 13th month pay — kabuuang basic salary ngayong taon ÷ 12; at (4) tax refund kung sobra ang kaltas. Bawasin ang loan at accountabilities. Halimbawa: ₱26,100 monthly, 10 araw na hindi pa bayad (₱12,000), 5 araw na SIL (₱6,000), 8 buwang 13th month (₱17,400), less ₱2,000 loan = ₱33,400 na back pay, dapat ibigay sa loob ng 30 araw.',
+  },
+  {
     q: 'Gaano katagal bago makuha ang back pay?',
     a: 'Within 30 days from the date of separation or termination, unless a more favorable company policy, contract or CBA applies (DOLE Labor Advisory No. 06-20). Clearance processing does not extend the 30-day rule; if it is late, you may file a request for assistance with the nearest DOLE office.',
   },
@@ -93,6 +109,62 @@ const faqs = [
     <p><strong>Example 3 — With deductions:</strong> additions total ₱23,833.33 but an unpaid
     company loan of ₱1,500 is outstanding → final pay = <strong>₱22,333.33</strong>.</p>
   </div>
+
+  <h2>Separation Pay Computation (Authorized Causes)</h2>
+  <p>
+    Separation pay is owed only when the employer ends the employment for an <strong>authorized
+    cause</strong> under Articles 298–299 of the Labor Code, or when a company policy, contract or
+    CBA grants it. The rate depends on the cause, and a fraction of at least six months of service
+    counts as one whole year.
+  </p>
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Cause of separation</th><th>Separation pay</th><th>Minimum</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Redundancy; installation of labor-saving devices</td><td>1 month pay per year of service</td><td>1 month pay</td></tr>
+        <tr><td>Retrenchment to prevent losses; closure or cessation not due to serious losses</td><td>½ month pay per year of service</td><td>1 month pay</td></tr>
+        <tr><td>Disease (continued employment prohibited by law or prejudicial to health)</td><td>½ month pay per year of service</td><td>1 month pay</td></tr>
+        <tr><td>Closure due to serious business losses</td><td>None required by law</td><td>—</td></tr>
+        <tr><td>Resignation; dismissal for just cause; end of a fixed-term or project contract</td><td>None required by law (policy or CBA may grant it)</td><td>—</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="example-card">
+    <p><strong>Example — ₱18,000/month, 4 years and 7 months of service:</strong> service rounds
+    up to 5 years. Retrenchment: ₱9,000 × 5 = <strong>₱45,000</strong>. Redundancy: ₱18,000 × 5 =
+    <strong>₱90,000</strong>. Enter the figure in the “Separation pay” field above to add it to
+    your final pay.</p>
+  </div>
+
+  <h2>Sample Final Pay Computation for a Resigned Employee</h2>
+  <p>
+    Resigned effective August 31; monthly basic salary ₱26,100; five-day work week (261-day
+    factor); 10 working days in the last cutoff not yet paid; 5 unused Service Incentive Leave
+    days; no separation pay; one outstanding company loan of ₱2,000.
+  </p>
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Step</th><th>Computation</th><th>Amount</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1. Daily rate</td><td>₱26,100 × 12 ÷ 261</td><td>₱1,200.00</td></tr>
+        <tr><td>2. Unpaid salary</td><td>₱1,200 × 10 days</td><td>₱12,000.00</td></tr>
+        <tr><td>3. Unused SIL converted to cash</td><td>₱1,200 × 5 days</td><td>₱6,000.00</td></tr>
+        <tr><td>4. Pro-rated 13th month pay</td><td>₱26,100 × 8 months ÷ 12</td><td>₱17,400.00</td></tr>
+        <tr><td>5. Gross final pay</td><td>Steps 2 + 3 + 4</td><td>₱35,400.00</td></tr>
+        <tr><td>6. Less deductions</td><td>Company loan balance</td><td>− ₱2,000.00</td></tr>
+        <tr><td><strong>Net final pay</strong></td><td>Due within 30 days of August 31</td><td><strong>₱33,400.00</strong></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="text-sm text-ink-soft">
+    Withholding tax on the final payout is annualized by the employer; if too much tax was withheld
+    during the year, the refund is added to this amount. The same steps apply to terminated
+    employees, with separation pay added where the cause requires it.
+  </p>
 
   <h2>Who This Applies To</h2>
   <p>

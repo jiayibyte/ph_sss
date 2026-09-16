@@ -3,7 +3,7 @@
   "rule_version": "PRC Resolution No. 2113, s. 2025 — Schedule of Licensure Examinations for the Year 2026",
   "effective_from": "2026-01-01",
   "effective_to": "2026-12-31",
-  "last_verified": "2026-08-19",
+  "last_verified": "2026-09-16",
   "official_source_url": "https://www.prc.gov.ph/article/schedule-licensure-examinations-year-2026",
   "official_source_label": "PRC — Schedule of Licensure Examinations for 2026 (prc.gov.ph)"
  },
@@ -53,7 +53,7 @@
   { "exam": "Psychologists", "dates_display": "Aug 19–20, 2026", "first_date": "2026-08-19", "application_start": "2026-05-21", "application_deadline": "2026-07-20", "results_target": "2026-08-27", "note": "CBLE" },
   { "exam": "Psychometricians", "dates_display": "Aug 19–20, 2026", "first_date": "2026-08-19", "application_start": "2026-05-06", "application_deadline": "2026-07-06", "results_target": "2026-08-27" },
   { "exam": "Sanitary Engineers (2nd exam)", "dates_display": "Aug 24–26, 2026", "first_date": "2026-08-24", "application_start": "2026-05-26", "application_deadline": "2026-07-27", "results_target": "2026-08-28", "note": "CBLE" },
-  { "exam": "Nurses (PNLE, 2nd exam)", "dates_display": "Aug 29–30, 2026", "first_date": "2026-08-29", "application_start": "2026-05-15", "application_deadline": "2026-07-15", "results_target": "2026-09-18" },
+  { "exam": "Nurses (PNLE, 2nd exam)", "dates_display": "Aug 29–30, 2026", "first_date": "2026-08-29", "application_start": "2026-05-15", "application_deadline": "2026-07-15", "results_target": "2026-09-18", "note": "Region III rescheduled to Sep 11–12, Metro Manila day 2 to Sep 12 (weather)" },
   { "exam": "Foreign Medical Professionals", "dates_display": "Sep 1–2, 2026", "first_date": "2026-09-01", "application_start": "2026-06-01", "application_deadline": "2026-08-03", "results_target": "2026-09-03", "note": "CBLE, NCR only" },
   { "exam": "Librarians", "dates_display": "Sep 3–4, 2026", "first_date": "2026-09-03", "application_start": "2026-06-05", "application_deadline": "2026-08-04", "results_target": "2026-09-08", "note": "CBLE" },
   { "exam": "Registered Electrical Engineers (2nd exam)", "dates_display": "Sep 5–6, 2026", "first_date": "2026-09-05", "application_start": "2026-06-05", "application_deadline": "2026-08-06", "results_target": "2026-09-10" },

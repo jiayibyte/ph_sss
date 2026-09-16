@@ -30,6 +30,22 @@ const faqs = [
     a: 'Philippine payroll computes net salary in a fixed order: gross monthly salary, minus the employee shares of SSS, PhilHealth and Pag-IBIG, then BIR withholding tax on the remainder using the monthly table under the TRAIN law. Premiums such as overtime, night differential and holiday pay form part of gross pay; the 13th month pay is a separate annual computation. The calculator above follows this exact order.',
   },
   {
+    q: 'How do I compute my salary with absences?',
+    a: 'Convert your monthly salary to a daily rate — monthly × 12 ÷ 261 for a five-day week or ÷ 313 for a six-day week — and deduct one daily rate per unpaid day (and the hourly rate, daily ÷ 8, for late or undertime hours). Run the reduced gross through the calculator: at ₱20,000 with 2 days absent on a five-day week, gross becomes ₱20,000 − ₱1,839.08 = ₱18,160.92 before contributions and tax.',
+  },
+  {
+    q: 'Does this salary calculator work for government employees?',
+    a: 'Not exactly. Government employees contribute to GSIS instead of SSS — 9% of monthly compensation as the personal share, with 12% from the agency — so the SSS line here does not apply. PhilHealth, Pag-IBIG and the BIR withholding table are the same. Use the result as a guide and replace the SSS deduction with your GSIS premium.',
+  },
+  {
+    q: 'Magkano ang daily rate ko kung ₱20,000 ang monthly na sahod?',
+    a: 'Depende sa factor ng kumpanya mo: ₱20,000 × 12 ÷ 261 = ₱919.54 kung five-day week, o ₱20,000 × 12 ÷ 313 = ₱766.77 kung six-day week na walang bayad sa rest day. Hatiin sa 8 para sa hourly rate: ₱114.94 o ₱95.85.',
+  },
+  {
+    q: 'Paano gamitin ito bilang suweldo calculator?',
+    a: 'Ilagay ang gross monthly na suweldo mo, at ikukuwenta ng calculator ang kaltas sa SSS, PhilHealth at Pag-IBIG at ang withholding tax ayon sa 2026 na talahanayan — ang lalabas ay ang net na suweldo o take-home pay. Kung may absent, overtime o night differential, ayusin muna ang gross (bawasin ang absent, idagdag ang premium) bago ilagay.',
+  },
+  {
     q: 'Magkano ang take-home pay sa ₱25,000 na sahod?',
     a: 'Deductions: SSS ₱1,250 (5% of the ₱25,000 MSC), PhilHealth ₱625 (2.5%), Pag-IBIG ₱200 — total ₱2,075. Taxable income is ₱22,925, so withholding tax is 15% of the excess over ₱20,833 = ₱313.80. Take-home pay: ₱25,000 − ₱2,075 − ₱313.80 = ₱22,611.20.',
   },
@@ -128,6 +144,27 @@ const faqs = [
     <p><strong>Example — ₱30,000 monthly, five-day week:</strong> daily rate = ₱30,000 × 12 ÷ 261
     = <strong>₱1,379.31</strong>; hourly rate = ₱1,379.31 ÷ 8 = <strong>₱172.41</strong>.
     Semi-monthly take-home ≈ ₱26,542.45 ÷ 2 = <strong>₱13,271.23</strong> per cutoff.</p>
+  </div>
+
+  <h2>Salary Computation With Absences, Overtime and Night Differential</h2>
+  <p>
+    The calculator takes one gross monthly figure. To match a real payslip, adjust the gross
+    before you enter it: <strong>absences and undertime</strong> are deducted at your daily or
+    hourly rate (daily rate = monthly × 12 ÷ factor, hourly = daily ÷ 8), while
+    <strong>overtime, night differential and holiday premiums</strong> are added on top of basic
+    pay. Premiums are taxable compensation, so they raise the withholding tax; SSS uses your total
+    compensation for the month to find the salary credit, PhilHealth uses basic salary, and
+    Pag-IBIG stays capped at ₱200. Compute the premiums first with the
+    <a href="/overtime-pay-calculator/">Overtime</a>,
+    <a href="/night-differential-calculator/">Night Differential</a> and
+    <a href="/holiday-pay-calculator/">Holiday Pay</a> calculators, then enter the adjusted gross
+    here.
+  </p>
+  <div class="example-card">
+    <p><strong>Example — ₱20,000 monthly, five-day week, 2 days absent, 10 OT hours:</strong>
+    daily rate ₱20,000 × 12 ÷ 261 = ₱919.54; absences −₱1,839.08; OT ₱919.54 ÷ 8 × 125% × 10 =
+    ₱1,436.78. Adjusted gross = ₱20,000 − ₱1,839.08 + ₱1,436.78 = <strong>₱19,597.70</strong>,
+    which you then run through the calculator above.</p>
   </div>
 
   <h2>Who This Applies To</h2>

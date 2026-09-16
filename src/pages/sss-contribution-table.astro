@@ -4,6 +4,17 @@ import SssTable from '../islands/SssTable';
 import sssRules from '../data/sss/2026.json';
 
 const meta = sssRules.meta;
+const rate = sssRules.rate;
+const ec = sssRules.ec;
+const ofwMin = sssRules.member_types.ofw.msc_min;
+const php = (n: number) => '₱' + Math.round(n).toLocaleString('en-PH');
+const memberRows = [5000, 8000, 10000, 15000, 20000, 25000, 30000, 35000].map((msc) => ({
+  msc: php(msc),
+  employee: php(rate.employee * msc),
+  voluntary: php(rate.total * msc),
+  selfEmployed: php(rate.total * msc + (msc >= ec.threshold ? ec.at_or_above : ec.below)),
+  ofw: msc >= ofwMin ? php(rate.total * msc) : '—',
+}));
 const faqs = [
   {
     q: 'How much is the SSS contribution in 2026?',
@@ -28,6 +39,14 @@ const faqs = [
   {
     q: 'Is the SSS contribution schedule the same as the SSS contribution table?',
     a: 'Yes. SSS itself calls it the "Schedule of Contributions" (or contribution schedule) in its circulars, while payroll staff and members usually say contribution table. Both refer to the same matrix reproduced above: each salary range maps to a Monthly Salary Credit, with the employee, employer and EC amounts per row, plus separate columns for self-employed, voluntary and OFW members.',
+  },
+  {
+    q: 'How much is the SSS voluntary contribution per month in 2026?',
+    a: 'Voluntary members pay the full 15% of the Monthly Salary Credit they declare, with no employer share and no EC: ₱750 a month at the ₱5,000 minimum MSC, ₱1,500 at ₱10,000, ₱3,000 at ₱20,000 and ₱5,250 at the ₱35,000 maximum. Amounts above the ₱20,000 MSC include the MySSS Pension Booster (MPF) portion.',
+  },
+  {
+    q: 'Magkano ang hulog sa SSS per month sa 2026?',
+    a: 'Para sa empleyado, ₱250 hanggang ₱1,750 ang kaltas kada buwan (5% ng MSC na ₱5,000–₱35,000); ang employer ang nagbabayad ng 10% at ng EC. Para sa voluntary at OFW, buong 15% ang hulog: ₱750 hanggang ₱5,250 kada buwan (₱1,200 ang minimum para sa OFW dahil ₱8,000 ang pinakamababang MSC). Self-employed: 15% plus ₱10 o ₱30 na EC.',
   },
   {
     q: 'Magkano ang hulog sa SSS kung ₱20,000 ang sahod ko?',
@@ -77,6 +96,28 @@ const faqs = [
     <li><strong>Land-based OFW members:</strong> full 15%, minimum MSC ₱8,000, no EC.</li>
     <li><strong>MSC range:</strong> ₱5,000 minimum to ₱35,000 maximum, in ₱500 steps. The portion above ₱20,000 goes to the Mandatory Provident Fund (MySSS Pension Booster).</li>
   </ul>
+
+  <h2>SSS Contribution Table 2026 for Voluntary, Self-Employed and OFW Members</h2>
+  <p>
+    Members without an employer pay the <strong>whole 15%</strong> themselves — the monthly
+    <em>hulog</em> is simply 15% of the Monthly Salary Credit you declare. Self-employed members
+    add the ₱{ec.below}/₱{ec.at_or_above} Employees’ Compensation contribution; voluntary members,
+    non-working spouses and land-based OFWs do not pay EC, and OFWs cannot declare an MSC below
+    {php(ofwMin)}. The full lookup for every ₱500 step is in the interactive table above; these are
+    the most-searched brackets.
+  </p>
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>MSC</th><th>Employee share (employed)</th><th>Voluntary / non-working spouse</th><th>Self-employed (with EC)</th><th>OFW</th></tr>
+      </thead>
+      <tbody>
+        {memberRows.map((r) => (
+          <tr><td>{r.msc}</td><td>{r.employee}</td><td>{r.voluntary}</td><td>{r.selfEmployed}</td><td>{r.ofw}</td></tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
 
   <h2>How the SSS Contribution Is Computed</h2>
   <p>

@@ -67,6 +67,22 @@ const faqs = [
     a: 'Under the Philippine Nursing Act of 2002 (RA 9173), an examinee who fails the nurse licensure examination three consecutive times must complete a refresher course before being allowed to retake the exam.',
   },
   {
+    q: 'Was the August 2026 PNLE rescheduled?',
+    a: 'Partly. PRC cancelled the August 29–30, 2026 NLE in Region III (San Fernando, Pampanga and Cabanatuan, Nueva Ecija testing centers) because of regionwide flooding and moved it to September 11–12, 2026, and cancelled the second exam day (August 30) in all Metro Manila testing centers because of PAGASA heavy-rainfall warnings, moving it to September 12, 2026. Other testing centers took the exam as scheduled. As of mid-September 2026 PRC had not announced a new results date; the resolution’s target remains September 18, 2026.',
+  },
+  {
+    q: 'When is the PNLE 2027 schedule release date?',
+    a: 'PRC publishes the whole following-year calendar in one resolution, usually signed in late October and posted on prc.gov.ph in mid-November — the 2026 schedule (Resolution No. 2113, s. 2025) was signed on October 23, 2025 and posted on November 17, 2025. Expect the PNLE 2027 dates around November 2026. This page switches to the 2027 schedule as soon as it is out.',
+  },
+  {
+    q: 'Is there a February 2027 PNLE?',
+    a: 'Not confirmed. The 2026 calendar moved the PNLE to February and August, and review centers are enrolling for a February 2027 round on that assumption, but PRC has not released the 2027 resolution, and there is unconfirmed talk online that the exam could return to the old May/November cycle. Treat any 2027 date as unofficial until it appears on prc.gov.ph.',
+  },
+  {
+    q: 'What are the requirements for the nursing board exam?',
+    a: 'Under RA 9173, Sec. 13 you must be a Filipino citizen (or a citizen of a country that lets Filipino nurses practise there on reciprocity), of good moral character, and a holder of a Bachelor of Science in Nursing degree from a CHED-recognised college or university. When filing in LERIS, PRC asks for your transcript of records with scanned picture and the remark “For Board Examination Purposes”, a PSA birth certificate, a PSA marriage certificate if you file under a married name, and the examination fee; PRC lists the exact set for the current round inside LERIS.',
+  },
+  {
     q: 'Is this schedule official?',
     a: 'The dates are transcribed from PRC Resolution No. 2113, s. 2025 — the official Schedule of Licensure Examinations for 2026. Always confirm on prc.gov.ph before booking travel or review classes; PRC can move dates by later resolution.',
   },
@@ -98,7 +114,9 @@ const faqs = [
       to {fmt(first.application_deadline)}) and <strong>{second.dates_display}</strong> (filing
       {fmt(second.application_start)} to {fmt(second.application_deadline)}), per PRC Resolution
       No. 2113, s. 2025. Target result dates: {fmt(first.results_target)} and
-      {fmt(second.results_target)}.
+      {fmt(second.results_target)}. <strong>Update:</strong> the August round was partly
+      rescheduled — Region III moved to September 11–12 and Metro Manila’s second exam day to
+      September 12, 2026 because of flooding (details below).
     </p>
   </Fragment>
 
@@ -138,6 +156,25 @@ const faqs = [
     targets.
   </p>
 
+  <h2>August 2026 PNLE Rescheduled: Region III and Metro Manila</h2>
+  <p>
+    Two PRC advisories changed the second round for some examinees. On August 28, 2026 PRC
+    cancelled the August 29–30 NLE in <strong>Region III</strong> (San Fernando, Pampanga and
+    Cabanatuan, Nueva Ecija testing centers) because of regionwide flooding and PAGASA heavy
+    rainfall warnings, and on August 30 it set the new Region III dates at
+    <strong>September 11–12, 2026</strong>. The same day PRC cancelled the <strong>second exam
+    day (August 30) in all Metro Manila testing centers</strong> and rescheduled it to
+    <strong>September 12, 2026</strong>. Examinees in every other testing center took the exam on
+    the original dates.
+  </p>
+  <p>
+    As of mid-September 2026 PRC has not published a new target release date for the results. The
+    resolution’s target stays {fmt(second.results_target)}; PRC normally releases one list of
+    passers for the whole round, so the September 12 sittings may push the actual release past
+    that target. Watch <a href="https://www.prc.gov.ph/" target="_blank" rel="noopener">prc.gov.ph</a>
+    for the announcement.
+  </p>
+
   <h2>How to Apply for the PNLE (LERIS)</h2>
   <ol>
     <li>Create or log in to your account on <strong>LERIS</strong>, PRC's Licensure Examination and Registration Information System, at <a href="https://online.prc.gov.ph/" target="_blank" rel="noopener">online.prc.gov.ph</a>.</li>
@@ -173,6 +210,25 @@ const faqs = [
     <li>Attend the <strong>oath-taking</strong> organised by PRC and the Board of Nursing (dates are announced with the results).</li>
     <li>Claim your professional ID and certificate of registration at the PRC office named in your appointment.</li>
   </ol>
+
+  <h2>PNLE 2027 Schedule: What Is Known So Far</h2>
+  <p>
+    PRC has <strong>not yet released the 2027 schedule</strong>. It publishes the whole
+    following-year calendar in one resolution, usually signed in late October and posted on
+    prc.gov.ph in mid-November — the 2026 schedule (Resolution No. 2113, s. 2025) was signed on
+    October 23, 2025 and posted on November 17, 2025 — so the PNLE 2027 schedule release date is
+    most likely November 2026. Until then, every 2027 date circulating is unofficial:
+  </p>
+  <ul>
+    <li><strong>February/August pattern:</strong> 2026 moved the PNLE from the old May/November cycle to February and August. Many review centers are enrolling for a “PNLE February 2027” round on the assumption that the pattern continues.</li>
+    <li><strong>Talk of reverting:</strong> there is unconfirmed discussion online that PRC could return the exam to May and November in 2027. PRC has not said so.</li>
+    <li><strong>Filing window:</strong> PRC opened 2026 filing about three months before each exam and closed it four to six weeks before, so a late-February 2027 round would file from roughly late November 2026 to mid-January 2027.</li>
+  </ul>
+  <p>
+    This page switches to the official 2027 dates the day PRC publishes them; the
+    <a href="/prc-board-exam-schedule/">PRC Board Exam Schedule</a> page does the same for every
+    other profession.
+  </p>
 
   <h2>Retakes</h2>
   <p>

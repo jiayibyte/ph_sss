@@ -2,8 +2,16 @@
 import ToolPageLayout from '../layouts/ToolPageLayout.astro';
 import ThirteenthMonthCalculator from '../islands/ThirteenthMonthCalculator';
 import laborRules from '../data/labor/2026.json';
+import { peso } from '../lib/format';
 
 const meta = laborRules.meta;
+const divisor = laborRules.thirteenth_month.divisor;
+const sampleSalary = 18000;
+const proratedRows = [1, 3, 4, 5, 6, 8, 9, 12].map((m) => ({
+  months: m,
+  pct: Math.round((m / divisor) * 1000) / 10,
+  amount: peso((sampleSalary * m) / divisor),
+}));
 const faqs = [
   {
     q: 'How do I compute my 13th month pay?',
@@ -24,6 +32,26 @@ const faqs = [
   {
     q: 'Does overtime pay count in the 13th month computation?',
     a: 'No. The base is basic salary only. Overtime pay, holiday premium, night differential, and cost-of-living allowances are excluded unless your company policy, practice, or collective bargaining agreement treats them as part of basic salary.',
+  },
+  {
+    q: 'Is 13th month pay always divided by 12?',
+    a: 'Yes. Under PD 851 the divisor is always 12, whether you worked twelve months or two. Working fewer months shrinks the total basic salary that goes into the formula — that is what makes the result pro-rated — but the divisor never changes to the number of months you worked.',
+  },
+  {
+    q: 'How do I compute 13th month pay for 6 months of work?',
+    a: 'Multiply your monthly basic salary by 6, then divide by 12 — in other words, half a month’s salary. At ₱20,000 per month: ₱20,000 × 6 = ₱120,000 ÷ 12 = ₱10,000. For 5 months it is ₱8,333.33, for 4 months ₱6,666.67, and for 3 months ₱5,000.',
+  },
+  {
+    q: 'How do absences affect my 13th month pay?',
+    a: 'Unpaid absences reduce the basic salary you actually earned, and only earned basic salary enters the formula. Each unpaid day removes one day’s basic pay from the total before it is divided by 12; paid leave you took counts as salary and is not deducted. Tardiness and undertime deductions work the same way.',
+  },
+  {
+    q: 'Is there a 14th month pay in the Philippines?',
+    a: 'Not by law. As of 2026 no statute requires a 14th month pay; bills to mandate it have been filed in Congress (including a Senate bill in August 2025) but none has been enacted. Employers that give a 14th month or Christmas bonus do so voluntarily, and it counts toward the same ₱90,000 tax-exempt ceiling for 13th month pay and other benefits.',
+  },
+  {
+    q: 'How is 13th month pay computed for daily-paid employees?',
+    a: 'The same way: total basic pay actually earned during the calendar year ÷ 12. For a daily-paid worker that total is days actually paid (days worked plus paid leave and paid holidays) × daily rate, excluding overtime, premium pay and allowances. Example: ₱600 a day × 280 paid days = ₱168,000 ÷ 12 = ₱14,000.',
   },
   {
     q: 'Paano kung tumaas ang sahod ko sa kalagitnaan ng taon?',
@@ -100,6 +128,48 @@ const faqs = [
     <p><strong>Example 4 — Salary increase in July:</strong> 6 months at ₱20,000 + 6 months at
     ₱25,000 = ₱270,000. 13th month pay = ₱270,000 ÷ 12 = <strong>₱22,500</strong>.</p>
   </div>
+
+  <h2>Prorated 13th Month Pay by Months Worked (3, 4, 5, 6 Months)</h2>
+  <p>
+    The divisor is always {divisor}, so a partial year gives you a <strong>fraction of one
+    month’s salary</strong> — not a bonus “per month worked”. Multiply your monthly basic salary
+    by the months you actually earned it, then divide by {divisor}. The calculator’s Simple mode
+    does exactly this when you change “months worked”.
+  </p>
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Months worked</th><th>Formula</th><th>Share of one month’s salary</th><th>Example at {peso(sampleSalary)}/month</th></tr>
+      </thead>
+      <tbody>
+        {proratedRows.map((r) => (
+          <tr><td>{r.months}</td><td>salary × {r.months} ÷ {divisor}</td><td>{r.pct}%</td><td>{r.amount}</td></tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Absences, Daily-Paid Workers and the “14th Month Pay”</h2>
+  <p>
+    <strong>Absences:</strong> only basic salary actually earned counts, so unpaid absences
+    reduce the total before it is divided by {divisor}. Two unpaid days in a month at ₱18,000
+    (₱692.31 a day if your company uses a 26-day divisor) lower that month’s basic salary to
+    ₱16,615.38 and the year’s 13th month pay by ₱115.38. Paid leave you actually took is salary
+    and still counts.
+  </p>
+  <p>
+    <strong>Daily-paid and piece-rate workers</strong> use the same rule: add the basic pay you
+    actually received for the calendar year — days paid × daily rate, excluding overtime and
+    premiums — and divide by {divisor}. There is no separate daily-rate formula.
+  </p>
+  <p>
+    <strong>14th month pay</strong> is not required by any Philippine law as of 2026. Bills to
+    mandate it are pending in Congress (the latest Senate version, filed in August 2025, would
+    require a 14th month by November 30 and move the 13th month to May 31), but none has been
+    enacted. Companies that grant a 14th month or a Christmas bonus do so by policy or CBA, and it
+    shares the same ₱{laborRules.thirteenth_month.tax_exempt_cap.toLocaleString('en-PH')} tax-exempt
+    cap with the 13th month pay and other benefits.
+  </p>
 
   <h2>Maternity Leave, Unpaid Leave and Other Gaps</h2>
   <p>

@@ -26,6 +26,18 @@ const faqs = [
     a: 'Statutory overtime pay is mandatory for covered employees who are required or permitted to work beyond 8 hours. However, managerial employees, field personnel and certain other categories are excluded from hours-of-work rules. Undertime on another day cannot be offset against overtime.',
   },
   {
+    q: 'How is overtime computed for monthly-paid employees?',
+    a: 'Convert the monthly salary to an hourly rate first — monthly × 12 ÷ factor ÷ 8, using 365 if you are paid for every day of the year, 313 for a six-day week or 261 for a five-day week — then apply the overtime rate for the day type: 125% on an ordinary day, 169% on a rest day or special day, 260% on a regular holiday. Example: ₱20,000 monthly on a 261 factor is ₱114.94 an hour, so one ordinary-day OT hour pays ₱143.68.',
+  },
+  {
+    q: 'Can undertime be offset by overtime?',
+    a: 'No. Article 88 of the Labor Code prohibits offsetting: undertime on one day cannot be deducted from overtime worked on another day, and overtime must still be paid at the premium rate even if you left early on a different day. Undertime may be deducted from pay at the ordinary hourly rate, but never netted against OT hours.',
+  },
+  {
+    q: 'How much is overtime pay per hour in the Philippines in 2026?',
+    a: 'There is no fixed peso amount — the rate is a percentage of your own hourly wage: 125% on an ordinary working day, 169% on a rest day or special non-working day, 195% on a special day that is also your rest day, 260% on a regular holiday and 338% on a regular holiday falling on your rest day. At ₱100 an hour, one OT hour pays ₱125, ₱169, ₱195, ₱260 or ₱338 respectively.',
+  },
+  {
     q: 'Magkano ang overtime pay per hour?',
     a: 'On an ordinary working day, overtime is paid at 125% of your hourly rate: at ₱100 per hour each OT hour is ₱125. The rate rises to 169% on a rest day or special day, 195% on a special day that is also your rest day, 260% on a regular holiday and 338% on a regular holiday that falls on your rest day.',
   },
@@ -100,6 +112,22 @@ const faqs = [
   <div class="example-card">
     <p><strong>Example 3 — 2 OT hours on a regular holiday, both at night, ₱100/hour:</strong> OT
     rate ₱260/hour; night differential adds ₱26/hour → (₱260 + ₱26) × 2 = <strong>₱572</strong>.</p>
+  </div>
+
+  <h2>Overtime Pay Computation From a Monthly Salary</h2>
+  <p>
+    Overtime is always paid per hour, so a monthly salary must first become an hourly rate:
+    <strong>hourly rate = monthly salary × 12 ÷ factor ÷ 8</strong>. The factor is the number of
+    paid days in your year — 365 if you are paid for every day including rest days and holidays
+    (most monthly-paid employees), 313 for a six-day week not paid on rest days, or 261 for a
+    five-day week. Then apply the day-type rate from the table above. Your HR’s factor governs;
+    the calculator’s monthly option uses 313.
+  </p>
+  <div class="example-card">
+    <p><strong>Example — ₱20,000 monthly, 2 OT hours on an ordinary day:</strong> with factor 261,
+    daily rate ₱919.54 and hourly ₱114.94 → OT ₱114.94 × 125% × 2 = <strong>₱287.36</strong>.
+    With factor 313: hourly ₱95.85 → <strong>₱239.62</strong>. With factor 365: hourly ₱82.19 →
+    <strong>₱205.48</strong>.</p>
   </div>
 
   <h2>Who This Applies To</h2>

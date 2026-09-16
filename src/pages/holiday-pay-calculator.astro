@@ -23,6 +23,10 @@ const nextCounts = next
   : '';
 const fmtShort = (d: string) =>
   new Date(d + 'T00:00:00').toLocaleDateString('en-PH', { weekday: 'short', month: 'short', day: 'numeric' });
+const regularList = holidays
+  .filter((h) => h.type === 'regular')
+  .map((h) => `${h.name.replace(/ \(.*\)$/, '')} (${fmtShort(h.date)})`)
+  .join(', ');
 const meta = holidaysJson.meta;
 const fmtLong = (d: string) =>
   new Date(d + 'T00:00:00').toLocaleDateString('en-PH', { month: 'long', day: 'numeric', year: 'numeric' });
@@ -61,6 +65,14 @@ const faqs = [
   {
     q: 'Is February 25 (EDSA anniversary) a paid holiday in 2026?',
     a: 'No. In 2026, the EDSA People Power Revolution Anniversary is a special working day — work proceeds normally with no premium pay.',
+  },
+  {
+    q: 'How is holiday pay computed for monthly-paid employees?',
+    a: 'Monthly-paid employees are presumed paid for every day of the year (the 365-day factor), so an unworked regular holiday is already inside the monthly salary — no extra pay is due. If they work on a regular holiday they receive an additional 100% of the daily rate (monthly × 12 ÷ 365), for 200% in total; on a special non-working day the addition is 30%. Daily-paid employees instead receive 100% of the daily wage for an unworked regular holiday, subject to the day-before rule.',
+  },
+  {
+    q: `Which dates are double pay in ${holidaysJson.year}?`,
+    a: `Every regular holiday is a double-pay day if you work it (200% of the daily wage): ${regularList}. Special non-working days pay 130%, not double.`,
   },
   {
     q: 'Magkano ang bayad kung papasok ako sa holiday?',
