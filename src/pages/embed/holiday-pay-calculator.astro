@@ -1,0 +1,9 @@
+---
+import EmbedLayout from '../../layouts/EmbedLayout.astro';
+import HolidayPayCalculator from '../../islands/HolidayPayCalculator';
+import { TOOL_PAGES } from '../../lib/pages';
+---
+
+<EmbedLayout page={TOOL_PAGES.holidayPay!}>
+  <HolidayPayCalculator client:load />
+</EmbedLayout>

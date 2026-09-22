@@ -1,0 +1,9 @@
+---
+import EmbedLayout from '../../layouts/EmbedLayout.astro';
+import FinalPayCalculator from '../../islands/FinalPayCalculator';
+import { TOOL_PAGES } from '../../lib/pages';
+---
+
+<EmbedLayout page={TOOL_PAGES.finalPay!}>
+  <FinalPayCalculator client:load />
+</EmbedLayout>

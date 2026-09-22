@@ -1,0 +1,9 @@
+---
+import EmbedLayout from '../../layouts/EmbedLayout.astro';
+import PagibigCalculator from '../../islands/PagibigCalculator';
+import { TOOL_PAGES } from '../../lib/pages';
+---
+
+<EmbedLayout page={TOOL_PAGES.pagibig!}>
+  <PagibigCalculator client:load />
+</EmbedLayout>

@@ -1,6 +1,6 @@
 import { existsSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { DATASETS, PAGE_DATA, datasetLastVerified, pageDates, pageSourceFile } from './lastmod.mjs';
+import { DATASETS, PAGE_DATA, PAGE_SOURCE, datasetLastVerified, pageDates, pageSourceFiles } from './lastmod.mjs';
 import { ALL_TOOLS } from './pages';
 
 const ISO = /^\d{4}-\d{2}-\d{2}$/;
@@ -12,8 +12,15 @@ describe('lastmod', () => {
 
   it('PAGE_DATA only references real pages and real datasets', () => {
     for (const [p, keys] of Object.entries(PAGE_DATA)) {
-      expect(existsSync(pageSourceFile(p)), `${p} → ${pageSourceFile(p)}`).toBe(true);
+      for (const f of pageSourceFiles(p)) expect(existsSync(f), `${p} → ${f}`).toBe(true);
       for (const k of keys) expect(DATASETS).toContain(k);
+    }
+  });
+
+  it('dynamic-route pages point at the template and the copy config', () => {
+    for (const [p, files] of Object.entries(PAGE_SOURCE)) {
+      expect(files.length).toBeGreaterThan(1);
+      for (const f of files) expect(existsSync(f), `${p} → ${f}`).toBe(true);
     }
   });
 

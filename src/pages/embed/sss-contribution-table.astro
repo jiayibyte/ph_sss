@@ -1,0 +1,9 @@
+---
+import EmbedLayout from '../../layouts/EmbedLayout.astro';
+import SssTable from '../../islands/SssTable';
+import { TOOL_PAGES } from '../../lib/pages';
+---
+
+<EmbedLayout page={TOOL_PAGES.sssTable!}>
+  <SssTable client:load />
+</EmbedLayout>

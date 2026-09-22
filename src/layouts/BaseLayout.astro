@@ -67,6 +67,15 @@ const webPageSchema = noindex
       dateModified: modified,
       isPartOf: { '@type': 'WebSite', name: SITE.name, url: siteHome },
       publisher: organizationRef,
+      /* The share card is also rendered in the body (ToolPageLayout), so it is the
+         one image Google can pick as the mobile result thumbnail. */
+      image: ogImage,
+      primaryImageOfPage: {
+        '@type': 'ImageObject',
+        contentUrl: ogImage,
+        width: 1200,
+        height: 630,
+      },
     };
 
 const websiteSchema = isHome
@@ -112,6 +121,8 @@ const navLinks = [
     <title>{title}</title>
     <meta name="description" content={description} />
     {!noindex && <link rel="canonical" href={canonical} />}
+    {/* Without this Google caps result thumbnails at the small "standard" size (75% of our impressions are mobile). */}
+    {!noindex && <meta name="robots" content="max-image-preview:large" />}
     {noindex && <meta name="robots" content="noindex, follow" />}
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />
@@ -133,15 +144,17 @@ const navLinks = [
     <meta name="twitter:image" content={ogImage} />
     <style set:html={`:root{--accent:${accent};--accent-strong:${accentStrong};--accent-soft:${accentSoft}}`}
     ></style>
-    {allSchema.map((s) => <script type="application/ld+json" set:html={JSON.stringify(s)} />)}
+    {allSchema.map((s) => <script is:inline type="application/ld+json" set:html={JSON.stringify(s)} />)}
     {
       SITE.ga4Id && (
         <>
           <script
+            is:inline
             type="text/partytown"
             src={`https://www.googletagmanager.com/gtag/js?id=${SITE.ga4Id}`}
           />
           <script
+            is:inline
             type="text/partytown"
             set:html={`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)};gtag('js',new Date());gtag('config','${SITE.ga4Id}');`}
           />

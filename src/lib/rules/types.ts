@@ -160,6 +160,8 @@ export interface PrcExamEntry {
   application_deadline: string | null;
   /** PRC target release date for results (target, not a guarantee). */
   results_target: string | null;
+  /** Actual release date once PRC publishes the results — pages show it in place of the target. */
+  results_released?: string | null;
   note?: string;
 }
 

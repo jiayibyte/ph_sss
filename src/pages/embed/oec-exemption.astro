@@ -1,0 +1,9 @@
+---
+import EmbedLayout from '../../layouts/EmbedLayout.astro';
+import OecExemptionChecker from '../../islands/OecExemptionChecker';
+import { TOOL_PAGES } from '../../lib/pages';
+---
+
+<EmbedLayout page={TOOL_PAGES.oec!}>
+  <OecExemptionChecker client:load />
+</EmbedLayout>

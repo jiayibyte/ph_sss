@@ -1,0 +1,9 @@
+---
+import EmbedLayout from '../../layouts/EmbedLayout.astro';
+import SssCalculator from '../../islands/SssCalculator';
+import { TOOL_PAGES } from '../../lib/pages';
+---
+
+<EmbedLayout page={TOOL_PAGES.sssCalculator!}>
+  <SssCalculator client:load />
+</EmbedLayout>

@@ -1,0 +1,9 @@
+---
+import EmbedLayout from '../../layouts/EmbedLayout.astro';
+import OvertimeCalculator from '../../islands/OvertimeCalculator';
+import { TOOL_PAGES } from '../../lib/pages';
+---
+
+<EmbedLayout page={TOOL_PAGES.overtime!}>
+  <OvertimeCalculator client:load />
+</EmbedLayout>

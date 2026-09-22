@@ -26,6 +26,8 @@ interface Props {
   appCategory?: string;
   /** Extra JSON-LD (e.g. Dataset for PRC). */
   extraSchema?: Record<string, unknown>[];
+  /** Offer an <iframe> embed of the calculator (needs a matching /embed/<slug>/ page). Defaults to isApp. */
+  embeddable?: boolean;
 }
 
 const {
@@ -38,6 +40,7 @@ const {
   isApp = true,
   appCategory = 'FinanceApplication',
   extraSchema = [],
+  embeddable = isApp,
 } = Astro.props;
 
 const { published, modified } = pageDates(pagePath);
@@ -54,6 +57,13 @@ const updatedLabel = new Date(modified + 'T00:00:00').toLocaleDateString('en-PH'
 const ogSlug = pagePath.replace(/\//g, '');
 const ogPath = `/og/${ogSlug}.png`;
 const ogImage = existsSync(path.join(process.cwd(), 'public', ogPath)) ? ogPath : undefined;
+
+/* Embed snippet: the <a> line is the real backlink; the iframe alone passes
+   almost nothing. Fixed height with max-width so it degrades on phones. */
+const embedUrl = `${SITE.url}/embed/${ogSlug}/`;
+const embedSnippet = embeddable
+  ? `<iframe src="${embedUrl}" title="${h1} – AyTool" width="100%" height="760" style="max-width:720px;border:0" loading="lazy"></iframe>\n<p><a href="${SITE.url}${pagePath}">${h1}</a> by AyTool</p>`
+  : null;
 
 const schema: Record<string, unknown>[] = [...extraSchema];
 if (isApp) {
@@ -118,9 +128,43 @@ const relatedPages: PageRef[] = related.map((k) => TOOL_PAGES[k]);
       <slot name="calculator" />
     </section>
 
+    {
+      embedSnippet && (
+        <details class="mt-4 rounded-lg border border-line bg-surface px-4 py-3 text-sm">
+          <summary class="cursor-pointer font-semibold text-ink">Embed this calculator on your website</summary>
+          <p class="mt-2 text-ink-soft">
+            Free for any site — HR blogs, review centers, cooperatives. Paste this HTML where the
+            calculator should appear; it keeps following the official rates on its own.
+          </p>
+          <pre class="mt-2 overflow-x-auto rounded-md bg-surface-soft p-3 text-xs leading-relaxed"><code>{embedSnippet}</code></pre>
+        </details>
+      )
+    }
+
     <div class="content-prose mt-4">
       <slot />
     </div>
+
+    {
+      ogImage && (
+        <figure class="mt-5 rounded-lg border border-line bg-surface-soft p-3">
+          <img
+            src={ogImage}
+            alt={`${h1} — AyTool summary card`}
+            width="1200"
+            height="630"
+            loading="lazy"
+            decoding="async"
+            class="w-full rounded-md border border-line"
+          />
+          <figcaption class="mt-2 flex flex-wrap items-center justify-between gap-2 text-xs text-ink-soft">
+            <span>Save or share this card — the page address is printed on it.</span>
+            <ShareButtons path={pagePath} title={title} />
+          </figcaption>
+        </figure>
+      )
+    }
+
 
     {
       faqs.length > 0 && (

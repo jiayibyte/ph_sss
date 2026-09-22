@@ -18,7 +18,7 @@
 | **9 月 5 日** | 次年节假日 Proclamation | Malacañang 通常 9–11 月发布次年节假日总 Proclamation（2026 年的 Proc. 1006 是 2025-09-03 签署，2027 年的 Proc. 1427 是 2026-09-08 签署、09-11 公布）；发布即录入 `holidays/<次年>.json`（含 `proclamation` 块，Eid 先放 `pending`），/philippine-holidays/ 页会自动切到最新年份；**若 9 月没查到，10 月 15 日复查一次** | PCO / Official Gazette |
 | **10 月 12 日** | 13th month 页大促前核验 | 全年最大流量脉冲（11–12 月）前：核对 DOLE 年度 Labor Advisory（13th month 指引每年 10–11 月重申）、补充 FAQ、更新 labor JSON `last_verified`（页面 `Updated` 自动跟随）、重点检查计算器与示例；这也是发 FB 图卡的最佳窗口 | dole.gov.ph / bwc.dole.gov.ph |
 | **10 月 20 日** | Undas + 年末前节日簇 | All Saints/Souls（11/1–2）、Bonifacio（11/30）前刷新 holiday 页；FB 图卡 | — |
-| **11 月 15 日** | PRC 次年考试日历 | PRC Resolution 通常 10 月下旬签署、11 月中挂网（2026 年的 Res. 2113 是 10/23 签、11/17 发布）；录入 `prc/<次年>.json`，页面 Title 年份 +1；**同时清掉 09-16 加的时效内容**：nursing 页「August 2026 PNLE Rescheduled」「PNLE 2027 Schedule: What Is Known So Far」两段及 4 条对应 FAQ（reschedule / 2027 release date / Feb 2027 / requirements 保留）、首屏 Update 句、PRC 页「Rescheduled exams」bullet、`prc/2026.json` PNLE 2nd exam 的 `note` | prc.gov.ph |
+| **11 月 15 日** | PRC 次年考试日历 | PRC Resolution 通常 10 月下旬签署、11 月中挂网（2026 年的 Res. 2113 是 10/23 签、11/17 发布）；录入 `prc/<次年>.json`，页面 Title 年份 +1（PRC 页、nursing 页，以及 `src/lib/prcProfessionPages.ts` 里 10 个专业页的 title/h1；psychometrician 页「Was the August 2026 exam rescheduled」FAQ 与 `prc/2026.json` 两条 psychology 行的改期 note 一并清掉；`src/lib/pages.ts` 的 label 同步）；`/data/prc/<年>/*.ics` 与 EducationEvent 结构化数据都从 JSON 自动生成，只需把 `src/pages/data/prc/2026/[slug].ics.ts` 复制成次年目录（或改成按年参数）；**同时清掉 09-16 / 09-22 加的时效内容**：nursing 页首屏「Both 2026 rounds are over → next PNLE is 2027」段改回「两轮」句、description 改回、「PNLE 2027 Schedule: What Is Known So Far」「August 2026 PNLE: Rescheduled Sittings and Results」两段、Results 段里的 09-18 放榜句与 10-13 注册句、FAQ（When is the next PNLE / Kailan ang susunod na PNLE / results released / reschedule / 2027 release date / Feb 2027；requirements 保留）、llms.txt nursing 行、PRC 页「Rescheduled exams」bullet；`prc/2026.json` 的 `note` 与 `results_released` 随 2027 JSON 自然退役，2027 各场放榜后按同样方式补 `results_released` | prc.gov.ph |
 | **12 月 15 日** | 圣诞季节日簇 | Christmas Eve/Day（12/24–25）、Rizal（12/30）、年末（12/31）前刷新 holiday 页；FB 图卡（"double pay this Christmas" 是天然爆款选题） | — |
 
 ## 二、每月固定节点
@@ -47,8 +47,8 @@
 |---|---|
 | 2026-08-20 | ⬅ 最近的一个：8/21 Ninoy + 8/31 National Heroes 节前刷新 + FB 图卡 |
 | ~~2026-09-05~~ | ~~查 2027 节假日 Proclamation~~ ✅ Proc. 1427 已于 09-08 签署，09-14 录入 `holidays/2027.json` + 上线 /philippine-holidays/ |
-| 2026-09-18 | PNLE 8 月轮放榜目标日：PRC 出结果后，把 nursing 页 reschedule 段与 FAQ 里「As of mid-September 2026 PRC has not published a new target release date」改成实际放榜日期并部署 |
-| 2026-10-12 | 13th month 页核验（11–12 月脉冲前） |
+| ~~2026-09-18~~ | ~~PNLE 8 月轮放榜目标日：PRC 出结果后改 nursing 页时效句并部署~~ ✅ PRC 09-18 如期放榜（28,652/37,359，76.69%，21 人暂扣，注册 10-13 起线上办）；09-22 改完：`prc/2026.json` 加 `results_released`、首屏改成「两轮已结束 → 下一次是 2027」、2027 段上移、新增 next-PNLE FAQ（英/Taglish） |
+| 2026-10-12 | 13th month 页核验（11–12 月脉冲前）；顺带看 GSC 里 PRC 页有没有出 Event 富结果（09-22 起实验，60 天窗口）、移动端缩略图是否出现（09-22 起正文放 share card + max-image-preview:large） |
 | 2026-10-20 | Undas + Bonifacio 节前刷新 |
 | 2026-11-15 | PRC 2027 日历（Resolution 预计 10 月底签） |
 | 2026-11-18 | D90 Go/Pivot/Stop 决策 |

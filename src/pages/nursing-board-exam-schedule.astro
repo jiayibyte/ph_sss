@@ -2,8 +2,10 @@
 import ToolPageLayout from '../layouts/ToolPageLayout.astro';
 import prcRules from '../data/prc/2026.json';
 import { PRC_PROFESSIONS, resolveGroup, scheduleSentence } from '../lib/prcProfessions';
-import type { PrcExamEntry } from '../lib/rules/types';
+import type { PrcExamEntry, PrcRules } from '../lib/rules/types';
 import { SITE } from '../../site.config';
+import { educationEvents } from '../lib/prcCalendar';
+import pnleHistory from '../data/prc/pnle-history.json';
 
 const meta = prcRules.meta;
 const byName = new Map((prcRules.exams as PrcExamEntry[]).map((e) => [e.exam, e]));
@@ -22,6 +24,41 @@ const fmt = (d: string | null | undefined): string =>
         year: 'numeric',
       })
     : 'to be announced';
+
+const nextYear = prcRules.year + 1;
+/* PRC published the Aug–Sep 2026 results on 2026-09-18; the date lives in the
+   rule JSON (`results_released`) so this page and the PRC table cannot disagree.
+   The status copy below is written for "both rounds done" — the guard makes the
+   build fail loudly when the data rolls over to a year whose rounds are ahead. */
+if (!second.results_released) {
+  throw new Error(
+    'nursing page copy assumes the second PNLE round has results_released set in src/data/prc/<year>.json; ' +
+      'rewrite the status paragraph and FAQs before rolling over to a year whose rounds are still ahead.',
+  );
+}
+const released = fmt(second.results_released);
+const firstReleased = fmt(first.results_released ?? first.results_target);
+
+/* PNLE results history (src/data/prc/pnle-history.json — every row from a PRC press release). */
+const historyRounds = pnleHistory.rounds;
+const heldRounds = historyRounds.filter((r) => r.first_date !== null);
+const pct = (n: number | null) => (n === null ? '—' : `${n.toFixed(2)}%`);
+const num = (n: number | null) => (n === null ? '—' : n.toLocaleString('en-PH'));
+const rates = heldRounds.map((r) => r.pass_rate as number);
+const lowest = heldRounds[rates.indexOf(Math.min(...rates))]!;
+const highest = heldRounds[rates.indexOf(Math.max(...rates))]!;
+const workingDays = heldRounds.map((r) => r.working_days_to_results as number);
+const recent = heldRounds.slice(-4).reverse();
+const historyFrom = heldRounds[0]!.round.split(' ').at(-1);
+const historyTo = heldRounds.at(-1)!.round.split(' ').at(-1);
+/* EducationEvent markup for any upcoming round (none while both 2026 rounds are past). */
+const eventSchema = educationEvents(
+  prcRules as PrcRules,
+  rounds,
+  `${SITE.url}/nursing-board-exam-schedule/`,
+  new Date().toISOString().slice(0, 10),
+);
+const description = `Both ${prcRules.year} PNLE rounds are done (results released ${released}). Next PNLE: ${nextYear} — PRC has not released the dates yet, expected November ${prcRules.year}.`;
 
 const datasetSchema = {
   '@context': 'https://schema.org',
@@ -47,12 +84,16 @@ const datasetSchema = {
 
 const faqs = [
   {
-    q: 'When is the nursing board exam in 2026?',
-    a: `The Philippine Nurse Licensure Examination (PNLE) has two rounds in 2026: ${scheduleSentence(rounds)} Both rounds run for two days each.`,
+    q: 'When is the next PNLE?',
+    a: `There is no PNLE round left in ${prcRules.year}: both rounds (${first.dates_display} and ${second.dates_display}) have been held and the results are out. The next PNLE is in ${nextYear}. PRC has not released the ${nextYear} schedule — it normally publishes the whole following-year calendar on prc.gov.ph in mid-November, so expect the dates around November ${prcRules.year}. If the February/August pattern introduced in ${prcRules.year} continues, the next round would fall in late February ${nextYear}, but that is unconfirmed until PRC posts it.`,
   },
   {
-    q: 'When will the PNLE August 2026 results be released?',
-    a: `PRC's target release date for the ${second.dates_display} exam is ${fmt(second.results_target)}. That is the target printed in Resolution No. 2113, s. 2025 — not a guarantee; the actual release is announced on prc.gov.ph.`,
+    q: 'When is the nursing board exam in 2026?',
+    a: `The Philippine Nurse Licensure Examination (PNLE) had two rounds in 2026: ${scheduleSentence(rounds)} Both rounds ran for two days each and have now been held.`,
+  },
+  {
+    q: 'When were the PNLE August 2026 results released?',
+    a: `On ${released} — the target date printed in Resolution No. 2113, s. 2025, and five working days after the rescheduled September 11–12 sittings. 28,652 of 37,359 examinees passed (76.69%); 21 results were withheld pending PRC's determination of the examinees' liabilities. The list of passers is on prc.gov.ph, and per-subject ratings are in LERIS once PRC opens verification for the exam.`,
   },
   {
     q: 'How do I apply for the PNLE?',
@@ -60,7 +101,7 @@ const faqs = [
   },
   {
     q: 'How many times a year is the PNLE given?',
-    a: `Twice. In ${prcRules.year} the rounds are ${first.dates_display} and ${second.dates_display}, so a candidate who misses the first filing window can target the second round.`,
+    a: `Twice. In ${prcRules.year} the rounds were ${first.dates_display} and ${second.dates_display}, so a candidate who misses the first filing window can target the second round.`,
   },
   {
     q: 'What happens if I fail the PNLE three times?',
@@ -68,7 +109,7 @@ const faqs = [
   },
   {
     q: 'Was the August 2026 PNLE rescheduled?',
-    a: 'Partly. PRC cancelled the August 29–30, 2026 NLE in Region III (San Fernando, Pampanga and Cabanatuan, Nueva Ecija testing centers) because of regionwide flooding and moved it to September 11–12, 2026, and cancelled the second exam day (August 30) in all Metro Manila testing centers because of PAGASA heavy-rainfall warnings, moving it to September 12, 2026. Other testing centers took the exam as scheduled. As of mid-September 2026 PRC had not announced a new results date; the resolution’s target remains September 18, 2026.',
+    a: `Partly. PRC cancelled the August 29–30, 2026 NLE in Region III (San Fernando, Pampanga and Cabanatuan, Nueva Ecija testing centers) because of regionwide flooding and moved it to September 11–12, 2026, and cancelled the second exam day (August 30) in all Metro Manila testing centers because of PAGASA heavy-rainfall warnings, moving it to September 12, 2026. Other testing centers took the exam as scheduled. The results for the whole round were still released on the original target date, ${released}.`,
   },
   {
     q: 'When is the PNLE 2027 schedule release date?',
@@ -76,7 +117,19 @@ const faqs = [
   },
   {
     q: 'Is there a February 2027 PNLE?',
-    a: 'Not confirmed. The 2026 calendar moved the PNLE to February and August, and review centers are enrolling for a February 2027 round on that assumption, but PRC has not released the 2027 resolution, and there is unconfirmed talk online that the exam could return to the old May/November cycle. Treat any 2027 date as unofficial until it appears on prc.gov.ph.',
+    a: 'Not confirmed. The 2026 calendar moved the PNLE to February and August, and review centers are enrolling for a February 2027 round on that assumption, but PRC has not released the 2027 resolution. Treat any 2027 date as unofficial until it appears on prc.gov.ph.',
+  },
+  {
+    q: 'What months is the PNLE given?',
+    a: `From ${prcRules.year} the PNLE is given in February and August (PRC Resolution No. 2113, s. 2025 — the resolution states no reason for the change). From 2019 to 2025 it was given in May and November, with two exceptions: both 2020 rounds were postponed for COVID-19 and never held, and the 2021 rounds were July and November. The ${nextYear} months are not yet official.`,
+  },
+  {
+    q: 'What is the PNLE passing rate?',
+    a: `Recent rounds: ${recent.map((r) => `${r.round} ${pct(r.pass_rate)} (${num(r.passers)} of ${num(r.examinees)})`).join('; ')}. Across ${historyFrom}–${historyTo} the pass rate ranged from ${pct(lowest.pass_rate)} (${lowest.round}) to ${pct(highest.pass_rate)} (${highest.round}); the larger November cohorts have posted the higher rates. Counts are from PRC's press releases.`,
+  },
+  {
+    q: 'How many days after the exam does PRC release PNLE results?',
+    a: `Between ${Math.min(...workingDays)} and ${Math.max(...workingDays)} working days over ${historyFrom}–${historyTo}. Both ${prcRules.year} rounds came out in five working days: ${first.dates_display} on ${firstReleased} and ${second.dates_display} on ${released}. The resolution's printed target is an upper bound, not the usual timing.`,
   },
   {
     q: 'What are the requirements for the nursing board exam?',
@@ -88,35 +141,40 @@ const faqs = [
   },
   {
     q: 'Kailan ang PNLE 2026?',
-    a: `The Philippine Nurse Licensure Examination has two rounds in ${prcRules.year}: ${scheduleSentence(rounds)} Each round is a two-day exam.`,
+    a: `The Philippine Nurse Licensure Examination had two rounds in ${prcRules.year}: ${scheduleSentence(rounds)} Each round was a two-day exam, and both are done.`,
+  },
+  {
+    q: 'Kailan ang susunod na PNLE?',
+    a: `Wala nang PNLE round sa ${prcRules.year} — tapos na ang ${first.dates_display} at ${second.dates_display} exams at labas na ang results. Ang susunod na PNLE ay sa ${nextYear}. Hindi pa inilabas ng PRC ang ${nextYear} schedule; karaniwang mid-November ito ipo-post sa prc.gov.ph. Kung magpapatuloy ang February/August pattern, late February ${nextYear} ang susunod na round, pero unofficial pa ito.`,
   },
   {
     q: 'Kailan lalabas ang result ng PNLE 2026?',
-    a: `PRC targets ${fmt(first.results_target)} for the ${first.dates_display} exam and ${fmt(second.results_target)} for the ${second.dates_display} exam (Resolution No. 2113, s. 2025). These are targets, not guarantees — the actual release is announced on prc.gov.ph.`,
+    a: `Lumabas na. PRC released the ${second.dates_display} exam results on ${released}, its target date — 28,652 of 37,359 passed (76.69%). The ${first.dates_display} round's results came out on ${firstReleased} — 3,611 of 8,162 passed (44.24%). Check prc.gov.ph for the official list and LERIS for your ratings.`,
   },
 ];
 ---
 
 <ToolPageLayout
   title="PNLE 2026 Schedule – Nursing Board Exam Dates & Results Date"
-  description={`PNLE ${prcRules.year} schedule: ${first.dates_display} and ${second.dates_display}, with application deadlines, LERIS filing steps and PRC's target result dates.`}
+  description={description}
   path="/nursing-board-exam-schedule/"
   h1="Nursing Board Exam Schedule 2026 (PNLE)"
   faqs={faqs}
-  related={['prc', 'takeHome', 'thirteenth', 'sssCalculator']}
+  related={['prc', 'letSchedule', 'criminologySchedule', 'physicianSchedule']}
   isApp={false}
-  extraSchema={[datasetSchema]}
+  extraSchema={[datasetSchema, ...eventSchema]}
 >
   <Fragment slot="answer">
     <p>
-      The <strong>Philippine Nurse Licensure Examination (PNLE)</strong> is given twice in
-      {prcRules.year}: <strong>{first.dates_display}</strong> (filing {fmt(first.application_start)}
-      to {fmt(first.application_deadline)}) and <strong>{second.dates_display}</strong> (filing
-      {fmt(second.application_start)} to {fmt(second.application_deadline)}), per PRC Resolution
-      No. 2113, s. 2025. Target result dates: {fmt(first.results_target)} and
-      {fmt(second.results_target)}. <strong>Update:</strong> the August round was partly
-      rescheduled — Region III moved to September 11–12 and Metro Manila’s second exam day to
-      September 12, 2026 because of flooding (details below).
+      <strong>Both {prcRules.year} rounds of the Philippine Nurse Licensure Examination (PNLE) are
+      over.</strong> The {first.dates_display} round is done, and the {second.dates_display} round
+      — with make-up sittings on September 11–12 for Region III and Metro Manila — had its results
+      released on <strong>{released}</strong>: 28,652 of 37,359 examinees passed (76.69%).
+      <strong>The next PNLE is in {nextYear}.</strong> PRC has not published the {nextYear}
+      schedule; it normally posts the whole calendar in mid-November, so expect the dates around
+      November {prcRules.year} (<a href="#pnle-2027">what is known so far</a>). The {prcRules.year}
+      schedule below, per PRC Resolution No. 2113, s. 2025, stays as the record of this year’s
+      rounds.
     </p>
   </Fragment>
 
@@ -128,7 +186,7 @@ const faqs = [
           <th>Round</th>
           <th>Exam dates</th>
           <th>Application window</th>
-          <th>Results (target)</th>
+          <th>Results</th>
         </tr>
       </thead>
       <tbody>
@@ -142,7 +200,11 @@ const faqs = [
               <td>
                 {fmt(r.application_start)} – {fmt(r.application_deadline)}
               </td>
-              <td>{fmt(r.results_target)}</td>
+              <td>
+                {r.results_released
+                  ? `Released ${fmt(r.results_released)}`
+                  : `${fmt(r.results_target)} (target)`}
+              </td>
             </tr>
           ))
         }
@@ -156,7 +218,25 @@ const faqs = [
     targets.
   </p>
 
-  <h2>August 2026 PNLE Rescheduled: Region III and Metro Manila</h2>
+  <h2 id="pnle-2027">PNLE 2027 Schedule: What Is Known So Far</h2>
+  <p>
+    PRC has <strong>not yet released the 2027 schedule</strong>. It publishes the whole
+    following-year calendar in one resolution, usually signed in late October and posted on
+    prc.gov.ph in mid-November — the 2026 schedule (Resolution No. 2113, s. 2025) was signed on
+    October 23, 2025 and posted on November 17, 2025 — so the PNLE 2027 schedule release date is
+    most likely November 2026. Until then, every 2027 date circulating is unofficial:
+  </p>
+  <ul>
+    <li><strong>February/August pattern:</strong> 2026 moved the PNLE from the old May/November cycle to February and August. Review centers are enrolling for a “PNLE February 2027” round on the assumption that the pattern continues; PRC has not confirmed it.</li>
+    <li><strong>Filing window:</strong> PRC opened 2026 filing about three months before each exam and closed it four to six weeks before, so a late-February 2027 round would file from roughly late November 2026 to mid-January 2027.</li>
+  </ul>
+  <p>
+    This page switches to the official 2027 dates the day PRC publishes them; the
+    <a href="/prc-board-exam-schedule/">PRC Board Exam Schedule</a> page does the same for every
+    other profession.
+  </p>
+
+  <h2>August 2026 PNLE: Rescheduled Sittings and Results</h2>
   <p>
     Two PRC advisories changed the second round for some examinees. On August 28, 2026 PRC
     cancelled the August 29–30 NLE in <strong>Region III</strong> (San Fernando, Pampanga and
@@ -168,11 +248,14 @@ const faqs = [
     the original dates.
   </p>
   <p>
-    As of mid-September 2026 PRC has not published a new target release date for the results. The
-    resolution’s target stays {fmt(second.results_target)}; PRC normally releases one list of
-    passers for the whole round, so the September 12 sittings may push the actual release past
-    that target. Watch <a href="https://www.prc.gov.ph/" target="_blank" rel="noopener">prc.gov.ph</a>
-    for the announcement.
+    The make-up sittings did not delay the results. PRC released the
+    <strong>August–September 2026 NLE results on {released}</strong> — the target date printed in
+    the resolution, five working days after the last sitting: <strong>28,652 of 37,359 examinees
+    passed (76.69%)</strong> across 26 testing centers, with 21 results withheld pending PRC’s
+    determination of the examinees’ liabilities. Online registration for the new nurses’
+    Professional ID and Certificate of Registration opens on <strong>October 13, 2026</strong>
+    through LERIS; the oath-taking date and venue are still to be announced on
+    <a href="https://www.prc.gov.ph/" target="_blank" rel="noopener">prc.gov.ph</a>.
   </p>
 
   <h2>How to Apply for the PNLE (LERIS)</h2>
@@ -186,11 +269,13 @@ const faqs = [
 
   <h2>PNLE Results {prcRules.year}: When and Where They Come Out</h2>
   <p>
-    PRC's target release dates are <strong>{fmt(first.results_target)}</strong> for the
+    PRC's target release dates were <strong>{fmt(first.results_target)}</strong> for the
     {first.dates_display} exam and <strong>{fmt(second.results_target)}</strong> for the
-    {second.dates_display} exam. These are the targets printed in the resolution — the actual
-    release can land a few days either side and is announced only by PRC. AyTool does not host
-    exam results or lists of passers.
+    {second.dates_display} exam. Both came out in five working days: the February round on
+    <strong>{firstReleased}</strong> (3,611 of 8,162 passed, 44.24%) and the August–September round
+    on <strong>{released}</strong> (28,652 of 37,359 passed, 76.69%). Targets are printed in the
+    resolution as an upper bound — the actual release is announced only by PRC. AyTool does not
+    host exam results or lists of passers.
   </p>
   <h3>Where the results are published</h3>
   <ol>
@@ -206,28 +291,64 @@ const faqs = [
   </p>
   <h3>After you pass</h3>
   <ol>
-    <li>Watch for PRC's announcement of the <strong>online initial registration</strong> schedule for the new nurses; book your appointment through LERIS.</li>
+    <li>Register through LERIS once PRC opens <strong>online initial registration</strong> for the new nurses — for the August–September 2026 passers it opens on October 13, 2026; bring the system-generated registration form and a valid government ID to your appointment.</li>
     <li>Attend the <strong>oath-taking</strong> organised by PRC and the Board of Nursing (dates are announced with the results).</li>
     <li>Claim your professional ID and certificate of registration at the PRC office named in your appointment.</li>
   </ol>
 
-  <h2>PNLE 2027 Schedule: What Is Known So Far</h2>
+  <h2>PNLE Results History {historyFrom}–{historyTo}: Pass Rates, Exam Months and Release Speed</h2>
   <p>
-    PRC has <strong>not yet released the 2027 schedule</strong>. It publishes the whole
-    following-year calendar in one resolution, usually signed in late October and posted on
-    prc.gov.ph in mid-November — the 2026 schedule (Resolution No. 2113, s. 2025) was signed on
-    October 23, 2025 and posted on November 17, 2025 — so the PNLE 2027 schedule release date is
-    most likely November 2026. Until then, every 2027 date circulating is unofficial:
+    Every row below is taken from PRC’s press release for that round. The PNLE was a May/November
+    exam through 2025 — except 2020, when both rounds were postponed for COVID-19 and never held,
+    and 2021, when the first round moved to July — and became a February/August exam in
+    {prcRules.year} under Resolution No. 2113, s. 2025. Pass rates have ranged from
+    <strong>{pct(lowest.pass_rate)}</strong> ({lowest.round}) to <strong>{pct(highest.pass_rate)}</strong>
+    ({highest.round}); the larger November cohorts have posted the higher rates. Results have come
+    out {Math.min(...workingDays)} to {Math.max(...workingDays)} working days after the exam, and
+    both {prcRules.year} rounds took five.
   </p>
-  <ul>
-    <li><strong>February/August pattern:</strong> 2026 moved the PNLE from the old May/November cycle to February and August. Many review centers are enrolling for a “PNLE February 2027” round on the assumption that the pattern continues.</li>
-    <li><strong>Talk of reverting:</strong> there is unconfirmed discussion online that PRC could return the exam to May and November in 2027. PRC has not said so.</li>
-    <li><strong>Filing window:</strong> PRC opened 2026 filing about three months before each exam and closed it four to six weeks before, so a late-February 2027 round would file from roughly late November 2026 to mid-January 2027.</li>
-  </ul>
-  <p>
-    This page switches to the official 2027 dates the day PRC publishes them; the
-    <a href="/prc-board-exam-schedule/">PRC Board Exam Schedule</a> page does the same for every
-    other profession.
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>Round</th>
+          <th>Exam dates</th>
+          <th>Results released</th>
+          <th>Examinees</th>
+          <th>Passers</th>
+          <th>Pass rate</th>
+        </tr>
+      </thead>
+      <tbody>
+        {
+          historyRounds.map((r) => (
+            <tr>
+              <td>
+                <a href={r.source_url} target="_blank" rel="noopener">{r.round}</a>
+                {r.verified_via === 'archive' && <sup title="PRC page now offline; text confirmed from the Internet Archive">*</sup>}
+              </td>
+              <td>
+                {r.exam_dates_display}
+                {r.note && <span class="text-ink-soft"> — {r.note}</span>}
+              </td>
+              <td>
+                {r.results_released
+                  ? `${fmt(r.results_released)} (${r.working_days_to_results} working days)`
+                  : '—'}
+              </td>
+              <td>{num(r.examinees)}</td>
+              <td>{num(r.passers)}</td>
+              <td>{r.pass_rate === null ? '—' : <strong>{pct(r.pass_rate)}</strong>}</td>
+            </tr>
+          ))
+        }
+      </tbody>
+    </table>
+  </div>
+  <p class="text-sm text-ink-soft">
+    Counts are as printed by PRC; the pass rate is passers ÷ examinees. * PRC’s page for that round
+    is no longer online; the text was confirmed from the Internet Archive’s copy of the same URL.
+    Last verified {fmt(pnleHistory.meta.last_verified)}.
   </p>
 
   <h2>Retakes</h2>

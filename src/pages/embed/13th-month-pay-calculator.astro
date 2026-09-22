@@ -1,0 +1,9 @@
+---
+import EmbedLayout from '../../layouts/EmbedLayout.astro';
+import ThirteenthMonthCalculator from '../../islands/ThirteenthMonthCalculator';
+import { TOOL_PAGES } from '../../lib/pages';
+---
+
+<EmbedLayout page={TOOL_PAGES.thirteenth!}>
+  <ThirteenthMonthCalculator client:load />
+</EmbedLayout>

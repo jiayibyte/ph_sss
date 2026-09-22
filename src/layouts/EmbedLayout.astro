@@ -1,0 +1,44 @@
+---
+/**
+ * Bare layout for /embed/<tool>/ — the calculator island plus a credit line,
+ * meant to be iframed by other sites (nginx allows frame-ancestors * on /embed/
+ * only). noindex: the canonical content lives on the tool page. No analytics,
+ * no canonical, no og:url, no JSON-LD (scripts/audit-dist.mjs enforces the
+ * noindex rules).
+ */
+import '../styles/global.css';
+import { SITE } from '../../site.config';
+import type { PageRef } from '../lib/pages';
+
+interface Props {
+  page: PageRef;
+}
+const { page } = Astro.props;
+const { accent, accentStrong, accentSoft } = SITE.palette;
+const fullUrl = `${SITE.url}${page.href}`;
+---
+
+<!doctype html>
+<html lang="en-PH">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{page.label} – AyTool embed</title>
+    <meta name="robots" content="noindex" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <style set:html={`:root{--accent:${accent};--accent-strong:${accentStrong};--accent-soft:${accentSoft}}`}
+    ></style>
+  </head>
+  <body>
+    <main class="mx-auto max-w-content p-3">
+      <slot />
+      <p class="mt-3 text-xs leading-relaxed text-ink-soft">
+        Powered by
+        <a href={fullUrl} target="_top" rel="noopener" class="font-medium text-accent hover:underline"
+          >AyTool — {page.label}</a
+        >. Independent estimates from the official rules; not affiliated with any government agency.
+        Formula, sources and FAQs are on the full page.
+      </p>
+    </main>
+  </body>
+</html>

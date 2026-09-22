@@ -45,6 +45,7 @@ export const PRC_PROFESSIONS: ProfessionGroup[] = [
       'Professional Teachers (LET / BLEPT, 2nd exam)',
     ],
     aka: ['LET', 'BLEPT', 'licensure exam for teachers', 'teachers board exam'],
+    href: '/let-board-exam-schedule/',
   },
   {
     id: 'criminology',
@@ -52,6 +53,7 @@ export const PRC_PROFESSIONS: ProfessionGroup[] = [
     navLabel: 'Criminology',
     exams: ['Criminologists', 'Criminologists (2nd exam)'],
     aka: ['criminologist licensure examination', 'crim board exam'],
+    href: '/criminology-board-exam-schedule/',
   },
   {
     id: 'accountancy',
@@ -62,6 +64,7 @@ export const PRC_PROFESSIONS: ProfessionGroup[] = [
       'Certified Public Accountants (CPALE, 2nd exam)',
     ],
     aka: ['CPALE', 'CPA board exam', 'accountancy licensure exam'],
+    href: '/cpa-board-exam-schedule/',
   },
   {
     id: 'civil-engineering',
@@ -69,6 +72,7 @@ export const PRC_PROFESSIONS: ProfessionGroup[] = [
     navLabel: 'Civil Engineering',
     exams: ['Civil Engineers', 'Civil Engineers (2nd exam)'],
     aka: ['civil engineer licensure exam', 'CE board exam'],
+    href: '/civil-engineering-board-exam-schedule/',
   },
   {
     id: 'medical-technology',
@@ -76,6 +80,7 @@ export const PRC_PROFESSIONS: ProfessionGroup[] = [
     navLabel: 'Med Tech',
     exams: ['Medical Technologists', 'Medical Technologists (2nd exam)'],
     aka: ['MTLE', 'med tech board exam', 'medical technologist licensure exam'],
+    href: '/medtech-board-exam-schedule/',
   },
   {
     id: 'electrical-engineering',
@@ -119,6 +124,7 @@ export const PRC_PROFESSIONS: ProfessionGroup[] = [
     navLabel: 'Physicians (PLE)',
     exams: ['Physicians (PLE)', 'Physicians (PLE, 2nd exam)'],
     aka: ['PLE', 'medical board exam', 'physician board exam'],
+    href: '/physician-board-exam-schedule/',
   },
   {
     id: 'midwifery',
@@ -126,6 +132,7 @@ export const PRC_PROFESSIONS: ProfessionGroup[] = [
     navLabel: 'Midwifery',
     exams: ['Midwives', 'Midwives (2nd exam)'],
     aka: ['midwife licensure exam', 'midwifery board exam'],
+    href: '/midwifery-board-exam-schedule/',
   },
   {
     id: 'pharmacy',
@@ -133,6 +140,7 @@ export const PRC_PROFESSIONS: ProfessionGroup[] = [
     navLabel: 'Pharmacy',
     exams: ['Pharmacists', 'Pharmacists (2nd exam)'],
     aka: ['pharmacy licensure exam', 'pharmacist board exam'],
+    href: '/pharmacy-board-exam-schedule/',
   },
   {
     id: 'psychology',
@@ -140,6 +148,7 @@ export const PRC_PROFESSIONS: ProfessionGroup[] = [
     navLabel: 'Psychology',
     exams: ['Psychometricians', 'Psychologists'],
     aka: ['psychometrician board exam', 'psychologist licensure exam'],
+    href: '/psychometrician-board-exam-schedule/',
   },
   {
     id: 'social-work',
@@ -185,6 +194,7 @@ export const PRC_PROFESSIONS: ProfessionGroup[] = [
     navLabel: 'Rad Tech',
     exams: ['Radiologic Technologists', 'X-Ray Technologists'],
     aka: ['radtech board exam', 'radiologic technologist licensure exam', 'x-ray technologist exam'],
+    href: '/radtech-board-exam-schedule/',
   },
   {
     id: 'agriculture',
@@ -212,6 +222,49 @@ export function resolveGroup(
     }
     return entry;
   });
+}
+
+/** URL-safe, stable id for an exam row: "Nurses (PNLE, 2nd exam)" → "nurses-pnle-2nd-exam". */
+export function examSlug(examName: string): string {
+  return examName
+    .toLowerCase()
+    .replace(/&/g, ' and ')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+}
+
+/* ------------------------------ Table search ------------------------------ */
+
+/** Lower-case alphanumerics only, so "med tech", "Med-Tech" and "medtech" compare equal. */
+const normalize = (s: string): string => s.toLowerCase().replace(/[^a-z0-9]+/g, '');
+
+let searchIndex: Map<string, string[]> | undefined;
+
+/**
+ * Search terms for an exam: its PRC name plus the heading, nav label and every
+ * `aka` of the profession group it belongs to — so "Nursing" finds
+ * "Nurses (PNLE)", "pharmacy" finds "Pharmacists", "medtech" finds
+ * "Medical Technologists". Exams outside PRC_PROFESSIONS match on name only.
+ */
+export function examSearchTerms(examName: string): string[] {
+  if (!searchIndex) {
+    searchIndex = new Map();
+    for (const g of PRC_PROFESSIONS) {
+      for (const name of g.exams) {
+        const terms = searchIndex.get(name) ?? [];
+        terms.push(g.heading, g.navLabel, ...g.aka);
+        searchIndex.set(name, terms);
+      }
+    }
+  }
+  return [examName, ...(searchIndex.get(examName) ?? [])];
+}
+
+/** True when `query` (any spacing/casing) is a substring of one of the exam's search terms. */
+export function matchesExamQuery(exam: Pick<PrcExamEntry, 'exam'>, query: string): boolean {
+  const q = normalize(query);
+  if (q === '') return true;
+  return examSearchTerms(exam.exam).some((t) => normalize(t).includes(q));
 }
 
 /** Short month, to match the `dates_display` wording authored in the rule data. */

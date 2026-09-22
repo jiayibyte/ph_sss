@@ -61,8 +61,10 @@ const groups: ResolvedGroup[] = PRC_PROFESSIONS.map((g) => ({
           <li>
             <strong>{e.exam}</strong>
             {e.note && <span class="prc-note"> ({e.note})</span>} — {e.dates_display}. Filing:{' '}
-            {fmt(e.application_start)} to {fmt(e.application_deadline)}. Results (target):{' '}
-            {fmt(e.results_target)}.
+            {fmt(e.application_start)} to {fmt(e.application_deadline)}.{' '}
+            {e.results_released
+              ? `Results: released ${fmt(e.results_released)}.`
+              : `Results (target): ${fmt(e.results_target)}.`}
           </li>
         ))}
       </ul>

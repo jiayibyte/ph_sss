@@ -20,7 +20,7 @@
 
 ## 当前状态
 
-**v1 代码全量完成（2026-08-19），待部署。** 全部 18 页（13 内容/工具 + 5 信任）、8 个计算引擎（41 条官方示例值单测全过）、数据层 8 个规则 JSON（逐项对官方来源核验）、SEO/GEO 层、infra 部署文件均已交付。剩余为需要服务器/账号权限的上线动作，清单见 [infra/README.md](infra/README.md)。
+**已上线（2026-08-19），持续迭代。** 可索引页面见 `dist/sitemap-0.xml`（计算器 + 假日 + OEC + PRC 总表 + 护理及各专业考试页），另有 `/embed/<tool>/` 可嵌入计算器（noindex）与 `/data/…` 机读端点（JSON、每场考试的 .ics）。运营节点与年更流程见 [docs/ops-calendar.md](docs/ops-calendar.md)；上线前的一次性动作见 [infra/README.md](infra/README.md)。
 
 - 代码仓库：https://github.com/jiayibyte/ph_sss
 - 本地开发：`npm install && npm run dev`；测试：`npm test`；构建：`npm run build`

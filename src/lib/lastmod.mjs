@@ -40,6 +40,16 @@ export const PAGE_DATA = {
   '/final-pay-calculator/': ['labor'],
   '/prc-board-exam-schedule/': ['prc'],
   '/nursing-board-exam-schedule/': ['prc'],
+  '/let-board-exam-schedule/': ['prc'],
+  '/criminology-board-exam-schedule/': ['prc'],
+  '/cpa-board-exam-schedule/': ['prc'],
+  '/civil-engineering-board-exam-schedule/': ['prc'],
+  '/physician-board-exam-schedule/': ['prc'],
+  '/pharmacy-board-exam-schedule/': ['prc'],
+  '/midwifery-board-exam-schedule/': ['prc'],
+  '/psychometrician-board-exam-schedule/': ['prc'],
+  '/radtech-board-exam-schedule/': ['prc'],
+  '/medtech-board-exam-schedule/': ['prc'],
   '/sources/': DATASETS,
 };
 
@@ -79,10 +89,31 @@ export function datasetLastVerified(key) {
   return meta.last_verified;
 }
 
-/** Repo-relative source file that renders a page path ("/" or "/slug/"). */
+/**
+ * Pages rendered by a shared dynamic route: path → the source files whose git
+ * history should drive its dates (the route template and the config that
+ * carries its copy). Anything not listed maps to src/pages/<slug>.astro.
+ */
+export const PAGE_SOURCE = Object.fromEntries(
+  [
+    'let', 'criminology', 'cpa', 'civil-engineering', 'physician',
+    'pharmacy', 'midwifery', 'psychometrician', 'radtech', 'medtech',
+  ].map((slug) => [
+    `/${slug}-board-exam-schedule/`,
+    ['src/pages/[slug]-board-exam-schedule.astro', 'src/lib/prcProfessionPages.ts'],
+  ]),
+);
+
+/** Repo-relative source files that render a page path ("/" or "/slug/"). */
+export function pageSourceFiles(pagePath) {
+  if (PAGE_SOURCE[pagePath]) return PAGE_SOURCE[pagePath];
+  if (pagePath === '/') return ['src/pages/index.astro'];
+  return [`src/pages/${pagePath.replace(/^\/|\/$/g, '')}.astro`];
+}
+
+/** First source file of a page (kept for callers that want one path). */
 export function pageSourceFile(pagePath) {
-  if (pagePath === '/') return 'src/pages/index.astro';
-  return `src/pages/${pagePath.replace(/^\/|\/$/g, '')}.astro`;
+  return pageSourceFiles(pagePath)[0];
 }
 
 const dateCache = new Map();
@@ -93,15 +124,22 @@ const dateCache = new Map();
  */
 export function pageDates(pagePath) {
   if (dateCache.has(pagePath)) return dateCache.get(pagePath);
-  const file = pageSourceFile(pagePath);
+  const files = pageSourceFiles(pagePath);
 
-  const dirty = git(['status', '--porcelain', '--', file]) !== '';
-  const lastCommit = git(['log', '-1', '--format=%cs', '--', file]);
+  // Several source files: newest commit wins for "modified", the earliest
+  // addition for "published"; any dirty file counts as edited today.
+  const dirty = files.some((f) => git(['status', '--porcelain', '--', f]) !== '');
+  const lastCommit = files
+    .map((f) => git(['log', '-1', '--format=%cs', '--', f]))
+    .filter((d) => ISO_DATE.test(d))
+    .sort()
+    .at(-1) ?? '';
   const addedCommit =
-    git(['log', '--diff-filter=A', '--format=%cs', '--', file])
-      .split('\n')
-      .filter(Boolean)
-      .at(-1) ?? '';
+    files
+      .map((f) => git(['log', '--diff-filter=A', '--format=%cs', '--', f]).split('\n').filter(Boolean).at(-1) ?? '')
+      .filter((d) => ISO_DATE.test(d))
+      .sort()
+      .at(0) ?? '';
 
   const sourceDate = dirty || !ISO_DATE.test(lastCommit) ? today() : lastCommit;
   const dataDates = (PAGE_DATA[pagePath] ?? []).map(datasetLastVerified);

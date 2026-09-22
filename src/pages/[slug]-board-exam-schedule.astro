@@ -1,0 +1,312 @@
+---
+/**
+ * Per-profession PRC schedule page (LET, criminology, CPA, civil engineering,
+ * physicians...). One template, driven by:
+ *   - src/data/prc/<year>.json      → every date (via PRC_PROFESSIONS + resolveGroup)
+ *   - src/lib/prcProfessionPages.ts → the profession's law, passing rule, requirements
+ * Mirrors the structure of nursing-board-exam-schedule.astro.
+ */
+import ToolPageLayout from '../layouts/ToolPageLayout.astro';
+import prcRules from '../data/prc/2026.json';
+import { PRC_PROFESSIONS, resolveGroup, scheduleSentence } from '../lib/prcProfessions';
+import { PROFESSION_PAGES, type ProfessionPage } from '../lib/prcProfessionPages';
+import { educationEvents, icsPath } from '../lib/prcCalendar';
+import type { PrcExamEntry, PrcRules } from '../lib/rules/types';
+import { SITE } from '../../site.config';
+import { TOOL_PAGES } from '../lib/pages';
+
+export function getStaticPaths() {
+  return PROFESSION_PAGES.map((page) => ({ params: { slug: page.slug }, props: { page } }));
+}
+
+const { page } = Astro.props as { page: ProfessionPage };
+const meta = prcRules.meta;
+const year = prcRules.year;
+const nextYear = year + 1;
+const pagePath = `/${page.slug}-board-exam-schedule/`;
+const pageUrl = `${SITE.url}${pagePath}`;
+
+const byName = new Map((prcRules.exams as PrcExamEntry[]).map((e) => [e.exam, e]));
+const group = PRC_PROFESSIONS.find((g) => g.id === page.groupId);
+if (!group) throw new Error(`Profession page "${page.slug}" references unknown PRC group "${page.groupId}".`);
+const rounds = [...resolveGroup(page.exams ? { ...group, exams: page.exams } : group, byName, year)].sort((a, b) =>
+  a.first_date.localeCompare(b.first_date),
+);
+
+/* Related: the PRC master schedule + the other exam pages (siblings), so the
+   cluster links to itself; capped at 4 cards like every other page. */
+const siblingKeys = PROFESSION_PAGES.filter((p) => p.slug !== page.slug).map((p) => p.toolKey as string);
+const related = (page.related ?? ['prc', 'nursingSchedule', ...siblingKeys])
+  .filter((k) => k in TOOL_PAGES)
+  .slice(0, 4) as Array<keyof typeof TOOL_PAGES>;
+
+const fmt = (d: string | null | undefined): string =>
+  d
+    ? new Date(d + 'T00:00:00').toLocaleDateString('en-PH', { month: 'long', day: 'numeric', year: 'numeric' })
+    : 'to be announced';
+
+/* Build-date status: the site is rebuilt on every deploy, so "next round" is
+   current to the last deploy, never to a hand-typed date. */
+const today = new Date().toISOString().slice(0, 10);
+const upcoming = rounds.filter((r) => r.first_date >= today);
+const next = upcoming[0];
+const released = rounds.filter((r) => r.results_released);
+const filingOpen = next?.application_deadline ? next.application_deadline >= today : false;
+
+const nextRoundSentence = next
+  ? `The next ${page.shortName} is on ${next.dates_display}. ${
+      next.application_deadline
+        ? filingOpen
+          ? `Filing through LERIS is open until ${fmt(next.application_deadline)}.`
+          : `The LERIS filing window closed on ${fmt(next.application_deadline)}.`
+        : ''
+    } PRC's target results date is ${fmt(next.results_target)}.`
+  : `All ${year} rounds have been held. The next ${page.shortName} is in ${nextYear}; PRC has not published the ${nextYear} calendar yet — it normally posts the whole following-year schedule on prc.gov.ph in mid-November, so expect the dates around November ${year}.`;
+
+const datasetSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Dataset',
+  name: `${page.h1}`,
+  description: `${page.examName} ${year} schedule per ${meta.rule_version}: exam dates, application windows and target result dates.`,
+  url: pageUrl,
+  creator: { '@type': 'Organization', name: 'Professional Regulation Commission (source data)' },
+  isBasedOn: meta.official_source_url,
+  dateModified: meta.last_verified,
+  keywords: [page.shortName, `${page.shortName} schedule ${year}`, 'PRC', 'Philippines', ...group.aka],
+  distribution: [
+    {
+      '@type': 'DataDownload',
+      encodingFormat: 'application/json',
+      contentUrl: `${SITE.url}/data/prc-board-exam-schedule-${year}.json`,
+    },
+  ],
+  temporalCoverage: `${meta.effective_from}/${meta.effective_to}`,
+  spatialCoverage: { '@type': 'Place', name: 'Philippines' },
+  isPartOf: `${SITE.url}/prc-board-exam-schedule/`,
+};
+const eventSchema = educationEvents(prcRules as PrcRules, rounds, pageUrl, today);
+
+const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+const times = rounds.length === 1 ? 'once' : rounds.length === 2 ? 'twice' : `${rounds.length} times`;
+const joinList = (parts: string[]) =>
+  parts.length <= 1 ? parts.join('') : `${parts.slice(0, -1).join(', ')} and ${parts[parts.length - 1]}`;
+/* Pre-built sentence fragments (HTML) so no stray whitespace lands before punctuation. */
+const roundsHtml = joinList(
+  rounds.map(
+    (r) => `<strong>${r.dates_display}</strong> (filing ${fmt(r.application_start)} to ${fmt(r.application_deadline)})`,
+  ),
+);
+const targetsHtml = joinList(
+  rounds.map((r) => `<strong>${fmt(r.results_target)}</strong> for the ${r.dates_display} exam`),
+);
+const description =
+  page.description ??
+  `${cap(page.shortName)} ${year}: ${rounds.map((r) => r.dates_display).join(' and ')}. Filing deadlines, passing score, requirements and PRC's results dates.`;
+if (description.length > 158) {
+  throw new Error(`${pagePath}: meta description is ${description.length} chars (max 158) — set page.description in prcProfessionPages.ts.`);
+}
+
+const cite = (c: { label: string; url: string }) => `<a href="${c.url}" target="_blank" rel="noopener">${c.label}</a>`;
+
+const faqs = [
+  {
+    q: `When is the ${page.shortName} in ${year}?`,
+    a: `The ${page.examName} is scheduled ${times} in ${year}: ${scheduleSentence(rounds)} Dates are from ${meta.rule_version}.`,
+  },
+  {
+    q: `When is the next ${page.shortName}?`,
+    a: nextRoundSentence,
+  },
+  {
+    q: `What is the passing score for the ${page.shortName}?`,
+    a: `${page.passing.text} (${cite(page.passing.cite)})`,
+  },
+  {
+    q: `Who can take the ${page.shortName}?`,
+    a: `Under ${page.law.label}, an applicant must: ${page.requirements.items.join('; ')}. (${cite(page.requirements.cite)}) PRC lists the exact documents for the current round inside LERIS.`,
+  },
+  {
+    q: `How do I apply for the ${page.shortName}?`,
+    a: `File online through LERIS at online.prc.gov.ph within the application window: create or log in to your account, choose the ${page.examName}, upload your documents, pay the fee and book an appointment at your chosen PRC office. Late applications are not accepted except in justifiable cases defined by PRC rules.`,
+  },
+  {
+    q: `When will the ${page.shortName} ${year} results be released?`,
+    a: `PRC's target release dates are ${rounds.map((r) => `${fmt(r.results_target)} for the ${r.dates_display} exam`).join(' and ')}.${
+      released.length > 0
+        ? ` ${released.map((r) => `The ${r.dates_display} results were released on ${fmt(r.results_released)}.`).join(' ')}`
+        : ''
+    } Targets are printed in the resolution; the actual release is announced only on prc.gov.ph.`,
+  },
+  {
+    q: `When will PRC release the ${page.shortName} ${nextYear} schedule?`,
+    a: `PRC publishes the whole following-year calendar in one resolution, usually signed in late October and posted on prc.gov.ph in mid-November — the ${year} schedule (Resolution No. 2113, s. 2025) was signed on October 23, 2025 and posted on November 17, 2025. Expect the ${page.shortName} ${nextYear} dates around November ${year}; this page switches to them as soon as they are out.`,
+  },
+  ...(page.retake
+    ? [{ q: `Is there a limit on retaking the ${page.shortName}?`, a: `${page.retake.text} (${cite(page.retake.cite)})` }]
+    : []),
+  ...(page.extraFaqs ?? []),
+  {
+    q: `Kailan ang ${page.taglishName} ${year}?`,
+    a: `Ang ${page.examName} ay nakatakda sa ${year} nang ${scheduleSentence(rounds)} Mag-file online sa LERIS (online.prc.gov.ph) sa loob ng application window.`,
+  },
+];
+---
+
+<ToolPageLayout
+  title={page.title}
+  description={description}
+  path={pagePath}
+  h1={page.h1}
+  faqs={faqs}
+  related={related}
+  isApp={false}
+  extraSchema={[datasetSchema, ...eventSchema]}
+>
+  <Fragment slot="answer">
+    <p>
+      The <strong>{page.examName}</strong> is given {times} in {year} per
+      <strong>{meta.rule_version.split(' — ')[0]}</strong>: <Fragment set:html={roundsHtml} />.{' '}
+      {next ? (
+        <Fragment>
+          <strong>Next round: {next.dates_display}</strong>
+          {next.application_deadline
+            ? filingOpen
+              ? ` — filing is open until ${fmt(next.application_deadline)}.`
+              : ` — the filing window closed on ${fmt(next.application_deadline)}.`
+            : '.'}{' '}
+          Target results date: {fmt(next.results_target)}.
+        </Fragment>
+      ) : (
+        <Fragment>
+          <strong>All {year} rounds have been held.</strong> The next {page.shortName} is in {nextYear}; PRC has
+          not published the {nextYear} calendar yet (expected November {year}).
+        </Fragment>
+      )}
+    </p>
+  </Fragment>
+
+  <h2>{page.headingName} {year}: Exam Dates and Deadlines</h2>
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>Round</th>
+          <th>Exam dates</th>
+          <th>Application window</th>
+          <th>Results</th>
+        </tr>
+      </thead>
+      <tbody>
+        {rounds.map((r, i) => (
+          <tr>
+            <td>{i + 1}</td>
+            <td>
+              <strong>{r.dates_display}</strong>
+              {r.note && <span class="text-ink-soft"> ({r.note})</span>}
+              {r.first_date >= today && (
+                <div class="text-xs">
+                  <a href={icsPath(year, r)}>Add to calendar</a>
+                </div>
+              )}
+            </td>
+            <td>
+              {fmt(r.application_start)} – {fmt(r.application_deadline)}
+            </td>
+            <td>
+              {r.results_released
+                ? `Released ${fmt(r.results_released)}`
+                : r.results_target
+                  ? `${fmt(r.results_target)} (target)`
+                  : 'To be announced'}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  <p>
+    Looking for another profession? See the complete
+    <a href="/prc-board-exam-schedule/">PRC Board Exam Schedule {year}</a> — all {prcRules.exams.length}
+    licensure exams, searchable, with the same filing windows and result targets.
+  </p>
+
+  <h2>Passing Score for the {page.examName}</h2>
+  <p>
+    {page.passing.text}
+    Source: <a href={page.passing.cite.url} target="_blank" rel="noopener">{page.passing.cite.label}</a>.
+  </p>
+  <h3>What the exam covers</h3>
+  <p>
+    {page.parts.text}
+    Source: <a href={page.parts.cite.url} target="_blank" rel="noopener">{page.parts.cite.label}</a>.
+  </p>
+
+  <h2>Requirements to Take the {page.headingName}</h2>
+  <p>
+    Under <a href={page.law.url} target="_blank" rel="noopener">{page.law.label}</a> ({page.law.title}), an
+    applicant for the {page.examName} must:
+  </p>
+  <ul>
+    {page.requirements.items.map((item) => <li>{item}</li>)}
+  </ul>
+  <p>
+    Source: <a href={page.requirements.cite.url} target="_blank" rel="noopener">{page.requirements.cite.label}</a>.
+    PRC lists the exact documents for each round inside LERIS — typically the transcript of records
+    with the remark “For Board Examination Purposes”, a PSA birth certificate, a PSA marriage
+    certificate when filing under a married name, and the examination fee.
+  </p>
+
+  <h2>How to Apply for the {page.headingName} (LERIS)</h2>
+  <ol>
+    <li>Create or log in to your account on <strong>LERIS</strong>, PRC's Licensure Examination and Registration Information System, at <a href="https://online.prc.gov.ph/" target="_blank" rel="noopener">online.prc.gov.ph</a>.</li>
+    <li>Select the <strong>{page.examName}</strong> and your preferred testing center.</li>
+    <li>Upload your documents and ID photo, then pay the examination fee through the available payment channels.</li>
+    <li>Book an appointment and submit your requirements at your chosen PRC office before the deadline.</li>
+    <li>File <strong>within the application window</strong> in the table above — late applications are not accepted except in justifiable cases defined by PRC rules.</li>
+  </ol>
+
+  <h2>{page.headingName} Results {year}: When and Where They Come Out</h2>
+  <p>
+    PRC's target release dates are <Fragment set:html={targetsHtml} />.
+    {released.length > 0 &&
+      released.map((r) => ` The ${r.dates_display} results were released on ${fmt(r.results_released)}.`)}
+    {' '}Targets are printed in the resolution — the actual release can land a few days either side and is
+    announced only by PRC. AyTool does not host exam results or lists of passers.
+  </p>
+  <ol>
+    <li><strong>prc.gov.ph</strong> — the official list of passers and the top 10, posted as a news release on <a href="https://www.prc.gov.ph/" target="_blank" rel="noopener">prc.gov.ph</a> and on PRC's official Facebook page.</li>
+    <li><strong>Verification of Rating</strong> — your own scores per subject, through LERIS at <a href="https://online.prc.gov.ph/" target="_blank" rel="noopener">online.prc.gov.ph</a> once PRC opens the service for that exam.</li>
+    <li>News sites and review centers republish the list within hours; treat anything not on prc.gov.ph as unofficial.</li>
+  </ol>
+
+  {page.retake && (
+    <Fragment>
+      <h2>Retakes</h2>
+      <p>
+        {page.retake.text}
+        Source: <a href={page.retake.cite.url} target="_blank" rel="noopener">{page.retake.cite.label}</a>.
+      </p>
+    </Fragment>
+  )}
+
+  <h2>{page.headingName} {nextYear} Schedule: When PRC Publishes It</h2>
+  <p>
+    PRC has <strong>not yet released the {nextYear} schedule</strong>. It publishes the whole
+    following-year calendar in one resolution, usually signed in late October and posted on prc.gov.ph
+    in mid-November — the {year} schedule (Resolution No. 2113, s. 2025) was signed on October 23, 2025
+    and posted on November 17, 2025 — so the {page.shortName} {nextYear} dates are most likely out in
+    November {year}. Each profession usually keeps the same months from one calendar to the next, so
+    the {year} rounds above are the working reference until then. This page switches to the official
+    {nextYear} dates the day PRC publishes them.
+  </p>
+
+  <h2>Official Source</h2>
+  <p>
+    <a href={meta.official_source_url} target="_blank" rel="noopener">{meta.official_source_label}</a>
+    — Resolution No. 2113, Series of 2025, signed October 23, 2025. Last verified
+    {new Date(meta.last_verified + 'T00:00:00').toLocaleDateString('en-PH', { month: 'long', day: 'numeric', year: 'numeric' })}.
+    The exam is administered by PRC's <strong>{page.board}</strong>. Apply, verify results and process
+    your license only on the official <a href="https://www.prc.gov.ph/" target="_blank" rel="noopener">PRC website</a>
+    and LERIS portal — AyTool is independent, does not host exam results, and cannot process applications.
+  </p>
+</ToolPageLayout>

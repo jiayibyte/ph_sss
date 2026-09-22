@@ -21,8 +21,9 @@ export default defineConfig({
     preact(),
     tailwind({ applyBaseStyles: false }),
     sitemap({
-      // 404 is excluded via robots meta; sitemap must contain exactly the 20 indexable URLs
-      filter: (page) => !page.includes('/404'),
+      // 404 and /embed/* are noindex; the sitemap must be exactly the indexable set
+      // (scripts/audit-dist.mjs fails the build otherwise).
+      filter: (page) => !page.includes('/404') && !page.includes('/embed/'),
       // <lastmod> per URL: page source commit date ⊕ rule-data last_verified (src/lib/lastmod.mjs)
       serialize: (item) => ({ ...item, lastmod: pageDates(new URL(item.url).pathname).modified }),
     }),

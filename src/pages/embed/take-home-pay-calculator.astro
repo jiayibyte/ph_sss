@@ -1,0 +1,9 @@
+---
+import EmbedLayout from '../../layouts/EmbedLayout.astro';
+import TakeHomeCalculator from '../../islands/TakeHomeCalculator';
+import { TOOL_PAGES } from '../../lib/pages';
+---
+
+<EmbedLayout page={TOOL_PAGES.takeHome!}>
+  <TakeHomeCalculator client:load />
+</EmbedLayout>
