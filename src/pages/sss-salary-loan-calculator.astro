@@ -1,0 +1,150 @@
+---
+import ToolPageLayout from '../layouts/ToolPageLayout.astro';
+import SssSalaryLoanCalculator from '../islands/SssSalaryLoanCalculator';
+import sssRules from '../data/sss/2026.json';
+import type { SssRules } from '../lib/rules/types';
+import { benefitMscCap, computeSalaryLoan } from '../lib/engine/sssBenefits';
+import { peso } from '../lib/format';
+
+const rules = sssRules as unknown as SssRules;
+const meta = rules.meta;
+const L = rules.benefits.salary_loan;
+const CAP = benefitMscCap(rules); // ₱20,000 — Regular SS MSC, the loan base
+const pct = (n: number) => `${Math.round(n * 100)}%`;
+const CIRCULAR = 'https://www.sss.gov.ph/wp-content/uploads/2025/06/CI-2025-004-External.pdf';
+
+const amounts = [5000, 10000, 15000, 20000, 30000, 40000];
+const table = amounts.map((a) => computeSalaryLoan({ averageMsc: a > CAP ? CAP : a, months: a > CAP ? 2 : 1, requested: a }, rules));
+const ex = computeSalaryLoan({ averageMsc: 20000, months: 1 }, rules);
+
+const faqs = [
+  {
+    q: 'How much can I borrow with an SSS salary loan?',
+    a: `A one-month loan equals the average of your 12 latest posted monthly salary credits under the Regular SS program, rounded up to the next MSC bracket, or the amount you apply for, whichever is lower; you need at least ${L.one_month_min_contributions} posted monthly contributions, ${L.recent_contributions_required} of them in the last 12 months. A two-month loan is twice that average and needs at least ${L.two_month_min_contributions} contributions. Because the Regular SS MSC tops out at ${peso(CAP)}, the ceiling is ${peso(CAP)} for a one-month and ${peso(CAP * 2)} for a two-month loan (SSS Circular 2025-004, IV.C). Net proceeds must be at least ${peso(L.min_net_proceeds)}.`,
+  },
+  {
+    q: 'What is the monthly payment on a ₱20,000 SSS salary loan?',
+    a: `About ${peso(ex.monthlyAmortization)} a month for ${L.term_months} months at ${pct(L.interest_pa)} interest per year on the diminishing balance — ${peso(ex.totalPayable)} in total, of which ${peso(ex.totalInterest)} is interest. A ${pct(L.service_fee_pct)} service fee (${peso(ex.serviceFee)}) and the pro-rated interest from the loan date to the end of the month before your first amortization month are deducted from the proceeds; SSS's own illustration for a ₱20,000 loan granted April 15, 2025 deducts ₱201.64 for 46 days at 8%, leaving ${peso(20000 - 200 - 201.64)}.`,
+  },
+  {
+    q: 'What is the interest rate on an SSS salary loan?',
+    a: `${pct(L.interest_pa)} per annum on the diminishing principal balance for initial loans and for renewals without a penalty condonation in the past five years; ${pct(L.interest_pa_renewal_condoned)} per annum for renewals where you availed of a penalty condonation within the past five years (SSS Circular No. 2025-004, effective June 16, 2025, which replaced the flat 10% of the 2004 rules). A one-time service fee of ${pct(L.service_fee_pct)} is deducted upfront, and pro-rated interest up to the end of the month before the first amortization month is deducted in advance. Late amortizations carry a ${L.penalty_per_month * 100}% per month penalty; a loan still unpaid after the term earns 10% a year plus the penalty until settled.`,
+  },
+  {
+    q: 'Who is eligible for an SSS salary loan?',
+    a: `A member of legal age and under 65 with at least ${L.one_month_min_contributions} posted monthly contributions (${L.two_month_min_contributions} for a two-month loan), ${L.recent_contributions_required} of them in the 12 months before the application month; self-employed, voluntary and land-based OFW members also need at least six posted contributions under their current membership type. You must have no past-due SSS loan (salary, SLERP, educational or other member loans), no final benefit granted, no disqualification for fraud, updated contact details and an active disbursement account enrolled in My.SSS; an employee's employer must be up to date in contributions and loan remittances.`,
+  },
+  {
+    q: 'When do I start paying, and how?',
+    a: `Amortization starts on the second month after the month of approval and each month's payment is due on or before the last day of the following month — a loan approved in April is first amortized for June, due July 31. Payments run for ${L.term_months} equal months and are applied to penalty first, then interest, then principal. Employed members pay through salary deduction remitted by the employer; other members pay through SSS payment channels or My.SSS. A loan is in default once the unpaid amount exceeds six amortizations or a balance remains after the term, and the whole balance becomes due; unpaid loans are deducted from future benefits.`,
+  },
+  {
+    q: 'When can I renew my SSS salary loan?',
+    a: `Six months after the loan was approved, provided the loan is not past due and the last three amortizations were paid on time; the remaining balance is deducted from the new proceeds. A fully paid loan can be renewed immediately if the last three amortizations were on time, otherwise three months after full payment. The net proceeds of a renewal must be at least ${peso(L.min_net_proceeds)} (₱100 for kasambahay).`,
+  },
+  {
+    q: 'What happens to my SSS loan if I resign?',
+    a: 'The loan stays with you, not the employer. Your employer reports your separation to SSS and remits the deductions made up to your last payroll; you then continue paying the monthly amortization yourself through My.SSS or an accredited payment channel to avoid the monthly penalty.',
+  },
+  {
+    q: 'Magkano ang pwedeng utangin sa SSS salary loan kung ₱15,000 ang sahod?',
+    a: `Kung ${peso(15000)} ang average MSC mo sa huling 12 buwan, hanggang ${peso(computeSalaryLoan({ averageMsc: 15000, months: 1 }, rules).loanableAmount)} ang one-month loan (kung may ${L.one_month_min_contributions}+ hulog) at ${peso(computeSalaryLoan({ averageMsc: 15000, months: 2 }, rules).loanableAmount)} ang two-month loan (${L.two_month_min_contributions}+ hulog). Ang buwanang bayad sa ${peso(15000)} ay ${peso(computeSalaryLoan({ averageMsc: 15000, months: 1 }, rules).monthlyAmortization)} sa loob ng ${L.term_months} buwan sa ${pct(L.interest_pa)} kada taon; babawasin sa proceeds ang ${pct(L.service_fee_pct)} service fee at ang pro-rated interest hanggang sa buwan bago ang unang hulog.`,
+  },
+];
+---
+
+<ToolPageLayout
+  title="SSS Salary Loan Calculator 2026 – Amount & Monthly Payment"
+  description={`Compute your SSS salary loan under Circular 2025-004: one-month or two-month loanable amount, ${pct(L.service_fee_pct)} service fee, ${pct(L.interest_pa)} interest, advance interest and the ${L.term_months}-month amortization.`}
+  path="/sss-salary-loan-calculator/"
+  h1="SSS Salary Loan Calculator"
+  faqs={faqs}
+  related={['sssCalculator', 'sssTable', 'sssPension', 'finalPay']}
+>
+  <Fragment slot="answer">
+    <p>
+      An <strong>SSS salary loan</strong> is <strong>one month</strong> of your average monthly salary credit (the average
+      of your 12 latest posted Regular SS MSCs, rounded up to the next bracket, max {peso(CAP)}) if you have at least
+      {L.one_month_min_contributions} contributions, or <strong>two months</strong> (max {peso(CAP * 2)}) with at least
+      {L.two_month_min_contributions}. It is repaid in <strong>{L.term_months} equal monthly amortizations at {pct(L.interest_pa)} per
+      year</strong> on the diminishing balance under SSS Circular 2025-004, after a {pct(L.service_fee_pct)} service fee and the
+      pro-rated advance interest. Example: MSC {peso(20000)} → {peso(ex.loanAmount)} loan, about
+      <strong>{peso(ex.monthlyAmortization)} a month</strong>. Enter your salary or MSC below.
+    </p>
+  </Fragment>
+
+  <Fragment slot="calculator">
+    <SssSalaryLoanCalculator client:idle />
+  </Fragment>
+
+  <h2>SSS Salary Loan Amortization Table ({L.term_months} Months, {pct(L.interest_pa)} p.a.)</h2>
+  <p>
+    One-month loans up to {peso(CAP)}; {peso(30000)} and {peso(CAP * 2)} are two-month loans. Net proceeds shown before the
+    pro-rated advance interest, which depends on your loan date.
+  </p>
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>Loan amount</th>
+          <th>Service fee ({pct(L.service_fee_pct)})</th>
+          <th>Net proceeds</th>
+          <th>Monthly amortization</th>
+          <th>Total interest</th>
+          <th>Total repaid</th>
+        </tr>
+      </thead>
+      <tbody>
+        {table.map((r) => (
+          <tr>
+            <td><strong>{peso(r.loanAmount)}</strong></td>
+            <td>{peso(r.serviceFee)}</td>
+            <td>{peso(r.netProceeds)}</td>
+            <td><strong>{peso(r.monthlyAmortization)}</strong></td>
+            <td>{peso(r.totalInterest)}</td>
+            <td>{peso(r.totalPayable)}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  <p>
+    Equal monthly amortization on a diminishing balance; SSS’s own billing can differ by a few pesos because of rounding
+    and the release date.
+  </p>
+
+  <h2>Eligibility and Loan Amount</h2>
+  <ul>
+    <li><strong>One-month loan:</strong> at least {L.one_month_min_contributions} posted monthly contributions, {L.recent_contributions_required} of them within the 12 months before the application month; amount = average of the 12 latest posted Regular SS MSCs, rounded up to the next MSC bracket (max {peso(CAP)}), or the amount applied for, whichever is lower.</li>
+    <li><strong>Two-month loan:</strong> at least {L.two_month_min_contributions} posted monthly contributions, {L.recent_contributions_required} in the last 12 months; amount = twice that average (max {peso(CAP * 2)}).</li>
+    <li>Self-employed, voluntary, non-working-spouse and land-based OFW members also need at least six posted contributions under their current membership type.</li>
+    <li>Of legal age and under 65; no past-due SSS loan of any kind; no final benefit granted; not disqualified for fraud; updated contact details and an active disbursement account in My.SSS; for employees, an employer current in contributions and loan remittances.</li>
+    <li>Net proceeds after fees, advance interest and any prior loan balance must be at least {peso(L.min_net_proceeds)} (₱100 for kasambahay).</li>
+  </ul>
+
+  <h2>Interest, Fees, Repayment and Renewal</h2>
+  <ul>
+    <li><strong>Interest:</strong> {pct(L.interest_pa)} per annum on the diminishing principal for initial loans and renewals without a penalty condonation in the past five years; {pct(L.interest_pa_renewal_condoned)} for renewals with a condonation in that period. Rates can be adjusted by SSS for new loans.</li>
+    <li><strong>Deducted from the proceeds:</strong> the {pct(L.service_fee_pct)} service fee, pro-rated interest from the loan date to the end of the month before the first amortization month (SSS example: ₱20,000 granted April 15 → 46 days → ₱201.64 at 8%), and any balance of a previous short-term loan.</li>
+    <li><strong>Repayment:</strong> {L.term_months} equal monthly amortizations starting on the second month after the approval month, each due by the end of the following month; employees through salary deduction, others through SSS channels or My.SSS. Payments are applied to penalty, then interest, then principal.</li>
+    <li><strong>Penalty and default:</strong> {L.penalty_per_month * 100}% per month on late amortizations; a loan is in default when the unpaid amount exceeds six amortizations or a balance remains after the term, and the whole balance becomes due. Unpaid loans are deducted from future benefits.</li>
+    <li><strong>Renewal:</strong> six months after approval if the loan is not past due and the last three amortizations were on time; a fully paid loan renews immediately (or after three months if any of the last three payments was late). The old balance is deducted from the new proceeds.</li>
+  </ul>
+
+  <h2>How to Apply</h2>
+  <ol>
+    <li>Log in to <strong>My.SSS</strong> at <a href="https://www.sss.gov.ph/" target="_blank" rel="noopener">sss.gov.ph</a> and open the salary loan application under E-Services; employees need their employer’s certification through the employer’s My.SSS account.</li>
+    <li>Confirm the amount (up to the maximum loanable) and your disbursement account — a bank account enrolled in SSS or an accredited e-wallet.</li>
+    <li>Track the status online; proceeds are credited to the disbursement account once approved.</li>
+  </ol>
+
+  <h2>Official Source</h2>
+  <p>
+    Loan terms: <a href={L.source_url} target="_blank" rel="noopener">SSS — Salary Loan program page</a> and
+    <a href={CIRCULAR} target="_blank" rel="noopener">SSS Circular No. 2025-004</a>, Guidelines of the SSS Salary Loan Program
+    (effective June 16, 2025).
+    Monthly salary credits: <a href={meta.official_source_url} target="_blank" rel="noopener">{meta.official_source_label}</a>.
+    AyTool is independent and cannot see your contribution record; the loanable amount SSS approves is based on your
+    posted MSCs.
+  </p>
+</ToolPageLayout>

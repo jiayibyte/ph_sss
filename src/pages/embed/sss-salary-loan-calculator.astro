@@ -1,0 +1,9 @@
+---
+import EmbedLayout from '../../layouts/EmbedLayout.astro';
+import SssSalaryLoanCalculator from '../../islands/SssSalaryLoanCalculator';
+import { TOOL_PAGES } from '../../lib/pages';
+---
+
+<EmbedLayout page={TOOL_PAGES.sssLoan!}>
+  <SssSalaryLoanCalculator client:load />
+</EmbedLayout>

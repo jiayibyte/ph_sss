@@ -1,0 +1,9 @@
+---
+import EmbedLayout from '../../layouts/EmbedLayout.astro';
+import MinimumWageCalculator from '../../islands/MinimumWageCalculator';
+import { TOOL_PAGES } from '../../lib/pages';
+---
+
+<EmbedLayout page={TOOL_PAGES.minimumWage!}>
+  <MinimumWageCalculator client:load />
+</EmbedLayout>

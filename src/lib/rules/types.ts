@@ -8,6 +8,62 @@ export interface RuleMeta {
   official_source_label: string;
 }
 
+/* ------------------------------- Minimum wage ------------------------------ */
+
+export interface WageTier {
+  label: string;
+  rate: number;
+  /** Sub-area / class the tier applies to, when the order splits the region geographically. */
+  group?: string;
+}
+
+export interface WageRegion {
+  id: string;
+  name: string;
+  wage_order: string;
+  date_issued: string | null;
+  effectivity: string | null;
+  second_tranche_effectivity?: string;
+  tiers: WageTier[];
+  notes?: string;
+  coverage?: string;
+  upcoming?: { wage_order: string; rates: WageTier[]; effectivity: string | null; expected?: string };
+  wage_order_url: string;
+  rtwpb_url: string;
+}
+
+export interface WageDivisor {
+  id: string;
+  factor: number;
+  label: string;
+  breakdown: string;
+}
+
+export interface WageRules {
+  meta: RuleMeta & { sources: Record<string, string> };
+  ncr: {
+    in_force: { wage_order: string; effectivity: string; non_agriculture: number; other_tier: number; other_tier_label: string; url: string };
+    upcoming: {
+      wage_order: string;
+      date_issued: string;
+      date_published: string;
+      effectivity: string | null;
+      effectivity_rule: string;
+      non_agriculture: number;
+      other_tier: number;
+      increase: number;
+      url: string;
+    };
+    enjoined: { wage_order: string; date_issued: string; nominal_effectivity: string; non_agriculture: number; other_tier: number; status: string; url: string; nwpc_statement_url: string };
+    cola_note: string;
+    rtwpb_url: string;
+  };
+  regions: WageRegion[];
+  kasambahay_monthly: Array<{ region: string; monthly: number; wage_order?: string; effectivity?: string; note?: string }>;
+  divisors: { source: string; source_label: string; options: WageDivisor[]; alternates_note: string; nwpc_practice: string };
+  coverage: Record<string, string>;
+}
+
 /* ---------------------------------- SSS ---------------------------------- */
 
 export type SssMemberType = 'employee' | 'self-employed' | 'voluntary' | 'ofw';
@@ -46,6 +102,54 @@ export interface SssRules {
     }
   >;
   table: Record<SssMemberType, SssTableRow[]>;
+  /** Benefit computation parameters (RA 11199 / RA 11210 / SSS loan terms). */
+  benefits: {
+    pension: {
+      base: number;
+      amsc_pct: number;
+      per_cys_pct: number;
+      cys_threshold: number;
+      flat_pct: number;
+      floor: number;
+      min_cys10: number;
+      min_cys20: number;
+      min_contributions: number;
+      dependent_pct: number;
+      dependent_min: number;
+      max_dependents: number;
+      /** Additional monthly benefit paid on top of the computed pension (0 if none). */
+      additional_benefit: number;
+      source_note: string;
+      source_url: string;
+    };
+    maternity: {
+      days_live_birth: number;
+      days_solo_parent_extra: number;
+      days_miscarriage: number;
+      top_msc_count: number;
+      divisor: number;
+      min_contributions: number;
+      source_note: string;
+      source_url: string;
+    };
+    salary_loan: {
+      /** Initial loans and renewals without penalty condonation in the past five years. */
+      interest_pa: number;
+      /** Renewals with a penalty condonation availed within the past five years. */
+      interest_pa_renewal_condoned: number;
+      service_fee_pct: number;
+      term_months: number;
+      one_month_min_contributions: number;
+      two_month_min_contributions: number;
+      recent_contributions_required: number;
+      penalty_per_month: number;
+      /** First amortization month = approval month + this offset. */
+      amortization_start_offset_months: number;
+      min_net_proceeds: number;
+      source_note: string;
+      source_url: string;
+    };
+  };
 }
 
 /* ------------------------------- PhilHealth ------------------------------ */

@@ -22,16 +22,20 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const DATA_DIR = path.join(ROOT, 'src/data');
 
 /** Every rule dataset directory under src/data/. */
-export const DATASETS = ['sss', 'philhealth', 'pagibig', 'labor', 'tax', 'holidays', 'prc'];
+export const DATASETS = ['sss', 'philhealth', 'pagibig', 'labor', 'tax', 'holidays', 'prc', 'wages'];
 
 /** Rule datasets rendered by each page (path → dataset keys). */
 export const PAGE_DATA = {
   '/': ['sss', 'philhealth', 'pagibig', 'tax', 'labor', 'holidays'], // "at a glance" block
   '/sss-contribution-table/': ['sss'],
   '/sss-contribution-calculator/': ['sss'],
+  '/sss-pension-calculator/': ['sss'],
+  '/sss-maternity-benefit-calculator/': ['sss'],
+  '/sss-salary-loan-calculator/': ['sss'],
   '/philhealth-contribution/': ['philhealth'],
   '/pagibig-contribution/': ['pagibig'],
   '/take-home-pay-calculator/': ['sss', 'philhealth', 'pagibig', 'tax'],
+  '/minimum-wage-philippines/': ['wages'],
   '/13th-month-pay-calculator/': ['labor'],
   '/holiday-pay-calculator/': ['holidays', 'labor'],
   '/philippine-holidays/': ['holidays', 'labor'],
@@ -50,6 +54,12 @@ export const PAGE_DATA = {
   '/psychometrician-board-exam-schedule/': ['prc'],
   '/radtech-board-exam-schedule/': ['prc'],
   '/medtech-board-exam-schedule/': ['prc'],
+  '/electrical-engineering-board-exam-schedule/': ['prc'],
+  '/mechanical-engineering-board-exam-schedule/': ['prc'],
+  '/architecture-board-exam-schedule/': ['prc'],
+  '/electronics-engineering-board-exam-schedule/': ['prc'],
+  '/dentistry-board-exam-schedule/': ['prc'],
+  '/social-work-board-exam-schedule/': ['prc'],
   '/sources/': DATASETS,
 };
 
@@ -98,6 +108,7 @@ export const PAGE_SOURCE = Object.fromEntries(
   [
     'let', 'criminology', 'cpa', 'civil-engineering', 'physician',
     'pharmacy', 'midwifery', 'psychometrician', 'radtech', 'medtech',
+    'electrical-engineering', 'mechanical-engineering', 'architecture', 'electronics-engineering', 'dentistry', 'social-work',
   ].map((slug) => [
     `/${slug}-board-exam-schedule/`,
     ['src/pages/[slug]-board-exam-schedule.astro', 'src/lib/prcProfessionPages.ts'],

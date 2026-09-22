@@ -10,8 +10,13 @@ const agencies = [
       { label: 'SSS Contribution Table (official)', url: 'https://www.sss.gov.ph/sss-contribution-table/' },
       { label: '2025 Schedule of Contributions PDF (Circulars 2024-006 to 2024-010, in force 2026)', url: 'https://www.sss.gov.ph/wp-content/uploads/2024/12/2025-SSS-Contribution-Table-rev.pdf' },
       { label: 'SSS main site / My.SSS portal', url: 'https://www.sss.gov.ph/' },
+      { label: 'RA 11199 — Social Security Act of 2018 (pension formula Sec. 12, maternity Sec. 14-A)', url: 'https://lawphil.net/statutes/repacts/ra2019/ra_11199_2019.html' },
+      { label: 'RA 11210 — 105-Day Expanded Maternity Leave Law', url: 'https://lawphil.net/statutes/repacts/ra2019/ra_11210_2019.html' },
+      { label: 'SSS Retirement Benefit page (formula, 13th-month pension, ₱1,000 additional benefit)', url: 'https://www.sss.gov.ph/retirement-benefit/' },
+      { label: 'SSS Maternity Benefit page (computation steps and ₱56,000 sample)', url: 'https://www.sss.gov.ph/maternity-benefit/' },
+      { label: 'SSS Circular No. 2025-004 — Guidelines of the SSS Salary Loan Program (June 2025)', url: 'https://www.sss.gov.ph/wp-content/uploads/2025/06/CI-2025-004-External.pdf' },
     ],
-    usedBy: [t.sssTable, t.sssCalculator, t.takeHome],
+    usedBy: [t.sssTable, t.sssCalculator, t.sssPension, t.sssMaternity, t.sssLoan, t.takeHome],
   },
   {
     name: 'PhilHealth — Philippine Health Insurance Corporation',
@@ -48,6 +53,18 @@ const agencies = [
     usedBy: [t.thirteenth, t.holidayPay, t.nightDiff, t.overtime, t.finalPay],
   },
   {
+    name: 'NWPC — National Wages and Productivity Commission / Regional Tripartite Wages and Productivity Boards',
+    links: [
+      { label: 'Summary of Current Regional Daily Minimum Wage Rates (September 2, 2026)', url: 'https://nwpc.dole.gov.ph/wp-content/uploads/2026/09/Summary-of-Current-Regl-MWRs-Non-Agri-and-Agri-by-Region-Sep_2026-1.pdf' },
+      { label: 'Latest Wage Orders Issued by the Regional Boards (matrix, September 11, 2026)', url: 'https://nwpc.dole.gov.ph/wp-content/uploads/2026/09/Latest-Wage-Order-Matrix-11-September-2026.pdf' },
+      { label: 'Wage Order No. NCR-28 (September 7, 2026)', url: 'https://nwpc.dole.gov.ph/wp-content/uploads/2026/09/Wage-Order-No.-NCR-28.pdf' },
+      { label: 'Wage Order No. NCR-26 (June 24, 2025)', url: 'https://nwpc.dole.gov.ph/wp-content/uploads/2025/06/01.-Wage-Order-No.-NCR-26.pdf' },
+      { label: 'Monthly minimum wage for kasambahay by region (September 2026)', url: 'https://nwpc.dole.gov.ph/wp-content/uploads/2026/09/Current-Monthly-MW-for-DW-as-of-September_2026.pdf' },
+      { label: 'DOLE Handbook on Workers’ Statutory Monetary Benefits, 2024 edition (NWPC mirror; monthly-equivalent factors)', url: 'https://nwpc.dole.gov.ph/wp-content/uploads/2024/11/Workers-Statutory-Monetary-Benefits-Handbook-2024-Edition.pdf' },
+    ],
+    usedBy: [t.minimumWage],
+  },
+  {
     name: 'Malacañang / Presidential Communications Office',
     links: [
       { label: 'Proclamation No. 1427, s. 2026 (2027 holidays)', url: 'https://pco.gov.ph/issuances/proclamation-no-1427-declaring-the-regular-holidays-and-special-non-working-days-for-the-year-2027/' },
@@ -71,7 +88,7 @@ const agencies = [
       { label: 'Schedule of Licensure Examinations for 2026 (Resolution No. 2113, s. 2025)', url: 'https://www.prc.gov.ph/article/schedule-licensure-examinations-year-2026' },
       { label: 'PRC main site / LERIS', url: 'https://www.prc.gov.ph/' },
     ],
-    usedBy: [t.prc, t.nursingSchedule, t.letSchedule, t.criminologySchedule, t.cpaSchedule, t.civilEngSchedule, t.physicianSchedule, t.pharmacySchedule, t.midwiferySchedule, t.psychometricianSchedule, t.radtechSchedule, t.medtechSchedule],
+    usedBy: [t.prc, t.nursingSchedule, t.letSchedule, t.criminologySchedule, t.cpaSchedule, t.civilEngSchedule, t.physicianSchedule, t.pharmacySchedule, t.midwiferySchedule, t.psychometricianSchedule, t.radtechSchedule, t.medtechSchedule, t.electricalSchedule, t.mechanicalSchedule, t.architectureSchedule, t.electronicsSchedule, t.dentistrySchedule, t.socialWorkSchedule],
   },
   {
     name: 'Republic Acts cited on the board exam pages (via the Arellano Law Foundation’s LawPhil archive)',
@@ -87,9 +104,15 @@ const agencies = [
       { label: 'RA 10029 — Philippine Psychology Act of 2009', url: 'https://lawphil.net/statutes/repacts/ra2010/ra_10029_2010.html' },
       { label: 'RA 7431 — Radiologic Technology Act of 1992', url: 'https://lawphil.net/statutes/repacts/ra1992/ra_7431_1992.html' },
       { label: 'RA 5527 — Philippine Medical Technology Act of 1969 (as amended by RA 6138, PD 498, PD 1534)', url: 'https://lawphil.net/statutes/repacts/ra1969/ra_5527_1969.html' },
+      { label: 'RA 7920 — New Electrical Engineering Law (1995)', url: 'https://lawphil.net/statutes/repacts/ra1995/ra_7920_1995.html' },
+      { label: 'RA 8495 — Philippine Mechanical Engineering Act of 1998', url: 'https://lawphil.net/statutes/repacts/ra1998/ra_8495_1998.html' },
+      { label: 'RA 9266 — Architecture Act of 2004', url: 'https://lawphil.net/statutes/repacts/ra2004/ra_9266_2004.html' },
+      { label: 'RA 9292 — Electronics Engineering Law of 2004', url: 'https://lawphil.net/statutes/repacts/ra2004/ra_9292_2004.html' },
+      { label: 'RA 9484 — Philippine Dental Act of 2007 (with Board of Dentistry Res. 02 and 05, s. 2021)', url: 'https://lawphil.net/statutes/repacts/ra2007/ra_9484_2007.html' },
+      { label: 'RA 4373 — Social Work Law of 1965, as amended by RA 5175 and RA 10847', url: 'https://lawphil.net/statutes/repacts/ra1965/ra_4373_1965.html' },
       { label: 'RA 8981 — PRC Modernization Act of 2000 (Boards set passing averages where a law is silent)', url: 'https://lawphil.net/statutes/repacts/ra2000/ra_8981_2000.html' },
     ],
-    usedBy: [t.nursingSchedule, t.letSchedule, t.criminologySchedule, t.cpaSchedule, t.civilEngSchedule, t.physicianSchedule, t.pharmacySchedule, t.midwiferySchedule, t.psychometricianSchedule, t.radtechSchedule, t.medtechSchedule],
+    usedBy: [t.nursingSchedule, t.letSchedule, t.criminologySchedule, t.cpaSchedule, t.civilEngSchedule, t.physicianSchedule, t.pharmacySchedule, t.midwiferySchedule, t.psychometricianSchedule, t.radtechSchedule, t.medtechSchedule, t.electricalSchedule, t.mechanicalSchedule, t.architectureSchedule, t.electronicsSchedule, t.dentistrySchedule, t.socialWorkSchedule],
   },
 ];
 ---

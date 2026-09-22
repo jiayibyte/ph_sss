@@ -1,0 +1,615 @@
+{
+ "meta": {
+  "rule_version": "NWPC Summary of Current Regional Daily Minimum Wage Rates (September 2, 2026) and Latest Wage Order Matrix (September 11, 2026)",
+  "effective_from": "2026-09-22",
+  "effective_to": null,
+  "last_verified": "2026-09-22",
+  "official_source_url": "https://nwpc.dole.gov.ph/stats/summary-of-current-regional-daily-minimum-wage-rates/",
+  "official_source_label": "NWPC — Summary of Current Regional Daily Minimum Wage Rates (nwpc.dole.gov.ph)",
+  "sources": {
+   "summary_pdf": "https://nwpc.dole.gov.ph/wp-content/uploads/2026/09/Summary-of-Current-Regl-MWRs-Non-Agri-and-Agri-by-Region-Sep_2026-1.pdf",
+   "matrix_pdf": "https://nwpc.dole.gov.ph/wp-content/uploads/2026/09/Latest-Wage-Order-Matrix-11-September-2026.pdf",
+   "handbook_2024": "https://nwpc.dole.gov.ph/wp-content/uploads/2024/11/Workers-Statutory-Monetary-Benefits-Handbook-2024-Edition.pdf",
+   "kasambahay_pdf": "https://nwpc.dole.gov.ph/wp-content/uploads/2026/09/Current-Monthly-MW-for-DW-as-of-September_2026.pdf"
+  }
+ },
+ "ncr": {
+  "in_force": {
+   "wage_order": "NCR-26",
+   "effectivity": "2025-07-18",
+   "non_agriculture": 695,
+   "other_tier": 658,
+   "other_tier_label": "Agriculture (plantation and non-plantation), service/retail establishments employing 15 workers or less, manufacturing regularly employing less than 10 workers",
+   "url": "https://nwpc.dole.gov.ph/wp-content/uploads/2025/06/01.-Wage-Order-No.-NCR-26.pdf"
+  },
+  "upcoming": {
+   "wage_order": "NCR-28",
+   "date_issued": "2026-09-07",
+   "date_published": "2026-09-11",
+   "effectivity": null,
+   "effectivity_rule": "15 days after publication in a newspaper of general circulation (Sec. 7) — NWPC has not yet printed the date; expected September 26–27, 2026",
+   "non_agriculture": 755,
+   "other_tier": 718,
+   "increase": 60,
+   "url": "https://nwpc.dole.gov.ph/wp-content/uploads/2026/09/Wage-Order-No.-NCR-28.pdf"
+  },
+  "enjoined": {
+   "wage_order": "NCR-27",
+   "date_issued": "2026-06-23",
+   "nominal_effectivity": "2026-07-25",
+   "non_agriculture": 755,
+   "other_tier": 718,
+   "status": "Never took effect: Status Quo Ante Order of July 24, 2026, then a TRO and a Writ of Preliminary Injunction (August 13, 2026) from RTC Pasig Branch 152, with related litigation before RTC Navotas Branch 287. Its second tranche (₱780/₱743 on January 20, 2027) is likewise suspended.",
+   "url": "https://nwpc.dole.gov.ph/wp-content/uploads/2026/07/Wage-Order-No.-NCR-27.pdf",
+   "nwpc_statement_url": "https://nwpc.dole.gov.ph/nwpcs-official-statement-on-the-injunction-order-issued-by-the-pasig-city-regional-trial-court/"
+  },
+  "cola_note": "All-basic wage: the last separate COLA in NCR (₱10 under WO NCR-21, 2017) was integrated in WO NCR-22 (2018); every order since is 100% basic wage.",
+  "rtwpb_url": "https://nwpc.dole.gov.ph/ncr/"
+ },
+ "regions": [
+  {
+   "id": "ncr",
+   "name": "National Capital Region (Metro Manila)",
+   "wage_order": "NCR-26",
+   "date_issued": "2025-06-24",
+   "effectivity": "2025-07-18",
+   "tiers": [
+    {
+     "label": "Non-agriculture",
+     "rate": 695
+    },
+    {
+     "label": "Agriculture; service/retail with 15 workers or less; manufacturing with less than 10 workers",
+     "rate": 658
+    }
+   ],
+   "notes": "Legally in force on the verification date. WO NCR-27 (₱755/₱718) is under a court injunction and never took effect; WO NCR-28 (₱755/₱718) was published September 11, 2026 and takes effect 15 days after publication.",
+   "upcoming": {
+    "wage_order": "NCR-28",
+    "rates": [
+     {
+      "label": "Non-agriculture",
+      "rate": 755
+     },
+     {
+      "label": "Agriculture; service/retail ≤15 workers; manufacturing <10 workers",
+      "rate": 718
+     }
+    ],
+    "effectivity": null,
+    "expected": "late September 2026"
+   },
+   "wage_order_url": "https://nwpc.dole.gov.ph/wp-content/uploads/2025/06/01.-Wage-Order-No.-NCR-26.pdf",
+   "rtwpb_url": "https://nwpc.dole.gov.ph/ncr/"
+  },
+  {
+   "id": "car",
+   "name": "Cordillera Administrative Region",
+   "wage_order": "CAR-24",
+   "date_issued": "2025-12-02",
+   "effectivity": "2025-12-30",
+   "tiers": [
+    {
+     "label": "All sectors",
+     "rate": 505
+    }
+   ],
+   "wage_order_url": "https://nwpc.dole.gov.ph/wp-content/uploads/2025/12/Wage-Order-No.-CAR-24.pdf",
+   "rtwpb_url": "https://nwpc.dole.gov.ph/car/"
+  },
+  {
+   "id": "r1",
+   "name": "Region I – Ilocos",
+   "wage_order": "RB 1-24",
+   "date_issued": "2025-10-16",
+   "effectivity": "2025-11-19",
+   "tiers": [
+    {
+     "label": "Non-agriculture, 10 or more employees",
+     "rate": 505
+    },
+    {
+     "label": "Non-agriculture with less than 10 employees; agriculture",
+     "rate": 480
+    }
+   ],
+   "wage_order_url": "https://nwpc.dole.gov.ph/wp-content/uploads/2025/11/Wage-Order-No.-RB-1-24.pdf",
+   "rtwpb_url": "https://nwpc.dole.gov.ph/region-i/"
+  },
+  {
+   "id": "r2",
+   "name": "Region II – Cagayan Valley",
+   "wage_order": "RTWPB 2-24",
+   "date_issued": "2025-10-08",
+   "effectivity": "2025-11-05",
+   "tiers": [
+    {
+     "label": "Non-agriculture",
+     "rate": 500
+    },
+    {
+     "label": "Agriculture",
+     "rate": 500
+    }
+   ],
+   "wage_order_url": "https://nwpc.dole.gov.ph/wp-content/uploads/2025/10/Wage-Order-No.-RTWPB-2-24.pdf",
+   "rtwpb_url": "https://nwpc.dole.gov.ph/region-ii/"
+  },
+  {
+   "id": "r3",
+   "name": "Region III – Central Luzon",
+   "wage_order": "RBIII-26",
+   "date_issued": "2025-09-16",
+   "effectivity": "2025-10-30",
+   "second_tranche_effectivity": "2026-04-16",
+   "tiers": [
+    {
+     "label": "Non-agriculture",
+     "rate": 600,
+     "group": "Bataan, Bulacan, Nueva Ecija, Pampanga, Tarlac, Zambales"
+    },
+    {
+     "label": "Agriculture",
+     "rate": 570,
+     "group": "Bataan, Bulacan, Nueva Ecija, Pampanga, Tarlac, Zambales"
+    },
+    {
+     "label": "Retail/service",
+     "rate": 590,
+     "group": "Bataan, Bulacan, Nueva Ecija, Pampanga, Tarlac, Zambales"
+    },
+    {
+     "label": "Non-agriculture",
+     "rate": 560,
+     "group": "Aurora"
+    },
+    {
+     "label": "Agriculture",
+     "rate": 545,
+     "group": "Aurora"
+    },
+    {
+     "label": "Retail/service",
+     "rate": 515,
+     "group": "Aurora"
+    }
+   ],
+   "notes": "Rates shown are after the second tranche of April 16, 2026. RTWPB-III opened a new wage review with public hearings from October 5 to November 11, 2026.",
+   "wage_order_url": "https://nwpc.dole.gov.ph/wp-content/uploads/2025/10/Wage-Order-No.-RBIII-26.pdf",
+   "rtwpb_url": "https://nwpc.dole.gov.ph/region-iii/"
+  },
+  {
+   "id": "r4a",
+   "name": "Region IV-A – CALABARZON",
+   "wage_order": "IVA-22",
+   "date_issued": "2025-09-03",
+   "effectivity": "2025-10-05",
+   "second_tranche_effectivity": "2026-04-01",
+   "tiers": [
+    {
+     "label": "Non-agriculture",
+     "rate": 600,
+     "group": "Extended metropolitan area, component cities, Rosario (Cavite)"
+    },
+    {
+     "label": "Non-agriculture",
+     "rate": 550,
+     "group": "First-class municipalities (incl. those reclassified under DOF DO 074-2024)"
+    },
+    {
+     "label": "Non-agriculture",
+     "rate": 525,
+     "group": "Second- to fifth-class municipalities"
+    },
+    {
+     "label": "Agriculture",
+     "rate": 525,
+     "group": "Extended metropolitan area, component cities, first-class municipalities"
+    },
+    {
+     "label": "Agriculture",
+     "rate": 508,
+     "group": "Second- to fifth-class municipalities"
+    },
+    {
+     "label": "Retail/service with not more than 10 workers",
+     "rate": 508,
+     "group": "All areas"
+    }
+   ],
+   "notes": "Rates shown are after the tranche of April 1, 2026. RTWPB IV-A held public hearings in August–September 2026 on new petitions.",
+   "wage_order_url": "https://nwpc.dole.gov.ph/wp-content/uploads/2025/09/Wage-Order-No.-IVA-22_compressed.pdf",
+   "rtwpb_url": "https://nwpc.dole.gov.ph/region-iva/"
+  },
+  {
+   "id": "r4b",
+   "name": "Region IV-B – MIMAROPA",
+   "wage_order": "RB-MIMAROPA-13",
+   "date_issued": "2025-12-04",
+   "effectivity": "2026-01-01",
+   "tiers": [
+    {
+     "label": "All establishments",
+     "rate": 455
+    }
+   ],
+   "wage_order_url": "https://nwpc.dole.gov.ph/wp-content/uploads/2025/12/Wage-Order-No.-MIMAROPA-13.pdf",
+   "rtwpb_url": "https://nwpc.dole.gov.ph/region-ivb/"
+  },
+  {
+   "id": "r5",
+   "name": "Region V – Bicol",
+   "wage_order": "RBV-23",
+   "date_issued": "2026-03-03",
+   "effectivity": "2026-04-08",
+   "tiers": [
+    {
+     "label": "All sectors",
+     "rate": 455
+    }
+   ],
+   "upcoming": {
+    "wage_order": "RBV-23 second tranche",
+    "rates": [
+     {
+      "label": "All sectors",
+      "rate": 480
+     }
+    ],
+    "effectivity": "2026-12-01"
+   },
+   "wage_order_url": "https://nwpc.dole.gov.ph/wp-content/uploads/2026/03/Wage-Order-No.-RBV-23.pdf",
+   "rtwpb_url": "https://nwpc.dole.gov.ph/region-v/"
+  },
+  {
+   "id": "r6",
+   "name": "Region VI – Western Visayas",
+   "wage_order": "RBVI-29",
+   "date_issued": "2025-10-23",
+   "effectivity": "2025-11-19",
+   "tiers": [
+    {
+     "label": "Non-agriculture (industrial/commercial), more than 10 workers",
+     "rate": 550
+    },
+    {
+     "label": "Non-agriculture, 10 workers or less",
+     "rate": 525
+    },
+    {
+     "label": "Agriculture",
+     "rate": 520
+    }
+   ],
+   "notes": "Workers' petitions for a ₱250 increase plus COLA are under review (stakeholders' dialogue July 21, 2026).",
+   "coverage": "Aklan, Antique, Capiz, Guimaras, Iloilo and Negros Occidental, including Iloilo City and Bacolod City.",
+   "wage_order_url": "https://nwpc.dole.gov.ph/wp-content/uploads/2025/11/Wage-Order-No.-RBVI-29.pdf",
+   "rtwpb_url": "https://nwpc.dole.gov.ph/region-vi/"
+  },
+  {
+   "id": "nir",
+   "name": "Negros Island Region",
+   "wage_order": "—",
+   "date_issued": null,
+   "effectivity": null,
+   "tiers": [],
+   "notes": "No NIR wage order yet — the regional board was only constituted in July 2026. Negros Occidental (incl. Bacolod) follows Region VI (RBVI-29); Negros Oriental and Siquijor follow Region VII Class B (₱500).",
+   "wage_order_url": "https://nwpc.dole.gov.ph/region-nir/",
+   "rtwpb_url": "https://nwpc.dole.gov.ph/region-nir/"
+  },
+  {
+   "id": "r7",
+   "name": "Region VII – Central Visayas",
+   "wage_order": "ROVII-26",
+   "date_issued": "2025-09-11",
+   "effectivity": "2025-10-04",
+   "tiers": [
+    {
+     "label": "Class A",
+     "rate": 540,
+     "group": "Cities of Carcar, Cebu, Danao, Lapu-Lapu, Mandaue, Naga, Talisay; Compostela, Consolacion, Cordova, Liloan, Minglanilla, San Fernando"
+    },
+    {
+     "label": "Class B",
+     "rate": 500,
+     "group": "All other cities and municipalities (incl. Bais, Bayawan, Bogo, Canlaon, Dumaguete, Guihulngan, Tagbilaran, Tanjay, Toledo)"
+    }
+   ],
+   "notes": "No sector split — rates depend on location class. RTWPB-VII started a new wage determination with hearings in August–September 2026.",
+   "wage_order_url": "https://nwpc.dole.gov.ph/wp-content/uploads/2025/09/Wage-Order-No.-ROVII-26.pdf",
+   "rtwpb_url": "https://nwpc.dole.gov.ph/region-vii/"
+  },
+  {
+   "id": "r8",
+   "name": "Region VIII – Eastern Visayas",
+   "wage_order": "RB VIII-25",
+   "date_issued": "2025-11-10",
+   "effectivity": "2025-12-08",
+   "second_tranche_effectivity": "2026-06-01",
+   "tiers": [
+    {
+     "label": "Non-agriculture; service/retail with more than 10 workers",
+     "rate": 470
+    },
+    {
+     "label": "Service/retail with 1–10 workers; cottage/handicraft; agriculture",
+     "rate": 440
+    }
+   ],
+   "wage_order_url": "https://nwpc.dole.gov.ph/wp-content/uploads/2025/11/Wage-Order-No.-RB-VIII-25.pdf",
+   "rtwpb_url": "https://nwpc.dole.gov.ph/region-viii/"
+  },
+  {
+   "id": "r9",
+   "name": "Region IX – Zamboanga Peninsula",
+   "wage_order": "RIX-24",
+   "date_issued": "2025-11-24",
+   "effectivity": "2026-01-01",
+   "second_tranche_effectivity": "2026-06-01",
+   "tiers": [
+    {
+     "label": "Non-agriculture, incl. retail/service with 10 or more workers",
+     "rate": 464
+    },
+    {
+     "label": "Agriculture, incl. retail/service with 1–9 workers",
+     "rate": 451
+    }
+   ],
+   "wage_order_url": "https://nwpc.dole.gov.ph/wp-content/uploads/2025/12/Wage-Order-No.-RIX-24.pdf",
+   "rtwpb_url": "https://nwpc.dole.gov.ph/region-ix/"
+  },
+  {
+   "id": "r10",
+   "name": "Region X – Northern Mindanao",
+   "wage_order": "RX-24",
+   "date_issued": "2025-12-15",
+   "effectivity": "2026-01-16",
+   "second_tranche_effectivity": "2026-05-01",
+   "tiers": [
+    {
+     "label": "Wage Category I",
+     "rate": 500,
+     "group": "Cagayan de Oro, Iligan, Malaybalay, Valencia, Gingoog, El Salvador, Ozamiz; Tagoloan, Villanueva, Jasaan, Opol, Maramag, Quezon, Manolo Fortich, Lugait"
+    },
+    {
+     "label": "Wage Category II",
+     "rate": 485,
+     "group": "All other areas; all retail/service establishments with 10 workers or less"
+    }
+   ],
+   "notes": "No agriculture/non-agriculture split. Sectoral consultations for the next order began September 11, 2026.",
+   "wage_order_url": "https://nwpc.dole.gov.ph/wp-content/uploads/2025/12/Wage-Order-No.-RX-24.pdf",
+   "rtwpb_url": "https://nwpc.dole.gov.ph/region-x/"
+  },
+  {
+   "id": "r11",
+   "name": "Region XI – Davao",
+   "wage_order": "RB XI-24",
+   "date_issued": "2026-02-19",
+   "effectivity": "2026-03-13",
+   "second_tranche_effectivity": "2026-09-01",
+   "tiers": [
+    {
+     "label": "Non-agriculture",
+     "rate": 540
+    },
+    {
+     "label": "Agriculture",
+     "rate": 525
+    }
+   ],
+   "notes": "Rates shown are after the second tranche of September 1, 2026.",
+   "wage_order_url": "https://nwpc.dole.gov.ph/wp-content/uploads/2026/02/Wage-Order-No.-RB-XI-24.pdf",
+   "rtwpb_url": "https://nwpc.dole.gov.ph/region-xi/"
+  },
+  {
+   "id": "r12",
+   "name": "Region XII – SOCCSKSARGEN",
+   "wage_order": "RB XII-25",
+   "date_issued": "2025-09-22",
+   "effectivity": "2025-11-02",
+   "second_tranche_effectivity": "2025-12-15",
+   "tiers": [
+    {
+     "label": "Non-agriculture; retail/service",
+     "rate": 460
+    },
+    {
+     "label": "Agriculture",
+     "rate": 443
+    }
+   ],
+   "notes": "Sectoral consultations for the next order concluded in September 2026; public hearings to follow.",
+   "wage_order_url": "https://nwpc.dole.gov.ph/wp-content/uploads/2025/10/Wage-Order-No.-RBXII-25.pdf",
+   "rtwpb_url": "https://nwpc.dole.gov.ph/region-xii/"
+  },
+  {
+   "id": "r13",
+   "name": "Region XIII – Caraga",
+   "wage_order": "RXIII-20",
+   "date_issued": "2025-12-09",
+   "effectivity": "2026-01-03",
+   "second_tranche_effectivity": "2026-05-01",
+   "tiers": [
+    {
+     "label": "All sectors",
+     "rate": 475
+    }
+   ],
+   "wage_order_url": "https://nwpc.dole.gov.ph/wp-content/uploads/2025/12/Wage-Order-No.-RXIII-20.pdf",
+   "rtwpb_url": "https://nwpc.dole.gov.ph/region-xiii/"
+  },
+  {
+   "id": "barmm",
+   "name": "BARMM – Bangsamoro",
+   "wage_order": "BARMM-05",
+   "date_issued": "2026-07-15",
+   "effectivity": "2026-08-06",
+   "second_tranche_effectivity": "2026-12-01",
+   "tiers": [
+    {
+     "label": "Non-agriculture",
+     "rate": 436,
+     "group": "Cotabato City, Lamitan City, Marawi City"
+    },
+    {
+     "label": "Agriculture",
+     "rate": 411,
+     "group": "Cotabato City, Lamitan City, Marawi City"
+    },
+    {
+     "label": "Non-agriculture",
+     "rate": 411,
+     "group": "Maguindanao del Norte and del Sur, Lanao del Sur (excl. Marawi), Basilan (excl. Lamitan), Tawi-Tawi, Special Geographic Area"
+    },
+    {
+     "label": "Agriculture",
+     "rate": 401,
+     "group": "Maguindanao del Norte and del Sur, Lanao del Sur (excl. Marawi), Basilan (excl. Lamitan), Tawi-Tawi, Special Geographic Area"
+    }
+   ],
+   "upcoming": {
+    "wage_order": "BARMM-05 second tranche",
+    "rates": [
+     {
+      "label": "Non-agriculture",
+      "rate": 461,
+      "group": "Cities"
+     },
+     {
+      "label": "Agriculture",
+      "rate": 436,
+      "group": "Cities"
+     },
+     {
+      "label": "Non-agriculture",
+      "rate": 436,
+      "group": "Other areas"
+     },
+     {
+      "label": "Agriculture",
+      "rate": 426,
+      "group": "Other areas"
+     }
+    ],
+    "effectivity": "2026-12-01"
+   },
+   "wage_order_url": "https://nwpc.dole.gov.ph/wp-content/uploads/2026/07/Wage-Order-No.-BARMM-05.pdf",
+   "rtwpb_url": "https://nwpc.dole.gov.ph/barmm/"
+  }
+ ],
+ "kasambahay_monthly": [
+  {
+   "region": "NCR",
+   "monthly": 7800,
+   "wage_order": "NCR-DW-06",
+   "effectivity": "2026-02-07"
+  },
+  {
+   "region": "CAR",
+   "monthly": 6600
+  },
+  {
+   "region": "Region I",
+   "monthly": 6700
+  },
+  {
+   "region": "Region II",
+   "monthly": 6500
+  },
+  {
+   "region": "Region III",
+   "monthly": 6500
+  },
+  {
+   "region": "Region IV-A",
+   "monthly": 6750
+  },
+  {
+   "region": "Region IV-B",
+   "monthly": 7000
+  },
+  {
+   "region": "Region V",
+   "monthly": 6000
+  },
+  {
+   "region": "Region VI",
+   "monthly": 6500
+  },
+  {
+   "region": "Region VII",
+   "monthly": 7000
+  },
+  {
+   "region": "Region VIII",
+   "monthly": 6400,
+   "note": "₱5,800 outside chartered cities and first-class municipalities"
+  },
+  {
+   "region": "Region IX",
+   "monthly": 6000,
+   "note": "₱5,500 outside chartered cities and first-class municipalities"
+  },
+  {
+   "region": "Region X",
+   "monthly": 6500
+  },
+  {
+   "region": "Region XI",
+   "monthly": 6500
+  },
+  {
+   "region": "Region XII",
+   "monthly": 6000
+  },
+  {
+   "region": "Region XIII",
+   "monthly": 6500
+  },
+  {
+   "region": "BARMM",
+   "monthly": 5500
+  }
+ ],
+ "divisors": {
+  "source": "https://nwpc.dole.gov.ph/wp-content/uploads/2024/11/Workers-Statutory-Monetary-Benefits-Handbook-2024-Edition.pdf",
+  "source_label": "DOLE Handbook on Workers' Statutory Monetary Benefits, 2024 edition, pp. 9–11",
+  "options": [
+   {
+    "id": "365",
+    "factor": 365,
+    "label": "Monthly-paid — paid every day of the month incl. rest days and holidays",
+    "breakdown": "293 ordinary working days + 52 rest days + 12 regular holidays + 8 special days"
+   },
+   {
+    "id": "395",
+    "factor": 395,
+    "label": "Daily-paid — works every day incl. rest days and holidays",
+    "breakdown": "293 + 67.6 (52 rest days × 1.3) + 24 (12 regular holidays × 2) + 10.4 (8 special days × 1.3)"
+   },
+   {
+    "id": "313",
+    "factor": 313,
+    "label": "Daily-paid — 6-day week, rest days unpaid, holidays paid",
+    "breakdown": "293 ordinary working days + 12 regular holidays + 8 special days"
+   },
+   {
+    "id": "261",
+    "factor": 261,
+    "label": "Daily-paid — 5-day week, Saturdays and Sundays unpaid",
+    "breakdown": "241 ordinary working days + 12 regular holidays + 8 special days"
+   }
+  ],
+  "alternates_note": "Factor 305 instead of 313, or 253 instead of 261, when the 8 special (non-working) days are not paid.",
+  "nwpc_practice": "NWPC's own press releases convert daily rates with factor 313 (e.g. ₱455 × 313 ÷ 12 = ₱11,868)."
+ },
+ "coverage": {
+  "applies_to": "All private-sector workers receiving the minimum wage, regardless of position, designation, status or method of payment (Handbook p. 6; WO NCR-28 Sec. 4).",
+  "exempt_bmbe": "Duly registered Barangay Micro Business Enterprises with a Certificate of Authority (RA 10644) are not covered by the minimum wage law; their workers keep SSS, PhilHealth and Pag-IBIG coverage.",
+  "retail_service_le10": "Retail/service establishments regularly employing not more than 10 workers, and establishments hit by calamities, may APPLY to the regional board within 75 days of the order's publication for a one-year exemption; it is not automatic. If denied, the increase is owed retroactively with 1% interest per month.",
+  "kasambahay": "Domestic workers are covered by RA 10361 (Batas Kasambahay) with separate MONTHLY minimum wages set by the regional boards, not by these daily orders.",
+  "penalty": "RA 8188 double indemnity: the unpaid difference is owed twice over, plus a fine of ₱25,000–₱100,000 and/or imprisonment."
+ }
+}

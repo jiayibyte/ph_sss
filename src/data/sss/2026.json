@@ -49,6 +49,49 @@
    "split": false
   }
  },
+ "benefits": {
+  "pension": {
+   "base": 300,
+   "amsc_pct": 0.2,
+   "per_cys_pct": 0.02,
+   "cys_threshold": 10,
+   "flat_pct": 0.4,
+   "floor": 1000,
+   "min_cys10": 1200,
+   "min_cys20": 2400,
+   "min_contributions": 120,
+   "dependent_pct": 0.1,
+   "dependent_min": 250,
+   "max_dependents": 5,
+   "additional_benefit": 1000,
+   "source_note": "RA 11199, Sec. 12(a)-(c) (monthly pension, minimums, ₱1,000 additional benefit allowance), Sec. 12-A (dependents' pension), Sec. 12-B (retirement), Sec. 8(g) (benefit MSC cap ₱20,000), Sec. 8(m) (AMSC), Sec. 8(q) (CYS); 13th-month pension per sss.gov.ph/retirement-benefit/",
+   "source_url": "https://www.sss.gov.ph/retirement-benefit/"
+  },
+  "maternity": {
+   "days_live_birth": 105,
+   "days_solo_parent_extra": 15,
+   "days_miscarriage": 60,
+   "top_msc_count": 6,
+   "divisor": 180,
+   "min_contributions": 3,
+   "source_note": "RA 11210, Sec. 3 and 5 (105/120/60 days, 3-contribution rule, salary differential); RA 11199, Sec. 8(n) (ADSC = six highest MSCs in the 12 months before the semester of contingency ÷ 180) and Sec. 8(g) (benefit MSC cap ₱20,000); official example on sss.gov.ph/maternity-benefit/: MSC ₱16,000 × 6 ÷ 180 × 105 = ₱56,000",
+   "source_url": "https://www.sss.gov.ph/maternity-benefit/"
+  },
+  "salary_loan": {
+   "interest_pa": 0.08,
+   "interest_pa_renewal_condoned": 0.1,
+   "service_fee_pct": 0.01,
+   "term_months": 24,
+   "one_month_min_contributions": 36,
+   "two_month_min_contributions": 72,
+   "recent_contributions_required": 6,
+   "penalty_per_month": 0.01,
+   "amortization_start_offset_months": 2,
+   "min_net_proceeds": 2000,
+   "source_note": "SSS Circular No. 2025-004 (Guidelines of the SSS Salary Loan Program, effective 16 June 2025): 8% p.a. diminishing (10% for renewals with penalty condonation in the past 5 years); loan base = average of 12 latest posted Regular SS MSCs rounded up to the next MSC; pro-rated interest to the end of the month before the first amortization month deducted in advance; 24 equal amortizations starting the 2nd month after approval",
+   "source_url": "https://www.sss.gov.ph/salary-loan/"
+  }
+ },
  "table": {
   "employee": [
    {

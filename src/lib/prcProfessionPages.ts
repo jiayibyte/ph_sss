@@ -550,4 +550,305 @@ export const PROFESSION_PAGES: ProfessionPage[] = [
       },
     ],
   },
+  {
+    slug: 'electrical-engineering',
+    groupId: 'electrical-engineering',
+    exams: ['Registered Electrical Engineers', 'Registered Electrical Engineers (2nd exam)'],
+    toolKey: 'electricalSchedule',
+    title: 'Electrical Engineering Board Exam Schedule 2026 – REE Dates',
+    h1: 'Electrical Engineering Board Exam Schedule 2026 (REE)',
+    examName: 'Registered Electrical Engineer Licensure Examination (REE)',
+    shortName: 'REE board exam',
+    headingName: 'REE Board Exam',
+    taglishName: 'board exam ng electrical engineering',
+    board: 'Board of Electrical Engineering',
+    law: {
+      label: 'RA 7920',
+      title: 'New Electrical Engineering Law (1995)',
+      url: 'https://lawphil.net/statutes/repacts/ra1995/ra_7920_1995.html',
+    },
+    passing: {
+      text: 'A general weighted average of 70% with no grade below 50% in any group of subjects. An examinee may retake, any number of times, only the subject groups scored below 50%, and passes on reaching a 70% average in the repeated subjects (Sec. 21). The Registered Master Electrician exam uses the same 70%/50% rule (Sec. 19(c)).',
+      cite: { label: 'RA 7920, Sec. 19(b) and Sec. 21', url: 'https://lawphil.net/statutes/repacts/ra1995/ra_7920_1995.html' },
+    },
+    parts: {
+      text: 'Three subject groups weighted by the law: Mathematics 25%; Engineering Sciences and Allied Subjects 30%; Electrical Engineering Professional Subjects 45% (RA 7920, Sec. 19(b)). From the September 2026 exam PRC gives them over two days in the order Engineering Sciences, then Professional Subjects, then Mathematics. The one-day RME exam that follows covers Technical Subjects 50% and the Philippine Electrical Code Parts 1 and 2 50%.',
+      cite: {
+        label: 'PRC — September 2026 REE/RME Program of Examination',
+        url: 'https://www.prc.gov.ph/sites/default/files/exam%20program%20september%202026%20(electrical).pdf',
+      },
+    },
+    requirements: {
+      items: [
+        'be a Filipino citizen',
+        'be at least 21 years old',
+        'be of good reputation with high moral values',
+        'have no final conviction for an offense involving moral turpitude',
+        'hold a Bachelor of Science in Electrical Engineering from a government-recognised and accredited school',
+      ],
+      cite: { label: 'RA 7920, Sec. 17', url: 'https://lawphil.net/statutes/repacts/ra1995/ra_7920_1995.html' },
+    },
+    retake: {
+      text: 'There is no limit and no refresher course: an applicant retakes only the subject groups scored below 50%, as many times as needed, and passes on averaging 70% in them.',
+      cite: { label: 'RA 7920, Sec. 21', url: 'https://lawphil.net/statutes/repacts/ra1995/ra_7920_1995.html' },
+    },
+    extraFaqs: [
+      {
+        q: 'What was the passing rate in the September 2026 REE board exam?',
+        a: 'REE: 1,676 of 3,399 passed (49.31%). RME: 715 of 961 passed (74.40%). PRC released both on September 14, 2026 from 17 testing centers; four results were withheld and online registration for the new engineers starts October 12, 2026. Source: <a href="https://www.prc.gov.ph/article/september-2026-registered-electrical-engineers-and-registered-master-electricians-licensure" target="_blank" rel="noopener">prc.gov.ph</a>.',
+      },
+      {
+        q: 'Is the Registered Master Electrician (RME) exam on the same dates?',
+        a: 'The RME exam is a separate one-day exam under the same law, normally given the day after the two REE days (September 7, 2026 for the second round). It is listed as its own row on the PRC Board Exam Schedule page.',
+      },
+    ],
+  },
+  {
+    slug: 'mechanical-engineering',
+    groupId: 'mechanical-engineering',
+    exams: ['Mechanical Engineers', 'Mechanical Engineers (2nd exam)'],
+    toolKey: 'mechanicalSchedule',
+    title: 'Mechanical Engineering Board Exam Schedule 2026 – ME Dates',
+    h1: 'Mechanical Engineering Board Exam Schedule 2026',
+    examName: 'Mechanical Engineer Licensure Examination',
+    shortName: 'ME board exam',
+    headingName: 'Mechanical Engineering Board Exam',
+    taglishName: 'board exam ng mechanical engineering',
+    board: 'Board of Mechanical Engineering',
+    law: {
+      label: 'RA 8495',
+      title: 'Philippine Mechanical Engineering Act of 1998',
+      url: 'https://lawphil.net/statutes/repacts/ra1998/ra_8495_1998.html',
+    },
+    passing: {
+      text: 'An average of 70% on all subjects with no rating below 50% in any subject, for Professional Mechanical Engineer, Mechanical Engineer and Certified Plant Mechanic candidates alike. There is no conditional pass in the law.',
+      cite: { label: 'RA 8495, Sec. 18', url: 'https://lawphil.net/statutes/repacts/ra1998/ra_8495_1998.html' },
+    },
+    parts: {
+      text: 'Three subjects over three days on PRC’s program: Power Plant Engineering 35%; Mathematics with Engineering Economics and Basic Engineering Sciences 35%; Machine Design, Materials and Shop Practice 30%. RA 8495, Sec. 17 names the subjects without weights; the weights come from Board Resolution No. 57, s. 2013.',
+      cite: {
+        label: 'PRC — February 2026 Mechanical Engineers Program of Examination',
+        url: 'https://www.prc.gov.ph/sites/default/files/RA%20-%20MECHANICAL%20ENGINEER%20FEB%202026_merged.pdf',
+      },
+    },
+    requirements: {
+      items: [
+        'be a Filipino citizen',
+        'have no conviction for a crime involving moral turpitude',
+        'hold a Bachelor of Science in Mechanical Engineering from a government-recognised school — no age or experience requirement for the ME exam (experience applies to the PME and CPM exams)',
+      ],
+      cite: { label: 'RA 8495, Sec. 15', url: 'https://lawphil.net/statutes/repacts/ra1998/ra_8495_1998.html' },
+    },
+    retake: {
+      text: 'An applicant who fails for the third time may take the examination again only after one year has passed. No refresher course is required by the law.',
+      cite: { label: 'RA 8495, Sec. 20', url: 'https://lawphil.net/statutes/repacts/ra1998/ra_8495_1998.html' },
+    },
+    extraFaqs: [
+      {
+        q: 'What was the passing rate in the August 2026 mechanical engineering board exam?',
+        a: 'ME: 1,362 of 3,686 passed (36.95%). CPM (computer-based): 109 of 142 passed (76.76%). PRC released the results on August 13, 2026 from 15 testing centers; online registration opens October 15, 2026. Source: <a href="https://www.prc.gov.ph/article/august-2026-mechanical-engineers-and-certified-plant-mechanics-licensure-exams-results" target="_blank" rel="noopener">prc.gov.ph</a>.',
+      },
+    ],
+  },
+  {
+    slug: 'architecture',
+    groupId: 'architecture',
+    toolKey: 'architectureSchedule',
+    title: 'Architecture Board Exam Schedule 2026 – Dates & Results',
+    h1: 'Architecture Board Exam Schedule 2026 (LEA)',
+    examName: 'Licensure Examination for Architects (LEA)',
+    shortName: 'architecture board exam',
+    headingName: 'Architecture Board Exam',
+    taglishName: 'board exam ng architecture',
+    board: 'Professional Regulatory Board of Architecture',
+    law: {
+      label: 'RA 9266',
+      title: 'Architecture Act of 2004',
+      url: 'https://lawphil.net/statutes/repacts/ra2004/ra_9266_2004.html',
+    },
+    passing: {
+      text: 'A weighted general average of 70% with no grade lower than 50% in any subject. There is no conditional pass in the law.',
+      cite: { label: 'RA 9266, Sec. 15', url: 'https://lawphil.net/statutes/repacts/ra2004/ra_9266_2004.html' },
+    },
+    parts: {
+      text: 'Three subjects on PRC’s program, over two exam days: History and Theory of Architecture, Principles of Planning and Architectural Practice 30%; Utilities, Structural Conceptualization, Building Materials and Technology 30%; Architectural Design and Site Planning 40% (the all-day design exam on the second day). RA 9266, Sec. 14 lists four subject groups that the Board has reclustered into these three.',
+      cite: {
+        label: 'PRC — January 2026 Program of Examination for Architects',
+        url: 'https://www.prc.gov.ph/sites/default/files/January%202026%20Examination%20Program%20for%20Architects_rev.pdf',
+      },
+    },
+    requirements: {
+      items: [
+        'be a Filipino citizen, or a foreign citizen qualified under the reciprocity rule in Sec. 27',
+        'be of good moral character',
+        'hold a Bachelor of Science in Architecture from a CHED-recognised school and have at least two years of diversified architectural experience certified by a registered architect — a master’s degree in architecture counts as one year',
+        'have no conviction for a criminal offense involving moral turpitude',
+      ],
+      cite: { label: 'RA 9266, Sec. 13', url: 'https://lawphil.net/statutes/repacts/ra2004/ra_9266_2004.html' },
+    },
+    retake: {
+      text: 'RA 9266 sets no limit on retakes and no refresher-course requirement.',
+      cite: { label: 'RA 9266 (full text)', url: 'https://lawphil.net/statutes/repacts/ra2004/ra_9266_2004.html' },
+    },
+    extraFaqs: [
+      {
+        q: 'What was the passing rate in the June 2026 architecture board exam?',
+        a: '2,799 of 3,290 passed (85.08%). PRC released the results on June 26, 2026, two working days after the exam, from 14 testing centers; the Davao City sitting was moved to June 22 and 24 by Resolution No. 2199, s. 2026. Online registration opened August 3, 2026. Source: <a href="https://www.prc.gov.ph/article/june-2026-licensure-examination-architects-results-released-two-2-working-days" target="_blank" rel="noopener">prc.gov.ph</a>.',
+      },
+    ],
+  },
+  {
+    slug: 'electronics-engineering',
+    groupId: 'electronics-engineering',
+    exams: ['Electronics Engineers', 'Electronics Engineers (2nd exam)'],
+    toolKey: 'electronicsSchedule',
+    title: 'ECE Board Exam Schedule 2026 – Electronics Engineer Dates',
+    h1: 'ECE Board Exam Schedule 2026 (Electronics Engineer Licensure Exam)',
+    examName: 'Electronics Engineer Licensure Examination (ECE)',
+    shortName: 'ECE board exam',
+    headingName: 'ECE Board Exam',
+    taglishName: 'board exam ng ECE',
+    board: 'Professional Regulatory Board of Electronics Engineering',
+    law: {
+      label: 'RA 9292',
+      title: 'Electronics Engineering Law of 2004',
+      url: 'https://lawphil.net/statutes/repacts/ra2004/ra_9292_2004.html',
+    },
+    passing: {
+      text: 'A passing rating of 70% in each subject — not a general average. A candidate who passes the majority of the subjects but scores between 60% and 69% in the others may take one removal examination in those subjects; failing the removal exam means failing the whole examination. The Electronics Technician (ECT) exam uses the same rule.',
+      cite: { label: 'RA 9292, Sec. 16', url: 'https://lawphil.net/statutes/repacts/ra2004/ra_9292_2004.html' },
+    },
+    parts: {
+      text: 'Four subjects over two days, 100 items each, weighted by Board Resolution No. 10, s. 2022: Mathematics 20%; General Engineering and Applied Sciences 20%; Electronics Engineering 30%; Electronics Systems and Technologies 30%. RA 9292, Sec. 15 lists the areas the Board may recluster.',
+      cite: {
+        label: 'PRC — March 2026 ECE Program of Examination',
+        url: 'https://www.prc.gov.ph/sites/default/files/exam%20program%20march%202026%20(ece).pdf',
+      },
+    },
+    requirements: {
+      items: [
+        'be a Filipino citizen, or a foreign citizen qualified under the reciprocity rule in Sec. 33',
+        'be of good moral character with no conviction for a criminal offense involving moral turpitude',
+        'hold a Bachelor of Science in Electronics and Communications Engineering or in Electronics Engineering, or an equivalent engineering course the Board accepts, after a full baccalaureate resident course',
+      ],
+      cite: { label: 'RA 9292, Sec. 14', url: 'https://lawphil.net/statutes/repacts/ra2004/ra_9292_2004.html' },
+    },
+    retake: {
+      text: 'Beyond the single removal examination in Sec. 16, RA 9292 sets no retake limit, waiting period or refresher-course requirement.',
+      cite: { label: 'RA 9292, Sec. 16', url: 'https://lawphil.net/statutes/repacts/ra2004/ra_9292_2004.html' },
+    },
+    extraFaqs: [
+      {
+        q: 'What was the passing rate in the March 2026 ECE board exam?',
+        a: 'ECE: 1,692 of 2,746 passed (61.62%). ECT: 1,907 of 2,440 passed (78.16%). PRC released the results on March 24, 2026 from 15 testing centers; online registration opened April 24, 2026. Source: <a href="https://www.prc.gov.ph/article/march-2026-electronics-engineers-and-electronics-technicians-licensure-examinations-results" target="_blank" rel="noopener">prc.gov.ph</a>.',
+      },
+    ],
+  },
+  {
+    slug: 'dentistry',
+    groupId: 'dentistry',
+    exams: ['Dentists (Written)', 'Dentists (Written, 2nd exam)'],
+    toolKey: 'dentistrySchedule',
+    title: 'Dentistry Board Exam Schedule 2026 – Dates & Results',
+    h1: 'Dentistry Board Exam Schedule 2026 (Dentist Licensure Exam)',
+    examName: 'Dentist Licensure Examination',
+    shortName: 'dentistry board exam',
+    headingName: 'Dentistry Board Exam',
+    taglishName: 'board exam ng dentistry',
+    board: 'Professional Regulatory Board of Dentistry',
+    law: {
+      label: 'RA 9484',
+      title: 'Philippine Dental Act of 2007',
+      url: 'https://lawphil.net/statutes/repacts/ra2007/ra_9484_2007.html',
+    },
+    passing: {
+      text: 'A general weighted average of at least 75% across the written and practical phases, weighted 60% and 40%, with no rating below 50% in the written phase or in any exercise of the practical phase (RA 9484, Sec. 16, as implemented by Board Resolution No. 02, s. 2021 from the December 2021 exam). Both phases are taken as one complete examination; a written result lapses if the practical is not taken within two consecutive practical schedules.',
+      cite: {
+        label: 'Board of Dentistry Resolution No. 02, s. 2021',
+        url: 'https://www.prc.gov.ph/sites/default/files/dentists%20reso2021-02%20published%20(1).pdf',
+      },
+    },
+    parts: {
+      text: 'Written phase (60%), three days in NCR, Baguio, Cebu and Davao: nine subject clusters from General and Oral Anatomy and Physiology (15%) to Periodontics and Endodontics (10%), per PRC’s May 2026 program. Practical phase (40%), NCR only: Class I and Class II cavity preparations, fixed and removable partial denture work and a complete denture on typodonts and mechanical articulators — Board Resolution No. 05, s. 2021 replaced live patients and amalgam. The dates in the table are the written phase; the practical follows the week after.',
+      cite: {
+        label: 'PRC — May 2026 Dentist Licensure Examination Written Phase Program',
+        url: 'https://www.prc.gov.ph/sites/default/files/Revised%20May%202026%20DLE%20Written%20Phase%20Program.pdf',
+      },
+    },
+    requirements: {
+      items: [
+        'be a Filipino citizen, or a foreign citizen whose country lets Filipino dentists practise on the same terms',
+        'have no conviction for an offense involving moral turpitude',
+        'hold a Doctor of Dental Medicine degree, or its equivalent, from a legally constituted and recognised school',
+        'have completed the refresher course required after failing three consecutive licensure examinations, where that applies',
+      ],
+      cite: { label: 'RA 9484, Sec. 14(a)', url: 'https://lawphil.net/statutes/repacts/ra2007/ra_9484_2007.html' },
+    },
+    retake: {
+      text: 'After three consecutive failures the applicant must complete a refresher course before filing again; the law does not fix its length.',
+      cite: { label: 'RA 9484, Sec. 14(a)(4)', url: 'https://lawphil.net/statutes/repacts/ra2007/ra_9484_2007.html' },
+    },
+    extraFaqs: [
+      {
+        q: 'When is the practical phase of the 2026 dentistry board exam?',
+        a: 'The practical phase is held in NCR the week after the written phase: May 11–14, 2026 after the May 4–6 written exam, and November 28 to December 5, 2026 after the November 22–24 written exam, with the results targeted for December 14, 2026 (PRC 2026 schedule of examination).',
+      },
+      {
+        q: 'What was the passing rate in the May 2026 dentistry board exam?',
+        a: '796 of 896 passed (88.84%). PRC released the results on May 20, 2026, four working days after the practical phase; online registration opened July 8, 2026. Source: <a href="https://www.prc.gov.ph/article/may-2026-dentists-licensure-examination-results-released-four-4-working-days" target="_blank" rel="noopener">prc.gov.ph</a>.',
+      },
+    ],
+  },
+  {
+    slug: 'social-work',
+    groupId: 'social-work',
+    toolKey: 'socialWorkSchedule',
+    title: 'Social Work Board Exam Schedule 2026 – Dates & Results',
+    h1: 'Social Work Board Exam Schedule 2026 (SWLE)',
+    examName: 'Social Workers Licensure Examination (SWLE)',
+    shortName: 'social work board exam',
+    headingName: 'Social Work Board Exam',
+    taglishName: 'board exam ng social work',
+    board: 'Professional Regulatory Board for Social Workers',
+    law: {
+      label: 'RA 4373',
+      title: 'Social Work Law of 1965, as amended by RA 5175 and RA 10847',
+      url: 'https://lawphil.net/statutes/repacts/ra1965/ra_4373_1965.html',
+    },
+    passing: {
+      text: 'A general rating of at least 70% in the written test with no rating below 50% in any subject. There is no conditional pass in the law.',
+      cite: { label: 'RA 4373, Sec. 14', url: 'https://lawphil.net/statutes/repacts/ra1965/ra_4373_1965.html' },
+    },
+    parts: {
+      text: 'Five subjects at 20% each over three days on PRC’s program: Human Behavior and Social Environment; Social Welfare Policies, Programs and Services; Social Work Practice I with Field Instruction I; Social Work Methods II (Working with Groups); Social Work Practice III with Field Instruction III (Communities). RA 4373, Sec. 13 leaves the scope of the written test to the Board.',
+      cite: {
+        label: 'PRC — September 2026 SWLE Program of Examination',
+        url: 'https://www.prc.gov.ph/sites/default/files/SWLE%20Program%20Sept%202026%20with%20Memo%202020-57.pdf',
+      },
+    },
+    requirements: {
+      items: [
+        'be a Filipino citizen',
+        'be at least 18 years old — RA 10847 lowered the age from 21 in 2016',
+        'be in good health and of good moral character',
+        'hold a bachelor’s or master’s degree in social work from a duly accredited, legally constituted institution',
+        'have completed at least 1,000 case hours of practical training in an established social work agency under a qualified social worker',
+      ],
+      cite: { label: 'RA 4373, Sec. 12, as amended by RA 10847, Sec. 2', url: 'https://lawphil.net/statutes/repacts/ra2016/ra_10847_2016.html' },
+    },
+    retake: {
+      text: 'RA 4373 and its amendments set no retake limit, waiting period or refresher-course requirement.',
+      cite: { label: 'RA 4373 (full text)', url: 'https://lawphil.net/statutes/repacts/ra1965/ra_4373_1965.html' },
+    },
+    extraFaqs: [
+      {
+        q: 'What was the passing rate in the September 2026 social work board exam?',
+        a: '8,383 of 10,991 passed (76.27%). PRC released the results on September 17, 2026, three working days after the exam, from 18 testing centers; online registration for the new social workers starts November 13, 2026. Source: <a href="https://www.prc.gov.ph/article/september-2026-social-workers-licensure-examination-results-released-three-3-working-days" target="_blank" rel="noopener">prc.gov.ph</a>.',
+      },
+      {
+        q: 'How often is the social work board exam given?',
+        a: 'Once a year (RA 4373, Sec. 11 says the Board gives it annually). In 2026 the domestic sitting was September 9–11, plus a Special Professional Licensure Examination for Filipinos in Hong Kong on May 29–31.',
+      },
+    ],
+  },
 ];

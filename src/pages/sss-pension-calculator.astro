@@ -1,0 +1,168 @@
+---
+import ToolPageLayout from '../layouts/ToolPageLayout.astro';
+import SssPensionCalculator from '../islands/SssPensionCalculator';
+import sssRules from '../data/sss/2026.json';
+import type { SssRules } from '../lib/rules/types';
+import { benefitMscCap, computePension } from '../lib/engine/sssBenefits';
+import { peso } from '../lib/format';
+
+const rules = sssRules as unknown as SssRules;
+const meta = rules.meta;
+const P = rules.benefits.pension;
+const CAP = benefitMscCap(rules); // ₱20,000 — RA 11199 Sec. 8(g)
+const pct = (n: number) => `${Math.round(n * 100)}%`;
+
+/* Reference matrix, computed by the same engine as the calculator. */
+const amscs = [5000, 8000, 10000, 12000, 15000, CAP];
+const years = [10, 15, 20, 30, 40];
+const matrix = amscs.map((a) => ({ amsc: a, cells: years.map((y) => computePension({ amsc: a, cys: y }, rules)) }));
+const ex = computePension({ amsc: 20000, cys: 30 }, rules);
+const max = computePension({ amsc: CAP, cys: 40 }, rules);
+const tenYears = computePension({ amsc: 15000, cys: 10 }, rules);
+
+const LAW = 'https://lawphil.net/statutes/repacts/ra2019/ra_11199_2019.html';
+const SSS_PAGE = P.source_url;
+
+const faqs = [
+  {
+    q: 'How is the SSS pension computed?',
+    a: `Under RA 11199, Sec. 12 the basic monthly pension is the highest of three amounts: (a) ${peso(P.base)} plus ${pct(P.amsc_pct)} of your average monthly salary credit (AMSC) plus ${pct(P.per_cys_pct)} of the AMSC for every credited year of service beyond ${P.cys_threshold}; (b) ${pct(P.flat_pct)} of the AMSC; or (c) ${peso(P.floor)}. The result cannot be lower than ${peso(P.min_cys10)} for members with at least ${P.cys_threshold} credited years or ${peso(P.min_cys20)} for those with at least 20. Example: AMSC ${peso(ex.amsc)} and ${ex.cys} credited years give ${peso(ex.formulaA)} under formula (a), the highest, so the basic pension is ${peso(ex.basicPension)}.`,
+  },
+  {
+    q: 'What is the maximum SSS pension in 2026?',
+    a: `For the pension formula the monthly salary credit counts only up to ${peso(CAP)} — the Regular SS cap in RA 11199, Sec. 8(g); contributions on the ₱20,000–₱35,000 portion go to the MPF provident fund and are paid out as a separate lump sum or annuity. So a member with 40 credited years gets ${peso(max.formulaA)} under formula (a) — ${peso(P.base)} + ${pct(P.amsc_pct)} × ${peso(CAP)} + ${pct(P.per_cys_pct)} × ${peso(CAP)} × 30 years — plus the ${peso(P.additional_benefit)} additional benefit, or ${peso(max.monthlyTotal)} per month before dependents' pension. Each extra credited year adds ${peso(P.per_cys_pct * CAP)}.`,
+  },
+  {
+    q: 'How much SSS pension will I get after 10 years of contributions?',
+    a: `With exactly ${P.cys_threshold} credited years the 2%-per-year term is zero, so the pension is the higher of ${peso(P.base)} + ${pct(P.amsc_pct)} of AMSC or ${pct(P.flat_pct)} of AMSC, but never below ${peso(P.min_cys10)}. For an AMSC of ${peso(tenYears.amsc)} that is ${peso(tenYears.basicPension)} a month (${pct(P.flat_pct)} of AMSC wins), plus the ${peso(P.additional_benefit)} additional benefit.`,
+  },
+  {
+    q: 'What is the minimum SSS pension?',
+    a: `${peso(P.min_cys10)} a month for members with at least ${P.cys_threshold} credited years of service and ${peso(P.min_cys20)} for members with at least 20 credited years (RA 11199, Sec. 12). The ${peso(P.additional_benefit)} additional benefit is paid on top.`,
+  },
+  {
+    q: 'What is the AMSC (average monthly salary credit)?',
+    a: `It is the average of your monthly salary credits — the salary brackets your contributions were based on — over the last 60 months before the semester of retirement, or over your whole membership if that average is higher (RA 11199, Sec. 8(m)). For benefit computation each MSC counts only up to ${peso(CAP)} (Sec. 8(g)), so the AMSC can never exceed ${peso(CAP)} even if you contributed on the ₱35,000 maximum. Because it averages the last five years, raising your MSC in the years just before retirement raises the pension.`,
+  },
+  {
+    q: 'When can I claim the SSS retirement pension?',
+    a: `At 60 if you are separated from employment or have ceased self-employment (optional retirement), or at 65 whether or not you are still working (technical retirement), provided you have at least ${P.min_contributions} monthly contributions before the semester of retirement (RA 11199, Sec. 12-B). With fewer than ${P.min_contributions} contributions SSS pays a lump sum equal to your contributions plus interest, or lets you keep paying as a voluntary member until you reach ${P.min_contributions}. A qualified retiree may also take the first 18 monthly pensions as a discounted lump sum. Pensioners under 65 who go back to work have the pension suspended.`,
+  },
+  {
+    q: 'Do SSS pensioners get a 13th month pension?',
+    a: 'Yes. A 13th-month pension equal to the basic monthly pension is paid every December (RA 11199, Sec. 12). Qualified dependent children — up to five, unmarried, not gainfully employed and below 21 or permanently incapacitated — each receive a dependents’ pension of 10% of the monthly pension or ₱250, whichever is higher (Sec. 12-A).',
+  },
+  {
+    q: 'Is the ₱1,000 additional benefit included?',
+    a: `Yes. RA 11199, Sec. 12(c) gives all retirement, death and disability pensioners an additional monthly benefit allowance of ${peso(P.additional_benefit)}, and the SSS retirement page confirms it is paid on top of the monthly pension since January 2017. The calculator shows it as a separate line; the dependents' pension is computed on the basic pension only, as Sec. 12-A defines it.`,
+  },
+  {
+    q: 'Magkano ang pension ko sa SSS?',
+    a: `Depende sa AMSC mo at sa bilang ng credited years. Halimbawa: AMSC ${peso(ex.amsc)} at ${ex.cys} taon ng hulog → basic pension ${peso(ex.basicPension)} kada buwan, plus ${peso(P.additional_benefit)} additional benefit = ${peso(ex.monthlyTotal)}; may 13th month pension tuwing Disyembre. Kung wala pang ${P.min_contributions} buwan ng hulog, lump sum ang makukuha, hindi buwanang pension.`,
+  },
+];
+---
+
+<ToolPageLayout
+  title="SSS Pension Calculator 2026 – Monthly Retirement Pension"
+  description={`Estimate your SSS retirement pension with the RA 11199 formula: ${peso(P.base)} + ${pct(P.amsc_pct)} of AMSC + ${pct(P.per_cys_pct)} per credited year over ${P.cys_threshold}, or ${pct(P.flat_pct)} of AMSC, plus the 13th-month pension.`}
+  path="/sss-pension-calculator/"
+  h1="SSS Pension Calculator"
+  faqs={faqs}
+  related={['sssCalculator', 'sssTable', 'sssMaternity', 'takeHome']}
+>
+  <Fragment slot="answer">
+    <p>
+      Your <strong>SSS monthly pension</strong> is the highest of three amounts under RA 11199, Sec. 12:
+      <strong>{peso(P.base)} + {pct(P.amsc_pct)} of your average monthly salary credit (AMSC) + {pct(P.per_cys_pct)} of
+      the AMSC for every credited year beyond {P.cys_threshold}</strong>, or {pct(P.flat_pct)} of the AMSC, or
+      {peso(P.floor)} — never below {peso(P.min_cys10)} ({P.cys_threshold}+ years) or {peso(P.min_cys20)} (20+ years).
+      Example: AMSC {peso(ex.amsc)} with {ex.cys} credited years → <strong>{peso(ex.basicPension)}</strong> basic pension,
+      {peso(ex.monthlyTotal)} with the {peso(P.additional_benefit)} additional benefit, plus a 13th-month pension every
+      December. The MSC counts only up to {peso(CAP)} in this formula. Enter your AMSC and credited years below.
+    </p>
+  </Fragment>
+
+  <Fragment slot="calculator">
+    <SssPensionCalculator client:idle />
+  </Fragment>
+
+  <h2>How the SSS Retirement Pension Is Computed</h2>
+  <p>
+    Republic Act No. 11199 (the Social Security Act of 2018), Section 12 sets the <strong>basic monthly pension</strong>
+    as whichever of these is highest:
+  </p>
+  <ol>
+    <li><strong>{peso(P.base)} + {pct(P.amsc_pct)} × AMSC + {pct(P.per_cys_pct)} × AMSC × (credited years − {P.cys_threshold})</strong> — the formula that wins for most members with long service;</li>
+    <li><strong>{pct(P.flat_pct)} × AMSC</strong> — wins for members with 10–14 credited years and an AMSC above roughly {peso(P.base / (P.flat_pct - P.amsc_pct))};</li>
+    <li><strong>{peso(P.floor)}</strong> — a flat floor, then lifted to the statutory minimum of {peso(P.min_cys10)} (at least {P.cys_threshold} credited years) or {peso(P.min_cys20)} (at least 20).</li>
+  </ol>
+  <p>
+    Two terms drive the result. The <strong>AMSC</strong> is the average of your monthly salary credits over the last 60
+    months before the semester of retirement, or over your whole membership if that is higher (Sec. 8(m)). For benefit
+    computation each MSC counts only up to <strong>{peso(CAP)}</strong> (Sec. 8(g); SSS Circular 2024-006) — contributions
+    on the portion above that, up to the {peso(rules.msc.max)} contribution ceiling, build your MPF provident account, which
+    is paid out separately. <strong>Credited years of service</strong> are the calendar years with at least six posted
+    contributions, from your year of coverage up to the year before the semester of retirement (Sec. 8(q)).
+  </p>
+
+  <h2>SSS Pension Table: AMSC × Credited Years</h2>
+  <p>
+    Basic monthly pension from the Sec. 12 formula, before the {peso(P.additional_benefit)} additional benefit and any
+    dependents’ pension. Generated by the same engine as the calculator.
+  </p>
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>AMSC</th>
+          {years.map((y) => <th>{y} yrs</th>)}
+        </tr>
+      </thead>
+      <tbody>
+        {matrix.map((row) => (
+          <tr>
+            <td><strong>{peso(row.amsc)}</strong></td>
+            {row.cells.map((c) => <td>{peso(c.basicPension)}</td>)}
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Who Qualifies, and What If You Have Fewer Than 120 Contributions</h2>
+  <ul>
+    <li><strong>Optional retirement at 60</strong> — if you are separated from employment or have stopped self-employment; <strong>compulsory at 65</strong> whether or not you still work (RA 11199, Sec. 12-B).</li>
+    <li><strong>At least {P.min_contributions} monthly contributions</strong> before the semester of retirement to receive a monthly pension.</li>
+    <li>With fewer than {P.min_contributions} contributions SSS pays a <strong>lump sum</strong> — your total contributions plus interest — or lets you continue paying as a voluntary member until you reach {P.min_contributions}.</li>
+    <li>A qualified retiree may take the <strong>first 18 monthly pensions in a discounted lump sum</strong>; a pensioner under 65 who is re-employed has the pension suspended (Sec. 12-B).</li>
+    <li>Earlier retirement ages apply to underground and surface mineworkers (RA 8558 / RA 10757) and racehorse jockeys (RA 10789).</li>
+  </ul>
+
+  <h2>13th-Month Pension, Dependents’ Pension and the Additional Benefit</h2>
+  <ul>
+    <li><strong>13th-month pension:</strong> one extra basic monthly pension paid every December (Sec. 12).</li>
+    <li><strong>Dependents’ pension:</strong> for each qualified child — legitimate, legitimated, legally adopted or illegitimate, unmarried, not gainfully employed, below 21 or permanently incapacitated — {pct(P.dependent_pct)} of the monthly pension or {peso(P.dependent_min)}, whichever is higher, for up to {P.max_dependents} children starting from the youngest (Sec. 12-A).</li>
+    <li><strong>Additional benefit allowance:</strong> {peso(P.additional_benefit)} a month on top of the basic pension for all retirement, death and disability pensioners since January 2017 (RA 11199, Sec. 12(c)). The calculator lists it separately; the dependents’ pension is computed on the basic pension only.</li>
+  </ul>
+
+  <h2>How to Raise Your Future Pension</h2>
+  <p>
+    Because the AMSC averages your last 60 monthly salary credits, the contributions you pay in the five years before
+    retirement carry the most weight. Voluntary and self-employed members can declare a higher MSC (subject to SSS rules on
+    MSC increases for members aged 55 and above); employees can check that their employer remits on the correct bracket
+    using the <a href="/sss-contribution-calculator/">SSS Contribution Calculator</a>. Every additional credited year beyond
+    {P.cys_threshold} adds {pct(P.per_cys_pct)} of the AMSC to the pension for life.
+  </p>
+
+  <h2>Official Source</h2>
+  <p>
+    Formula and eligibility: <a href={LAW} target="_blank" rel="noopener">RA 11199, Secs. 8, 12, 12-A and 12-B</a>
+    (LawPhil) and the <a href={SSS_PAGE} target="_blank" rel="noopener">SSS Retirement Benefit page</a>, which states the same
+    formula, the 13th-month pension and the ₱1,000 additional benefit. Monthly salary credits:
+    <a href={meta.official_source_url} target="_blank" rel="noopener">{meta.official_source_label}</a>.
+    File your retirement claim only through My.SSS at <a href="https://www.sss.gov.ph/" target="_blank" rel="noopener">sss.gov.ph</a> —
+    AyTool is independent and cannot see your posted contributions; the actual pension is computed by SSS from your
+    records.
+  </p>
+</ToolPageLayout>

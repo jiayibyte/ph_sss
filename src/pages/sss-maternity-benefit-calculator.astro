@@ -1,0 +1,164 @@
+---
+import ToolPageLayout from '../layouts/ToolPageLayout.astro';
+import SssMaternityCalculator from '../islands/SssMaternityCalculator';
+import sssRules from '../data/sss/2026.json';
+import type { SssRules } from '../lib/rules/types';
+import { findSssRow } from '../lib/engine/sss';
+import { benefitMscCap, computeMaternity } from '../lib/engine/sssBenefits';
+import { peso } from '../lib/format';
+
+const rules = sssRules as unknown as SssRules;
+const meta = rules.meta;
+const M = rules.benefits.maternity;
+const CAP = benefitMscCap(rules); // ₱20,000 — RA 11199 Sec. 8(g)
+const soloDays = M.days_live_birth + M.days_solo_parent_extra;
+
+const forSalary = (salary: number, event: 'live-birth' | 'live-birth-solo-parent' | 'miscarriage' = 'live-birth') =>
+  computeMaternity({ mscs: Array(M.top_msc_count).fill(findSssRow(salary, 'employee', rules).msc), event }, rules);
+const salaries = [10000, 12000, 15000, 16000, 18000, CAP, 30000];
+const table = salaries.map((s) => ({
+  salary: s,
+  live: forSalary(s),
+  solo: forSalary(s, 'live-birth-solo-parent'),
+  misc: forSalary(s, 'miscarriage'),
+}));
+const ex = forSalary(16000); // SSS's own published example: ₱16,000 × 6 ÷ 180 × 105 = ₱56,000
+const ex20 = forSalary(20000);
+const max = forSalary(CAP);
+
+const RA11210 = 'https://lawphil.net/statutes/repacts/ra2019/ra_11210_2019.html';
+const RA11199 = 'https://lawphil.net/statutes/repacts/ra2019/ra_11199_2019.html';
+const SSS_PAGE = M.source_url;
+
+const faqs = [
+  {
+    q: 'How is the SSS maternity benefit computed?',
+    a: `Add your ${M.top_msc_count} highest monthly salary credits (MSCs) in the 12 months before the semester of contingency, divide by ${M.divisor} to get the average daily salary credit, then multiply by the number of paid days: ${M.days_live_birth} for a live birth, ${soloDays} for a solo parent, ${M.days_miscarriage} for a miscarriage or emergency termination of pregnancy (RA 11199, Sec. 8(n); RA 11210, Sec. 5). SSS's own example: MSC ${peso(ex.topMscs[0]!)} for six months → ${peso(ex.sumTopMscs)} ÷ ${M.divisor} = ${peso(ex.averageDailySalaryCredit)} a day × ${ex.days} days = ${peso(ex.benefit)}. Each MSC counts only up to ${peso(CAP)}, the Regular SS cap.`,
+  },
+  {
+    q: 'How much is the SSS maternity benefit for a ₱20,000 salary?',
+    a: `A ₱20,000 salary maps to a ${peso(ex20.topMscs[0]!)} MSC. Six months of it total ${peso(ex20.sumTopMscs)}; ÷ ${M.divisor} gives ${peso(ex20.averageDailySalaryCredit)} a day; × ${M.days_live_birth} days = ${peso(ex20.benefit)} for a normal or caesarean live birth. A solo parent gets ${peso(forSalary(20000, 'live-birth-solo-parent').benefit)} (${soloDays} days); a miscarriage pays ${peso(forSalary(20000, 'miscarriage').benefit)} (${M.days_miscarriage} days).`,
+  },
+  {
+    q: 'What is the maximum SSS maternity benefit in 2026?',
+    a: `Benefits are computed on the MSC only up to ${peso(CAP)} — the Regular SS cap in RA 11199, Sec. 8(g), restated in SSS Circular 2024-006 — even though contributions run up to ${peso(rules.msc.max)} (the excess is MPF savings). The highest possible benefit is therefore ${peso(max.sumTopMscs)} ÷ ${M.divisor} = ${peso(max.averageDailySalaryCredit)} a day × ${M.days_live_birth} days = ${peso(max.benefit)} for a live birth, or ${peso(forSalary(CAP, 'live-birth-solo-parent').benefit)} for a solo parent with ${soloDays} days.`,
+  },
+  {
+    q: 'What is the “semester of contingency”?',
+    a: 'A quarter is three months ending in March, June, September or December; a semester is two consecutive quarters ending in the quarter of contingency (RA 11199, Sec. 8(o)–(p)). Example from SSS: a birth in October 2021 makes July–December 2021 the semester of contingency, so the 12 months counted are July 2020 to June 2021. SSS requires at least three posted contributions within those 12 months and takes your six highest MSCs from them; contributions paid within or after the semester are ignored.',
+  },
+  {
+    q: 'How many days of maternity leave are paid?',
+    a: `${M.days_live_birth} days for every live birth regardless of delivery type, with an option to extend 30 more days without pay; ${soloDays} days if you qualify as a solo parent under RA 8972; ${M.days_miscarriage} days for a miscarriage or emergency termination of pregnancy (RA 11210, Sec. 3). Up to seven of the ${M.days_live_birth} days may be transferred to the child’s father or an alternate caregiver.`,
+  },
+  {
+    q: 'Does my employer pay anything on top of the SSS benefit?',
+    a: 'Yes, if you are employed in the private sector. RA 11210, Sec. 5(c) requires the employer to pay the salary differential — the gap between your full pay for the leave period and the SSS cash benefit — unless the employer is exempt: distressed establishments, retail or service establishments with not more than ten workers, micro-business enterprises with total assets of ₱3 million or below, or employers already giving an equal or better benefit. Exemptions need DOLE approval every year. The employer advances the SSS benefit within 30 days of your leave application and SSS reimburses it.',
+  },
+  {
+    q: 'Can voluntary, self-employed or OFW members claim the maternity benefit?',
+    a: 'Yes. Any female member with at least three posted monthly contributions in the 12 months before the semester of contingency qualifies, whatever her membership type. Self-employed, voluntary and OFW members file directly with SSS and receive the benefit themselves; there is no employer salary differential for them.',
+  },
+  {
+    q: 'How do I file for the SSS maternity benefit?',
+    a: 'Notify your employer of the pregnancy and probable delivery date if employed (the employer files the Maternity Notification with SSS), or notify SSS directly through My.SSS if you are self-employed, voluntary, a non-working spouse or an OFW. After delivery, file the Maternity Benefit Application with the child’s birth certificate (or the medical records for a miscarriage). Employed members receive the advance from their employer; others are paid to their enrolled disbursement account. One benefit is paid per delivery even for twins; overlapping claims are paid consecutively with the overlap deducted.',
+  },
+  {
+    q: 'Magkano ang maternity benefit sa SSS kung ₱15,000 ang sahod?',
+    a: `Sa ₱15,000 na sahod, ${peso(findSssRow(15000, 'employee', rules).msc)} ang MSC. Anim na buwan nito = ${peso(forSalary(15000).sumTopMscs)}; hatiin sa ${M.divisor} = ${peso(forSalary(15000).averageDailySalaryCredit)} kada araw; × ${M.days_live_birth} araw = ${peso(forSalary(15000).benefit)}. Kung employed ka, dagdag pa ang salary differential mula sa employer.`,
+  },
+];
+---
+
+<ToolPageLayout
+  title="SSS Maternity Benefit Calculator 2026 – 105 Days Computation"
+  description={`Compute your SSS maternity benefit: six highest monthly salary credits ÷ ${M.divisor} × ${M.days_live_birth} days (${soloDays} for solo parents, ${M.days_miscarriage} for miscarriage). Employer salary differential explained.`}
+  path="/sss-maternity-benefit-calculator/"
+  h1="SSS Maternity Benefit Calculator"
+  faqs={faqs}
+  related={['sssCalculator', 'sssTable', 'sssPension', 'takeHome']}
+>
+  <Fragment slot="answer">
+    <p>
+      The <strong>SSS maternity benefit</strong> is your <strong>average daily salary credit × the number of paid
+      days</strong>: add your {M.top_msc_count} highest monthly salary credits from the 12 months before the semester of
+      contingency, divide by {M.divisor}, then multiply by <strong>{M.days_live_birth} days</strong> for a live birth
+      ({soloDays} for a solo parent, {M.days_miscarriage} for a miscarriage). SSS's own example: MSC {peso(ex.topMscs[0]!)} →
+      {peso(ex.averageDailySalaryCredit)} a day → <strong>{peso(ex.benefit)}</strong> for {M.days_live_birth} days. Each MSC
+      counts only up to {peso(CAP)}, so the 2026 maximum is {peso(max.benefit)}. Employed members also get the salary
+      differential from their employer under RA 11210.
+    </p>
+  </Fragment>
+
+  <Fragment slot="calculator">
+    <SssMaternityCalculator client:idle />
+  </Fragment>
+
+  <h2>SSS Maternity Benefit by Salary (2026 MSC Schedule)</h2>
+  <p>
+    Assumes the same salary for the six months counted; computed by the same engine as the calculator. Salaries above
+    {peso(CAP)} are counted at the {peso(CAP)} Regular SS cap — the contributions on the portion above it go to your MPF
+    savings, not into the benefit formula.
+  </p>
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>Monthly salary</th>
+          <th>MSC</th>
+          <th>Daily credit</th>
+          <th>Live birth ({M.days_live_birth} d)</th>
+          <th>Solo parent ({soloDays} d)</th>
+          <th>Miscarriage ({M.days_miscarriage} d)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {table.map((r) => (
+          <tr>
+            <td><strong>{peso(r.salary)}</strong></td>
+            <td>{peso(r.live.topMscs[0]!)}</td>
+            <td>{peso(r.live.averageDailySalaryCredit)}</td>
+            <td><strong>{peso(r.live.benefit)}</strong></td>
+            <td>{peso(r.solo.benefit)}</td>
+            <td>{peso(r.misc.benefit)}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Who Qualifies</h2>
+  <ul>
+    <li>A female SSS member — employed, self-employed, voluntary, OFW or a separated member — with <strong>at least {M.min_contributions} monthly contributions</strong> in the 12-month period immediately before the semester of contingency (RA 11199, Sec. 14-A).</li>
+    <li>The benefit is paid for <strong>every</strong> pregnancy, miscarriage or emergency termination; the old four-delivery limit no longer applies (RA 11210).</li>
+    <li>SSS must be notified of the pregnancy in advance (Maternity Notification) — through your employer if employed, or directly through My.SSS otherwise.</li>
+  </ul>
+
+  <h2>Salary Differential From Your Employer</h2>
+  <p>
+    Under RA 11210, Sec. 5 the employer of a member in the private sector pays the <strong>difference between her full
+    salary for the leave period and the SSS maternity benefit</strong>, so that she receives full pay for the {M.days_live_birth}
+    days. Exempt employers: distressed establishments, retail and service establishments with not more than ten
+    workers, micro-business enterprises with total assets of ₱3 million or below, and those already giving an equal or
+    better benefit under a collective bargaining agreement or company policy. The employer must also advance the SSS
+    benefit within 30 days of the leave application and claims reimbursement from SSS.
+  </p>
+
+  <h2>Leave Days and Options</h2>
+  <ul>
+    <li><strong>{M.days_live_birth} days</strong> with full pay for every live birth, normal or caesarean; <strong>30 more days</strong> may be added without pay on written notice to the employer at least 45 days before the leave ends.</li>
+    <li><strong>{soloDays} days</strong> for a solo parent qualified under RA 8972.</li>
+    <li><strong>{M.days_miscarriage} days</strong> for a miscarriage or emergency termination of pregnancy.</li>
+    <li>Up to <strong>seven days</strong> may be allocated to the child’s father (on top of his paternity leave) or, if the mother is single, to an alternate caregiver.</li>
+  </ul>
+
+  <h2>Official Source</h2>
+  <p>
+    Leave days and salary differential: <a href={RA11210} target="_blank" rel="noopener">RA 11210, the 105-Day Expanded Maternity Leave Law, Secs. 3–5</a>.
+    Average daily salary credit and the benefit cap: <a href={RA11199} target="_blank" rel="noopener">RA 11199, Secs. 8(g), 8(n) and 14-A</a>.
+    Qualifying conditions, computation steps and the ₱56,000 sample: <a href={SSS_PAGE} target="_blank" rel="noopener">SSS Maternity Benefit page</a>.
+    Monthly salary credits: <a href={meta.official_source_url} target="_blank" rel="noopener">{meta.official_source_label}</a>.
+    Notify and file only through <a href="https://www.sss.gov.ph/" target="_blank" rel="noopener">My.SSS</a> — AyTool is independent
+    and cannot see your posted contributions.
+  </p>
+</ToolPageLayout>

@@ -1,0 +1,9 @@
+---
+import EmbedLayout from '../../layouts/EmbedLayout.astro';
+import SssMaternityCalculator from '../../islands/SssMaternityCalculator';
+import { TOOL_PAGES } from '../../lib/pages';
+---
+
+<EmbedLayout page={TOOL_PAGES.sssMaternity!}>
+  <SssMaternityCalculator client:load />
+</EmbedLayout>

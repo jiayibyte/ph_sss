@@ -1,0 +1,241 @@
+---
+import ToolPageLayout from '../layouts/ToolPageLayout.astro';
+import MinimumWageCalculator from '../islands/MinimumWageCalculator';
+import wagesJson from '../data/wages/2026.json';
+import type { WageRules } from '../lib/rules/types';
+import { monthlyEquivalent, rateRange } from '../lib/engine/wages';
+import { peso } from '../lib/format';
+import { SITE } from '../../site.config';
+
+const rules = wagesJson as unknown as WageRules;
+const meta = rules.meta;
+const ncr = rules.ncr;
+const range = rateRange(rules);
+const fmt = (d: string | null | undefined): string =>
+  d ? new Date(d + 'T00:00:00').toLocaleDateString('en-PH', { month: 'long', day: 'numeric', year: 'numeric' }) : 'to be announced';
+const f313 = rules.divisors.options.find((d) => d.id === '313')!.factor;
+const f365 = rules.divisors.options.find((d) => d.id === '365')!.factor;
+const f261 = rules.divisors.options.find((d) => d.id === '261')!.factor;
+const byId = (id: string) => rules.regions.find((r) => r.id === id)!;
+const top = (id: string) => byId(id).tiers[0]!.rate;
+const examples = [ncr.in_force.non_agriculture, ncr.upcoming.non_agriculture, top('r3'), top('r7'), top('r11'), top('r6'), 500, 455];
+const withOrder = rules.regions.filter((r) => r.tiers.length > 0);
+const upcomingRegions = rules.regions.filter((r) => r.upcoming);
+
+const datasetSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Dataset',
+  name: 'Philippine Regional Daily Minimum Wage Rates 2026',
+  description: `Current daily minimum wage by region and sector under the latest Regional Tripartite Wages and Productivity Board wage orders, as summarised by NWPC on ${meta.rule_version.match(/September \d+, 2026/)?.[0] ?? '2026'}.`,
+  url: `${SITE.url}/minimum-wage-philippines/`,
+  creator: { '@type': 'Organization', name: 'National Wages and Productivity Commission (source data)' },
+  isBasedOn: meta.official_source_url,
+  dateModified: meta.last_verified,
+  keywords: ['minimum wage', 'Philippines', 'NCR', 'wage order', 'daily minimum wage 2026', 'NWPC'],
+  distribution: [{ '@type': 'DataDownload', encodingFormat: 'application/json', contentUrl: `${SITE.url}/data/minimum-wage-philippines-2026.json` }],
+  spatialCoverage: { '@type': 'Place', name: 'Philippines' },
+};
+
+const faqs = [
+  {
+    q: 'What is the minimum wage in Metro Manila (NCR) in 2026?',
+    a: `As of ${fmt(meta.last_verified)} the legally enforceable NCR minimum is ${peso(ncr.in_force.non_agriculture)} a day for non-agriculture and ${peso(ncr.in_force.other_tier)} for agriculture, service and retail establishments with 15 or fewer workers, and manufacturing with fewer than 10 workers (Wage Order NCR-26, in effect since ${fmt(ncr.in_force.effectivity)}). Wage Order NCR-28 raises these to ${peso(ncr.upcoming.non_agriculture)} and ${peso(ncr.upcoming.other_tier)}; it was published on ${fmt(ncr.upcoming.date_published)} and takes effect 15 days later — NWPC has not yet printed the exact date.`,
+  },
+  {
+    q: 'When does the ₱755 NCR minimum wage take effect?',
+    a: `Wage Order NCR-28 (₱${ncr.upcoming.increase} increase to ${peso(ncr.upcoming.non_agriculture)} / ${peso(ncr.upcoming.other_tier)}) was approved on ${fmt(ncr.upcoming.date_issued)} and published on ${fmt(ncr.upcoming.date_published)}. Under its Section 7 it takes effect 15 days after publication, which points to late September 2026; NWPC's wage order matrix still shows the effectivity cell blank, so check the RTWPB-NCR page for the confirmed date. Employers with 10 or fewer retail or service workers may apply for exemption within 75 days of publication.`,
+  },
+  {
+    q: 'What happened to Wage Order NCR-27?',
+    a: ncr.enjoined.status + ` NCR-27 (${fmt(ncr.enjoined.date_issued)}) would have set ${peso(ncr.enjoined.non_agriculture)} / ${peso(ncr.enjoined.other_tier)} from ${fmt(ncr.enjoined.nominal_effectivity)}; NCR-28 re-grants the same ₱60 increase on the NCR-26 baseline through a fresh order.`,
+  },
+  {
+    q: 'What is the monthly equivalent of the NCR minimum wage?',
+    a: `It depends on how you are paid (DOLE Handbook on Workers' Statutory Monetary Benefits, 2024 edition). A daily-paid worker on a six-day week with paid holidays uses factor ${f313}: ${peso(ncr.in_force.non_agriculture)} × ${f313} ÷ 12 = ${peso(monthlyEquivalent(ncr.in_force.non_agriculture, f313))} a month (${peso(monthlyEquivalent(ncr.upcoming.non_agriculture, f313))} once ${peso(ncr.upcoming.non_agriculture)} takes effect). A monthly-paid employee, paid for every day of the month, uses factor ${f365}: ${peso(monthlyEquivalent(ncr.in_force.non_agriculture, f365))}. A five-day week uses ${f261}: ${peso(monthlyEquivalent(ncr.in_force.non_agriculture, f261))}. NWPC itself uses ${f313} in its press releases.`,
+  },
+  {
+    q: 'What is the minimum wage in Cebu, Davao and CALABARZON?',
+    a: `Cebu (Region VII, Wage Order ${byId('r7').wage_order}): ${peso(byId('r7').tiers[0]!.rate)} a day in Class A — Metro Cebu cities plus Compostela, Consolacion, Cordova, Liloan, Minglanilla and San Fernando — and ${peso(byId('r7').tiers[1]!.rate)} elsewhere in the region. Davao (Region XI, ${byId('r11').wage_order}): ${peso(byId('r11').tiers[0]!.rate)} non-agriculture and ${peso(byId('r11').tiers[1]!.rate)} agriculture since the September 1, 2026 tranche. CALABARZON (Region IV-A, ${byId('r4a').wage_order}): ${peso(byId('r4a').tiers[0]!.rate)} in the extended metropolitan area and component cities, ${peso(byId('r4a').tiers[1]!.rate)} in first-class municipalities, ${peso(byId('r4a').tiers[2]!.rate)} in second- to fifth-class municipalities, and ${peso(byId('r4a').tiers[5]!.rate)} for retail and service establishments with 10 or fewer workers.`,
+  },
+  {
+    q: 'Which region has the lowest minimum wage?',
+    a: `BARMM, at ${peso(range.low)} a day for agriculture outside the cities under Wage Order BARMM-05 (${peso(byId('barmm').tiers[0]!.rate)} non-agriculture in Cotabato, Lamitan and Marawi). The lowest single-rate regions are MIMAROPA and Bicol at ${peso(top('r4b'))}; Bicol rises to ${peso(byId('r5').upcoming!.rates[0]!.rate)} on ${fmt(byId('r5').upcoming!.effectivity)}. The highest in force is NCR at ${peso(range.high)}.`,
+  },
+  {
+    q: 'Who is exempt from the minimum wage?',
+    a: `${rules.coverage.exempt_bmbe} ${rules.coverage.retail_service_le10} ${rules.coverage.kasambahay}`,
+  },
+  {
+    q: 'What is the minimum wage for kasambahay (domestic workers)?',
+    a: `Kasambahay have separate monthly minimum wages under RA 10361, set by each regional board: ${peso(rules.kasambahay_monthly[0]!.monthly)} a month in NCR (Wage Order ${rules.kasambahay_monthly[0]!.wage_order}, since ${fmt(rules.kasambahay_monthly[0]!.effectivity)}), ${peso(7000)} in MIMAROPA and Central Visayas, and between ${peso(5500)} (BARMM) and ${peso(6750)} (CALABARZON) elsewhere — see the table on this page.`,
+  },
+  {
+    q: 'What is the penalty for paying below the minimum wage?',
+    a: rules.coverage.penalty + ' Complaints go to the DOLE regional office; the Single Entry Approach (SEnA) handles most wage disputes first.',
+  },
+  {
+    q: 'Magkano ang minimum wage sa Metro Manila ngayong 2026?',
+    a: `${peso(ncr.in_force.non_agriculture)} kada araw para sa non-agriculture at ${peso(ncr.in_force.other_tier)} para sa agriculture, service/retail na may 15 o mas kaunting worker, at manufacturing na wala pang 10 worker (Wage Order NCR-26). Tataas ito sa ${peso(ncr.upcoming.non_agriculture)} at ${peso(ncr.upcoming.other_tier)} sa ilalim ng NCR-28, na inilathala noong ${fmt(ncr.upcoming.date_published)} at magiging epektibo 15 araw pagkatapos — hintayin ang opisyal na petsa mula sa NWPC. Katumbas ito ng humigit-kumulang ${peso(monthlyEquivalent(ncr.in_force.non_agriculture, f313))} kada buwan (factor ${f313}).`,
+  },
+];
+---
+
+<ToolPageLayout
+  title="Minimum Wage Philippines 2026 – Rates by Region & NCR Update"
+  description={`Current daily minimum wage in every Philippine region as of ${fmt(meta.last_verified)}, with the NCR ${peso(ncr.in_force.non_agriculture)} → ${peso(ncr.upcoming.non_agriculture)} update, monthly equivalents and who is exempt.`}
+  path="/minimum-wage-philippines/"
+  h1="Minimum Wage Philippines 2026 (by Region)"
+  faqs={faqs}
+  related={['takeHome', 'overtime', 'holidayPay', 'thirteenth']}
+  extraSchema={[datasetSchema]}
+>
+  <Fragment slot="answer">
+    <p>
+      The <strong>NCR minimum wage in force</strong> is <strong>{peso(ncr.in_force.non_agriculture)}</strong> a day for
+      non-agriculture and {peso(ncr.in_force.other_tier)} for agriculture, small retail/service and small manufacturing
+      (Wage Order NCR-26). <strong>Wage Order NCR-28</strong> raises them to <strong>{peso(ncr.upcoming.non_agriculture)}</strong>
+      and {peso(ncr.upcoming.other_tier)}: published {fmt(ncr.upcoming.date_published)}, effective 15 days after publication
+      (late September 2026, exact date pending from NWPC). Across the regions the daily minimum runs from
+      {peso(range.low)} (BARMM agriculture) to {peso(range.high)} (NCR); every rate below comes from the NWPC summary and
+      the wage order itself. Pick your region to see the sector rate and its monthly equivalent.
+    </p>
+  </Fragment>
+
+  <Fragment slot="calculator">
+    <MinimumWageCalculator client:idle />
+  </Fragment>
+
+  <h2>NCR Minimum Wage: Three Wage Orders, One in Force</h2>
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Wage order</th><th>Status</th><th>Non-agriculture</th><th>Agri / retail ≤15 / mfg &lt;10</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>{ncr.in_force.wage_order}</strong></td><td>In force since {fmt(ncr.in_force.effectivity)}</td><td><strong>{peso(ncr.in_force.non_agriculture)}</strong></td><td><strong>{peso(ncr.in_force.other_tier)}</strong></td></tr>
+        <tr><td>{ncr.enjoined.wage_order}</td><td>Enjoined by the courts — never took effect</td><td>{peso(ncr.enjoined.non_agriculture)}</td><td>{peso(ncr.enjoined.other_tier)}</td></tr>
+        <tr><td>{ncr.upcoming.wage_order}</td><td>Published {fmt(ncr.upcoming.date_published)}; effective 15 days later (date pending)</td><td>{peso(ncr.upcoming.non_agriculture)}</td><td>{peso(ncr.upcoming.other_tier)}</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p>
+    {ncr.enjoined.status} NCR-28 re-grants the same ₱{ncr.upcoming.increase} increase on the NCR-26 baseline through a
+    fresh order approved on {fmt(ncr.upcoming.date_issued)}; NWPC's statement on the injunction is
+    <a href={ncr.enjoined.nwpc_statement_url} target="_blank" rel="noopener">here</a>. {ncr.cola_note}
+  </p>
+
+  <h2>Daily Minimum Wage by Region (Current Wage Orders)</h2>
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Region</th><th>Wage order</th><th>In effect since</th><th>Sector / area</th><th>Daily rate</th></tr>
+      </thead>
+      <tbody>
+        {rules.regions.map((r) =>
+          r.tiers.length === 0 ? (
+            <tr>
+              <td><strong>{r.name}</strong></td>
+              <td colspan="4" class="text-ink-soft">{r.notes}</td>
+            </tr>
+          ) : (
+            r.tiers.map((t, i) => (
+              <tr>
+                {i === 0 && <td rowspan={r.tiers.length}><strong>{r.name}</strong></td>}
+                {i === 0 && <td rowspan={r.tiers.length}><a href={r.wage_order_url} target="_blank" rel="noopener">{r.wage_order}</a></td>}
+                {i === 0 && <td rowspan={r.tiers.length}>{fmt(r.effectivity)}{r.second_tranche_effectivity ? <span class="text-ink-soft"> (tranche {fmt(r.second_tranche_effectivity)})</span> : null}</td>}
+                <td>{t.label}{t.group && <span class="text-ink-soft"> — {t.group}</span>}</td>
+                <td><strong>{peso(t.rate)}</strong></td>
+              </tr>
+            ))
+          ),
+        )}
+      </tbody>
+    </table>
+  </div>
+  <p class="text-sm text-ink-soft">
+    Rates as printed in the NWPC summary of {fmt(meta.last_verified)} and each region's wage order; where a region is in a
+    multi-tranche order the current tranche is shown. Regional notes: {withOrder.filter((r) => r.notes).map((r) => `${r.name}: ${r.notes}`).join(' ')}
+  </p>
+
+  <h2>Increases Already Scheduled and Reviews Under Way</h2>
+  <ul>
+    {upcomingRegions.map((r) => (
+      <li>
+        <strong>{r.name} — {r.upcoming!.wage_order}:</strong>{' '}
+        {r.upcoming!.rates.map((t) => `${t.label}${t.group ? ` (${t.group})` : ''} ${peso(t.rate)}`).join('; ')}
+        {r.upcoming!.effectivity ? ` from ${fmt(r.upcoming!.effectivity)}.` : ` — expected ${r.upcoming!.expected}, date not yet published.`}
+      </li>
+    ))}
+    <li><strong>Formal wage reviews open, no new order yet:</strong> Central Luzon (hearings October 5 – November 11, 2026), CALABARZON, Central Visayas, Western Visayas, SOCCSKSARGEN, Cordillera, Ilocos and Northern Mindanao. New orders normally take effect 15 days after publication.</li>
+  </ul>
+
+  <h2>Daily to Monthly: The DOLE Factors</h2>
+  <p>
+    The Handbook on Workers' Statutory Monetary Benefits converts a daily rate to an <em>estimated equivalent monthly
+    rate</em> with a factor that depends on which days you are paid for: <strong>{f365}</strong> for monthly-paid employees
+    (paid every day of the month), <strong>395</strong> for daily-paid workers who work every day including rest days and
+    holidays, <strong>{f313}</strong> for a six-day week with rest days unpaid but holidays paid, and <strong>{f261}</strong> for a
+    five-day week. Use 305 or 253 instead of {f313} or {f261} if the eight special non-working days are unpaid. NWPC uses
+    {f313} in its own press releases.
+  </p>
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Daily rate</th><th>× {f261} ÷ 12 (5-day week)</th><th>× {f313} ÷ 12 (6-day week)</th><th>× {f365} ÷ 12 (monthly-paid)</th></tr>
+      </thead>
+      <tbody>
+        {[...new Set(examples)].sort((a, b) => b - a).map((d) => (
+          <tr>
+            <td><strong>{peso(d)}</strong></td>
+            <td>{peso(monthlyEquivalent(d, f261))}</td>
+            <td>{peso(monthlyEquivalent(d, f313))}</td>
+            <td>{peso(monthlyEquivalent(d, f365))}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Kasambahay Monthly Minimum Wage</h2>
+  <p>
+    Domestic workers are covered by RA 10361 and get a <strong>monthly</strong> minimum set by separate regional wage
+    orders (NWPC table, September 2026):
+  </p>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Region</th><th>Monthly minimum</th></tr></thead>
+      <tbody>
+        {rules.kasambahay_monthly.map((k) => (
+          <tr>
+            <td>{k.region}{k.wage_order ? <span class="text-ink-soft"> ({k.wage_order}, since {fmt(k.effectivity)})</span> : null}</td>
+            <td><strong>{peso(k.monthly)}</strong>{k.note ? <span class="text-ink-soft"> — {k.note}</span> : null}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Who Is Covered, Who Is Exempt</h2>
+  <ul>
+    <li><strong>Covered:</strong> {rules.coverage.applies_to}</li>
+    <li><strong>BMBEs:</strong> {rules.coverage.exempt_bmbe}</li>
+    <li><strong>Small retail/service:</strong> {rules.coverage.retail_service_le10}</li>
+    <li><strong>Kasambahay:</strong> {rules.coverage.kasambahay}</li>
+    <li><strong>Penalty:</strong> {rules.coverage.penalty}</li>
+  </ul>
+  <p>
+    Minimum wage is the floor for <strong>basic pay</strong>. Overtime, night differential, holiday pay and the 13th month are
+    computed on top of it — see the <a href="/overtime-pay-calculator/">Overtime Pay Calculator</a>,
+    <a href="/holiday-pay-calculator/">Holiday Pay Calculator</a> and <a href="/take-home-pay-calculator/">Take-Home Pay
+    Calculator</a>.
+  </p>
+
+  <h2>Official Source</h2>
+  <p>
+    <a href={meta.official_source_url} target="_blank" rel="noopener">{meta.official_source_label}</a> — {meta.rule_version};
+    each row links to the wage order PDF on nwpc.dole.gov.ph. Conversion factors:
+    <a href={rules.divisors.source} target="_blank" rel="noopener">{rules.divisors.source_label}</a>. Last verified
+    {fmt(meta.last_verified)}. AyTool is independent and not affiliated with DOLE or NWPC; confirm any figure with the
+    regional board before relying on it for payroll.
+  </p>
+</ToolPageLayout>

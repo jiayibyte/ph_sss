@@ -93,6 +93,7 @@ export const PRC_PROFESSIONS: ProfessionGroup[] = [
       'Registered Master Electricians (2nd exam)',
     ],
     aka: ['REE', 'RME', 'electrical engineering board exam', 'master electrician exam'],
+    href: '/electrical-engineering-board-exam-schedule/',
   },
   {
     id: 'electronics-engineering',
@@ -105,6 +106,7 @@ export const PRC_PROFESSIONS: ProfessionGroup[] = [
       'Electronics Technicians (2nd exam)',
     ],
     aka: ['ECE', 'ECT', 'electronics engineer licensure exam'],
+    href: '/electronics-engineering-board-exam-schedule/',
   },
   {
     id: 'mechanical-engineering',
@@ -117,6 +119,7 @@ export const PRC_PROFESSIONS: ProfessionGroup[] = [
       'Certified Plant Mechanics (2nd exam)',
     ],
     aka: ['mechanical engineer licensure exam', 'ME board exam', 'certified plant mechanic exam'],
+    href: '/mechanical-engineering-board-exam-schedule/',
   },
   {
     id: 'physicians',
@@ -156,6 +159,7 @@ export const PRC_PROFESSIONS: ProfessionGroup[] = [
     navLabel: 'Social Work',
     exams: ['Social Workers'],
     aka: ['social worker licensure exam', 'social work board exam'],
+    href: '/social-work-board-exam-schedule/',
   },
   {
     id: 'architecture',
@@ -163,6 +167,7 @@ export const PRC_PROFESSIONS: ProfessionGroup[] = [
     navLabel: 'Architecture',
     exams: ['Architects', 'Architects (2nd exam)'],
     aka: ['architect licensure exam', 'architecture board exam'],
+    href: '/architecture-board-exam-schedule/',
   },
   {
     id: 'dentistry',
@@ -175,6 +180,7 @@ export const PRC_PROFESSIONS: ProfessionGroup[] = [
       'Dentists (Practical, 2nd exam)',
     ],
     aka: ['dentist licensure exam', 'dental board exam'],
+    href: '/dentistry-board-exam-schedule/',
   },
   {
     id: 'physical-occupational-therapy',

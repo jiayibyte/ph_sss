@@ -1,0 +1,9 @@
+---
+import EmbedLayout from '../../layouts/EmbedLayout.astro';
+import SssPensionCalculator from '../../islands/SssPensionCalculator';
+import { TOOL_PAGES } from '../../lib/pages';
+---
+
+<EmbedLayout page={TOOL_PAGES.sssPension!}>
+  <SssPensionCalculator client:load />
+</EmbedLayout>
