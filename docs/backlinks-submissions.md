@@ -64,7 +64,10 @@
 | 2026-09-23 | AlternativeTo | 已提交，排队审核 | 应用 id cd653292-b528-4926-9eeb-dee03ff52a45；Free、Source available（仓库 public 无 LICENSE）→ github.com/jiayibyte/ph_sss；标签 salary-calculator / payroll-calculator / tax-calculator / personal-finance；功能勾 No registration required、Ad-free（有 GA，未勾 Privacy focused；无暗色模式）；icon-512 + 4 张截图。**未付 $5 插队**。站内没有真正的同类工具，alternatives 一步跳过 |
 | 2026-09-23 | Expat Forum › Philippines | 已回复，**待审核**（新号前几帖要人工审） | 账号由用户注册。在版主 M.C.A. 的《Live in maids/helpers》帖（/threads/live-in-maids-helpers.1554580/，第 3 页）回复：从他说的"₱12,000"切入，两名保姆按地区最低工资合计约 ₱13k–14k；再按 RA 10361 列雇佣要求（地区月最低工资、SSS/PhilHealth/Pag-IBIG 按 ₱5,000 分界、以 ₱6,500 月薪算的缴费金额、书面合同、barangay 登记、休息、13th month、SIL、不许收押金）。**不带链接**：新号试用期限制发链接，用户名也不能用品牌名。等发够正常帖、过了试用期，再私信 M.C.A. 请他把计算器加进《Useful Links For Expats》 |
 | 2026-09-23 | PHCorner（phcorner.org） | 已注册，**暂不发** | 版规：只能用英语或他加禄语；不许为打广告发博客或网站链接，作为引用来源可以；YouTube、社交群组、其他论坛都算广告。Career & Finance（/forums/524/）很活跃，但工资社保类求助很少；SSS 病假帖 7 月已标注 resolved，别挖坟。**11–12 月 13th month 旺季再来**；站内搜索偶尔会冒出可疑的验证框，别去点 |
-| — | Indie Hackers | 未注册 | |
+| 2026-09-23 | Indie Hackers | 产品页已上线 | https://www.indiehackers.com/product/aytool （账号 aytools；Solo、Side Project、Bootstrapped、Free、Web；标签 B2C / Financial Services / Utilities）。新号还不能发帖，开发日志草稿在 backlinks-drafts-2026-09.md 的 3b，先在社区评论攒积分 |
+| 2026-09-23 | Uneed | 免费队列，**2027-02-20 自动上线** | 账号 cherryeveli-10e6；描述改掉了 AI 自动填的"每年更新"；标签 Productivity / Personal Finances；logo + 3 张图。规则：上线当天投票分 ≥10 才能保留，≥20 才给 dofollow。付费插队（$14.99 / $29.99）和 $249 的"100+ 目录提交"都没买 |
+| 2026-09-23 | Fazier | **不做** | 免费档要求在我方首页或页脚放 Fazier 回链徽章，等于链接交换，违反 playbook；付费档 $29–$99 |
+| 2026-09-23 | SaaSHub | **不做**（用户决定） | |
 | — | Reddit | 需手动发 | Claude in Chrome 对 reddit.com 有安全限制，自动化打不开 |
 
 Quora 待答队列（新号一天 ≤4 条、同类题隔天；每条先完整作答再附链接并注明"我做的"）：
