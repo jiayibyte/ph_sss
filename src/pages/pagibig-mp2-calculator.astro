@@ -1,0 +1,91 @@
+---
+import ToolPageLayout from '../layouts/ToolPageLayout.astro';
+import Mp2Calculator from '../islands/Mp2Calculator';
+import pagibigJson from '../data/pagibig/2026.json';
+import type { PagibigRules } from '../lib/rules/types';
+import { projectMp2 } from '../lib/engine/pagibigSavings';
+import { peso } from '../lib/format';
+
+const rules = pagibigJson as unknown as PagibigRules;
+const M = rules.mp2;
+const pct = (r: number) => `${(r * 100).toFixed(2)}%`;
+const latest = M.dividend_rates[0]!;
+const five = M.dividend_rates.slice(0, 5);
+const avg5 = five.reduce((s, r) => s + r.rate, 0) / five.length;
+const monthlies = [500, 1000, 2000, 5000, 10000];
+const ex = projectMp2({ monthly: 1000, rate: latest.rate, payout: 'compounded' });
+const lump = projectMp2({ monthly: 0, lumpSum: 100000, rate: latest.rate, payout: 'compounded' });
+const lumpAnnual = projectMp2({ monthly: 0, lumpSum: 100000, rate: latest.rate, payout: 'annual' });
+
+const faqs = [
+  { q: `What is the Pag-IBIG MP2 dividend rate for ${latest.year}?`, a: `${pct(latest.rate)} for ${latest.year}, the latest rate Pag-IBIG has declared (official MP2 page). Recent years: ${five.map((r) => `${r.year} ${pct(r.rate)}`).join(', ')} — an average of ${pct(avg5)}. The rate for the current year is declared the following year, so any projection is an estimate.` },
+  { q: 'How much will ₱1,000 a month in MP2 earn after 5 years?', a: `About ${peso(ex.maturityValue)} if the rate stays at ${pct(latest.rate)} and dividends are compounded: you save ${peso(ex.totalDeposits)} and earn roughly ${peso(ex.totalDividends)} in tax-free dividends. A one-time ₱100,000 grows to about ${peso(lump.maturityValue)} compounded, or pays about ${peso(lumpAnnual.paidOut)} in total if you take the dividends every year.` },
+  { q: 'What is the minimum and maximum for MP2?', a: `At least ${peso(M.min_remittance)} per remittance, and up to ₱20,000,000 of principal at any time. A single remittance above ${peso(M.check_threshold)} must be paid by personal or manager's check, and remittances above ${peso(M.proof_of_income_threshold)} need proof of income or source of funds (Pag-IBIG MP2 FAQ). A lump sum for the whole five years is allowed, and you may open several MP2 accounts.` },
+  { q: 'Who can open an MP2 account?', a: `Active Pag-IBIG members — "members with ${M.active_member_rule}" — as well as pensioners and retirees with other monthly income who had at least 24 monthly savings before retiring, and natural-born Filipinos who reacquired citizenship under RA 9225 with at least 24 monthly savings before migrating. Open it online through Virtual Pag-IBIG or at a branch with the MP2 enrolment form.` },
+  { q: 'Is the MP2 dividend taxable, and is my money guaranteed?', a: 'Dividends are tax-free, and the MP2 savings are government-guaranteed. The dividends themselves are not guaranteed — they depend on Pag-IBIG Fund\'s financial performance, since the fund returns at least 70% of its annual net income to members\' savings.' },
+  { q: 'Can I withdraw MP2 before 5 years?', a: 'Only for specific reasons: total disability or insanity, separation for health reasons, retirement, permanent migration, layoff or company closure, OFW repatriation, death, critical illness of the member or an immediate family member, or other grounds approved by the Board. On pre-termination you get the principal plus only 50% of the dividends earned (for annual-payout accounts, 50% of the dividends already received is deducted).' },
+  { q: 'Compounded or annual payout — which should I choose?', a: 'Compounded pays everything at maturity and earns dividends on dividends, so it ends higher. Annual payout sends each year\'s dividend to your bank account (by check for members without a Philippine bank account). The choice is fixed for that account — open a second MP2 account if you want the other mode.' },
+  { q: 'Magkano ang kikitain sa MP2 kung ₱500 kada buwan?', a: `Sa ₱500 kada buwan sa loob ng 5 taon, ${peso(30000)} ang maiipon mo at humigit-kumulang ${peso(projectMp2({ monthly: 500, rate: latest.rate, payout: 'compounded' }).totalDividends)} ang dividend kung ${pct(latest.rate)} ang rate at compounded, kaya mga ${peso(projectMp2({ monthly: 500, rate: latest.rate, payout: 'compounded' }).maturityValue)} ang makukuha mo sa maturity. Tax-free ang dividend; nagbabago ang rate kada taon.` },
+];
+---
+
+<ToolPageLayout
+  title={`Pag-IBIG MP2 Calculator 2026 – ${pct(latest.rate)} Dividend Rate`}
+  description={`Estimate your Pag-IBIG MP2 savings after 5 years — monthly or lump sum, compounded or annual payout — with the official ${latest.year} rate of ${pct(latest.rate)}.`}
+  path="/pagibig-mp2-calculator/"
+  h1="Pag-IBIG MP2 Calculator"
+  faqs={faqs}
+  related={['pagibig', 'pagibigHousingLoan', 'pagibigMid', 'sssPension']}
+>
+  <Fragment slot="answer">
+    <p>
+      <strong>Pag-IBIG MP2</strong> is a voluntary five-year savings account that paid <strong>{pct(latest.rate)} in {latest.year}</strong>
+      ({five.map((r) => `${r.year} ${pct(r.rate)}`).join(', ')}), tax-free and government-guaranteed. You can save from
+      {peso(M.min_remittance)} per remittance or in one lump sum, and take dividends every year or compounded at maturity.
+      At {pct(latest.rate)} a year, ₱1,000 a month grows to about <strong>{peso(ex.maturityValue)}</strong> in five years, and a
+      one-time ₱100,000 to about {peso(lump.maturityValue)}. Future rates are declared yearly, so the calculator lets you pick
+      the rate to assume.
+    </p>
+  </Fragment>
+  <Fragment slot="calculator">
+    <Mp2Calculator client:idle />
+  </Fragment>
+
+  <h2>MP2 Dividend Rates Since 2011</h2>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Year</th><th>MP2 dividend rate</th></tr></thead>
+      <tbody>
+        {M.dividend_rates.map((r) => (<tr><td>{r.year}</td><td><strong>{pct(r.rate)}</strong>{r.source === 'archive' && <span class="text-ink-soft"> *</span>}</td></tr>))}
+      </tbody>
+    </table>
+  </div>
+  <p class="text-sm text-ink-soft">2021–{latest.year}: Pag-IBIG's current MP2 page. * 2011–2020: the same official page's earlier version, which listed rates from 2011.</p>
+
+  <h2>What ₱X a Month Becomes in 5 Years (at {pct(latest.rate)}, Compounded)</h2>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Monthly savings</th><th>Total saved</th><th>Dividends</th><th>At maturity</th></tr></thead>
+      <tbody>
+        {monthlies.map((m) => { const r = projectMp2({ monthly: m, rate: latest.rate, payout: 'compounded' }); return (<tr><td><strong>{peso(m)}</strong></td><td>{peso(r.totalDeposits)}</td><td>{peso(r.totalDividends)}</td><td><strong>{peso(r.maturityValue)}</strong></td></tr>); })}
+      </tbody>
+    </table>
+  </div>
+  <p>Each deposit earns the year's rate for the months it is held that year; the result is an estimate, because Pag-IBIG declares each year's rate after the year ends.</p>
+
+  <h2>MP2 Rules</h2>
+  <ul>
+    <li><strong>Who:</strong> active members ({M.active_member_rule}); pensioners and retirees with other income and at least 24 monthly savings before retirement; natural-born Filipinos who reacquired citizenship under RA 9225 with 24 monthly savings before migrating.</li>
+    <li><strong>How much:</strong> at least {peso(M.min_remittance)} per remittance; lump sum allowed; principal up to ₱20,000,000; check required above {peso(M.check_threshold)} in one remittance; proof of income above {peso(M.proof_of_income_threshold)}.</li>
+    <li><strong>Term:</strong> five years. Unclaimed MP2 stops earning the MP2 rate after maturity; it can be rolled over, in full or in part, into a new five-year account.</li>
+    <li><strong>Dividends:</strong> tax-free; annual payout to a bank account or compounded and paid at maturity; the payout mode cannot be changed for that account. The fifth-year rate, if maturity comes before it is declared, is the latest declared rate.</li>
+    <li><strong>Early withdrawal:</strong> only on the listed grounds (disability, health-related separation, retirement, migration, layoff or closure, OFW repatriation, death, critical illness, or Board-approved reasons), with 50% of dividends.</li>
+    <li><strong>Pay:</strong> by salary deduction, Virtual Pag-IBIG (GCash, Maya or card), or accredited payment partners in the Philippines and abroad.</li>
+  </ul>
+
+  <h2>Official Source</h2>
+  <p>
+    <a href={M.source_url} target="_blank" rel="noopener">Pag-IBIG Fund — MP2 Savings</a> (return rates, features and FAQ, read {new Date(rules.meta.last_verified + 'T00:00:00').toLocaleDateString('en-PH', { month: 'long', day: 'numeric', year: 'numeric' })}).
+    Open and pay only through Virtual Pag-IBIG or Pag-IBIG's accredited channels — AyTool is independent and cannot access your account.
+  </p>
+</ToolPageLayout>

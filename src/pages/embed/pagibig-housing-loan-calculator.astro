@@ -1,0 +1,9 @@
+---
+import EmbedLayout from '../../layouts/EmbedLayout.astro';
+import PagibigHousingLoanCalculator from '../../islands/PagibigHousingLoanCalculator';
+import { TOOL_PAGES } from '../../lib/pages';
+---
+
+<EmbedLayout page={TOOL_PAGES.pagibigHousingLoan!}>
+  <PagibigHousingLoanCalculator client:load />
+</EmbedLayout>

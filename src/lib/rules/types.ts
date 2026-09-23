@@ -200,6 +200,43 @@ export interface PagibigRules {
   /** Monthly compensation at or below which the low employee rate applies. */
   low_threshold: number;
   employer_rate: number;
+  mp2: {
+    min_remittance: number;
+    maturity_years: number;
+    max_principal: number;
+    check_threshold: number;
+    proof_of_income_threshold: number;
+    active_member_rule: string;
+    /** Newest first. source 'live' = current official page; 'archive' = the official page's earlier version. */
+    dividend_rates: Array<{ year: number; rate: number; source: 'live' | 'archive' }>;
+    source_note: string;
+    source_url: string;
+  };
+  housing_loan: {
+    max_loan: number;
+    ltv_above_6m: number;
+    max_term_years: number;
+    max_age_at_application: number;
+    max_age_at_maturity: number;
+    min_monthly_savings: number;
+    rates_valid_until: string;
+    regular_rates: Array<{ years: number; rate: number }>;
+    promo: Array<{ max_loan: number; rate: number; years: number }>;
+    affordable: {
+      rate: number;
+      rate_years: number;
+      rate_10y: number;
+      min_contributions: number;
+      income_ceiling_ncr: number;
+      income_ceiling_outside_ncr: number;
+      caps: Array<{ type: string; max_loan: number; sample_monthly: number }>;
+      extension_note: string;
+      source_url: string;
+    };
+    source_note: string;
+    source_url: string;
+    circular_491_url: string;
+  };
 }
 
 /* --------------------------------- Labor --------------------------------- */
@@ -311,7 +348,11 @@ export interface PrcExamEntry {
   /** From PRC's results press release (counts as printed; pass rate = passers ÷ examinees). */
   passers?: number;
   examinees?: number;
+  /** "Released in N working days" as stated in PRC's headline (counted by PRC from the last sitting, excluding holidays). */
+  results_working_days?: number;
   results_note?: string;
+  /** PRC press release the results figures were transcribed from. */
+  results_url?: string;
   note?: string;
 }
 

@@ -28,7 +28,8 @@ export default function MinimumWageCalculator() {
 
   const dailyPay = pay !== null && pay > 0 ? (basis === 'daily' ? pay : dailyEquivalent(pay, divisor.factor)) : null;
   const gap = dailyPay !== null ? shortfall(dailyPay, tier.rate) : null;
-  trackCalculatorUse('minimum-wage');
+  // Count real use only — not every page view (the result card renders with defaults).
+  if (pay !== null || regionId !== 'ncr' || tierIdx !== '0' || divisorId !== '313') trackCalculatorUse('minimum-wage');
 
   const rows = [
     { label: `${region.name} — ${tier.label}${tier.group ? ` (${tier.group})` : ''}`, value: '' },

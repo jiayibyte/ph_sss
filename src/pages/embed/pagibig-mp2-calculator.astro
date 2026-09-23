@@ -1,0 +1,9 @@
+---
+import EmbedLayout from '../../layouts/EmbedLayout.astro';
+import Mp2Calculator from '../../islands/Mp2Calculator';
+import { TOOL_PAGES } from '../../lib/pages';
+---
+
+<EmbedLayout page={TOOL_PAGES.pagibigMp2!}>
+  <Mp2Calculator client:load />
+</EmbedLayout>

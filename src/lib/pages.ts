@@ -118,6 +118,22 @@ export const TOOL_PAGES: Record<string, PageRef> = {
     priority: 'P0',
     ogKicker: 'Free · Independent · NWPC wage orders, Sept 2026',
   },
+  pagibigMp2: {
+    href: '/pagibig-mp2-calculator/',
+    label: 'Pag-IBIG MP2 Calculator',
+    short: 'MP2 Savings',
+    blurb: 'Project your MP2 savings after 5 years with the official dividend rates (7.12% for 2025), monthly or lump sum, compounded or annual payout.',
+    priority: 'P1',
+    ogKicker: 'Free · Independent · Official MP2 rates',
+  },
+  pagibigHousingLoan: {
+    href: '/pagibig-housing-loan-calculator/',
+    label: 'Pag-IBIG Housing Loan Calculator',
+    short: 'Pag-IBIG Housing Loan',
+    blurb: 'Monthly amortization at the 2026 rates — 4.5% promo, 6.5%–9.75% regular, 3% Affordable Housing — for loans up to ₱10M.',
+    priority: 'P1',
+    ogKicker: 'Free · Independent · Pag-IBIG rates until Dec 31, 2026',
+  },
   takeHome: {
     href: '/take-home-pay-calculator/',
     label: 'Take-Home Pay Calculator',
@@ -361,3 +377,45 @@ export const TRUST_PAGES: Array<{ href: string; label: string }> = [
 ];
 
 export const ALL_TOOLS: PageRef[] = Object.values(TOOL_PAGES);
+
+/* ------------------------------ Categories ------------------------------ */
+/* Drives the home-page sections and the footer. Every TOOL_PAGES key must be
+   listed exactly once (prcProfessionPages / pages tests enforce it). */
+
+export type PageCategory = 'contributions' | 'pay' | 'benefits' | 'guides' | 'exams';
+
+export const CATEGORY_LABELS: Record<PageCategory, string> = {
+  contributions: 'Contribution Calculators',
+  pay: 'Pay, Wage & Separation Calculators',
+  benefits: 'SSS & Pag-IBIG Benefits, Loans & Savings',
+  guides: 'Government IDs, Holidays & OFW Guides',
+  exams: 'PRC Board Exam Schedules & Results',
+};
+
+export const CATEGORY_KEYS: Record<PageCategory, Array<keyof typeof TOOL_PAGES>> = {
+  contributions: ['sssTable', 'sssCalculator', 'philhealth', 'pagibig'],
+  pay: ['takeHome', 'minimumWage', 'dailyRate', 'thirteenth', 'overtime', 'holidayPay', 'nightDiff', 'finalPay', 'separationPay', 'retirementPay'],
+  benefits: ['sssPension', 'sssMaternity', 'sssSickness', 'sssUnemployment', 'sssLoan', 'pagibigMp2', 'pagibigHousingLoan'],
+  guides: ['sssNumber', 'tinNumber', 'pagibigMid', 'philhealthPin', 'holidays', 'oec'],
+  exams: [
+    'prc', 'prcResults', 'nursingSchedule', 'letSchedule', 'criminologySchedule', 'cpaSchedule', 'civilEngSchedule',
+    'physicianSchedule', 'medtechSchedule', 'pharmacySchedule', 'midwiferySchedule', 'psychometricianSchedule',
+    'radtechSchedule', 'electricalSchedule', 'mechanicalSchedule', 'electronicsSchedule', 'architectureSchedule',
+    'dentistrySchedule', 'socialWorkSchedule',
+  ],
+};
+
+export function pagesIn(category: PageCategory): PageRef[] {
+  return CATEGORY_KEYS[category].map((k) => {
+    const p = TOOL_PAGES[k];
+    if (!p) throw new Error(`CATEGORY_KEYS.${category} references unknown TOOL_PAGES key "${String(k)}"`);
+    return p;
+  });
+}
+
+/** Footer: every calculator and guide, plus the three hub pages of the exam cluster (profession pages link each other). */
+export const FOOTER_GROUPS: Array<{ label: string; pages: PageRef[] }> = [
+  { label: 'Contributions & Pay', pages: [...pagesIn('contributions'), ...pagesIn('pay')] },
+  { label: 'Benefits, Loans & Guides', pages: [...pagesIn('benefits'), ...pagesIn('guides')] },
+  { label: 'Board Exams', pages: pagesIn('exams').slice(0, 3) },
+];

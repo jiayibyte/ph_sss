@@ -23,7 +23,10 @@ const DIST = path.resolve(process.cwd(), 'dist');
 const ORIGIN = 'https://aytool.com';
 
 const findings = [];
+const warnings = [];
 const fail = (file, msg) => findings.push(`${file}: ${msg}`);
+const decodeEntities = (s) =>
+  s.replace(/&amp;/g, '&').replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&lt;/g, '<').replace(/&gt;/g, '>');
 
 /** Every .html file in dist, as { file: relative path, url: the URL it serves }. */
 function htmlPages(dir = DIST) {
@@ -80,6 +83,17 @@ for (const { file, url } of pages) {
     }
   } else {
     indexable.push(url);
+    // Snippet hygiene: Google cuts descriptions around 155–160 characters.
+    const desc = html.match(/<meta name="description" content="([^"]*)"/)?.[1] ?? '';
+    const descLen = decodeEntities(desc).length;
+    if (descLen === 0) fail(file, 'missing meta description');
+    else if (descLen > 160) fail(file, `meta description is ${descLen} chars (max 160)`);
+    const titleLen = decodeEntities(html.match(/<title>([^<]*)<\/title>/)?.[1] ?? '').length;
+    if (titleLen > 65) warnings.push(`${file}: title is ${titleLen} chars`);
+    // Embed snippet must point at an embed page that exists.
+    const embed = decodeEntities(html).match(/src="https:\/\/aytool\.com(\/embed\/[a-z0-9-]+\/)"/)?.[1];
+    if (html.includes('Embed this calculator') && (!embed || !resolves(embed)))
+      fail(file, `embed snippet points at ${embed ?? 'nothing'}, which does not exist`);
     if (canonical !== `${ORIGIN}${url}`)
       fail(file, `canonical is ${canonical ?? 'missing'}, expected ${ORIGIN}${url}`);
     if (ogUrl !== `${ORIGIN}${url}`)
@@ -125,4 +139,5 @@ if (findings.length > 0) {
   console.error('');
   process.exit(1);
 }
+for (const w of warnings) console.warn(`  ! ${w}`);
 console.log(`✓ dist audit: ${pages.length} pages, ${indexable.length} indexable, all crawl-facing URLs canonical`);

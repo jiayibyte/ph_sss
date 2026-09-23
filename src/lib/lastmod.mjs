@@ -39,6 +39,8 @@ export const PAGE_DATA = {
   '/daily-rate-calculator/': ['wages'],
   '/philhealth-contribution/': ['philhealth'],
   '/pagibig-contribution/': ['pagibig'],
+  '/pagibig-mp2-calculator/': ['pagibig'],
+  '/pagibig-housing-loan-calculator/': ['pagibig'],
   '/take-home-pay-calculator/': ['sss', 'philhealth', 'pagibig', 'tax'],
   '/minimum-wage-philippines/': ['wages'],
   '/13th-month-pay-calculator/': ['labor'],

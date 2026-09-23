@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import { ALL_TOOLS } from '../lib/pages';
+import { FOOTER_GROUPS } from '../lib/pages';
+const links = FOOTER_GROUPS.flatMap((g) => g.pages);
 ---
 
 <BaseLayout
@@ -16,7 +17,7 @@ import { ALL_TOOLS } from '../lib/pages';
     </p>
     <ul class="mx-auto mt-6 grid max-w-md gap-2 text-left">
       {
-        ALL_TOOLS.map((t) => (
+        links.map((t) => (
           <li>
             <a
               href={t.href}

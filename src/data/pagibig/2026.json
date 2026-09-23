@@ -3,7 +3,7 @@
   "rule_version": "HDMF Circular No. 460 — Maximum Fund Salary ₱10,000 (Feb 2024), unchanged for 2026",
   "effective_from": "2024-02-01",
   "effective_to": null,
-  "last_verified": "2026-08-19",
+  "last_verified": "2026-09-23",
   "official_source_url": "https://www.pagibigfund.gov.ph/document/pdf/circulars/provident/Circular%20No.%20460%20-%20Guidelines%20on%20the%20Pag-IBIG%20Fund's%20Implementation%20of%20Increase%20in%20the%20MFS%20Effective%20February%202024.pdf",
   "official_source_label": "HDMF Circular No. 460 (pagibigfund.gov.ph)"
  },
@@ -11,5 +11,174 @@
  "employee_rate_low": 0.01,
  "employee_rate": 0.02,
  "low_threshold": 1500,
- "employer_rate": 0.02
+ "employer_rate": 0.02,
+ "mp2": {
+  "min_remittance": 500,
+  "maturity_years": 5,
+  "max_principal": 20000000,
+  "check_threshold": 500000,
+  "proof_of_income_threshold": 100000,
+  "active_member_rule": "at least one (1) monthly savings (contribution) within the last six (6) months",
+  "dividend_rates": [
+   {
+    "year": 2025,
+    "rate": 0.0712,
+    "source": "live"
+   },
+   {
+    "year": 2024,
+    "rate": 0.071,
+    "source": "live"
+   },
+   {
+    "year": 2023,
+    "rate": 0.0705,
+    "source": "live"
+   },
+   {
+    "year": 2022,
+    "rate": 0.0703,
+    "source": "live"
+   },
+   {
+    "year": 2021,
+    "rate": 0.06,
+    "source": "live"
+   },
+   {
+    "year": 2020,
+    "rate": 0.0612,
+    "source": "archive"
+   },
+   {
+    "year": 2019,
+    "rate": 0.0723,
+    "source": "archive"
+   },
+   {
+    "year": 2018,
+    "rate": 0.0741,
+    "source": "archive"
+   },
+   {
+    "year": 2017,
+    "rate": 0.0811,
+    "source": "archive"
+   },
+   {
+    "year": 2016,
+    "rate": 0.0743,
+    "source": "archive"
+   },
+   {
+    "year": 2015,
+    "rate": 0.0534,
+    "source": "archive"
+   },
+   {
+    "year": 2014,
+    "rate": 0.0469,
+    "source": "archive"
+   },
+   {
+    "year": 2013,
+    "rate": 0.0458,
+    "source": "archive"
+   },
+   {
+    "year": 2012,
+    "rate": 0.0467,
+    "source": "archive"
+   },
+   {
+    "year": 2011,
+    "rate": 0.0463,
+    "source": "archive"
+   }
+  ],
+  "source_note": "pagibigfund.gov.ph/member_savings_mp2.html (read 2026-09-23): return rates 2021–2025, P500 minimum per remittance, 5-year maturity, tax-free and government-guaranteed, annual payout or compounded at maturity, P20M principal cap, pre-termination grounds with 50% of dividends. 2011–2020 rates from the same official page's earlier version (Membership_ModifiedPagIBIG2.html, 2024 capture) — the current page lists 2021 onward only.",
+  "source_url": "https://www.pagibigfund.gov.ph/member_savings_mp2.html"
+ },
+ "housing_loan": {
+  "max_loan": 10000000,
+  "ltv_above_6m": 0.9,
+  "max_term_years": 30,
+  "max_age_at_application": 65,
+  "max_age_at_maturity": 70,
+  "min_monthly_savings": 24,
+  "rates_valid_until": "2026-12-31",
+  "regular_rates": [
+   {
+    "years": 5,
+    "rate": 0.065
+   },
+   {
+    "years": 10,
+    "rate": 0.07125
+   },
+   {
+    "years": 15,
+    "rate": 0.0775
+   },
+   {
+    "years": 20,
+    "rate": 0.085
+   },
+   {
+    "years": 25,
+    "rate": 0.09125
+   },
+   {
+    "years": 30,
+    "rate": 0.0975
+   }
+  ],
+  "promo": [
+   {
+    "max_loan": 4900000,
+    "rate": 0.045,
+    "years": 3
+   },
+   {
+    "max_loan": 10000000,
+    "rate": 0.0575,
+    "years": 3
+   }
+  ],
+  "affordable": {
+   "rate": 0.03,
+   "rate_years": 5,
+   "rate_10y": 0.0625,
+   "min_contributions": 12,
+   "income_ceiling_ncr": 47855.82,
+   "income_ceiling_outside_ncr": 34685.82,
+   "caps": [
+    {
+     "type": "Socialized house and lot, 27 sqm and above",
+     "max_loan": 950000,
+     "sample_monthly": 4005.24
+    },
+    {
+     "type": "Socialized house and lot, 24–26 sqm",
+     "max_loan": 844440,
+     "sample_monthly": 3560.19
+    },
+    {
+     "type": "Socialized condominium, 27 sqm and above",
+     "max_loan": 1800000,
+     "sample_monthly": 7588.87
+    },
+    {
+     "type": "Socialized condominium, 24–26 sqm",
+     "max_loan": 1600000,
+     "sample_monthly": 6745.66
+    }
+   ],
+   "extension_note": "If the borrower's gross monthly income at the end of the five-year period is still within the income threshold, the subsidized rate applies for another three years.",
+   "source_url": "https://www.pagibigfund.gov.ph/AffordableHousingLoan.html"
+  },
+  "source_note": "pagibigfund.gov.ph/Availmentofnewloan.html (read 2026-09-23): rates until December 31, 2026 by repricing period and the 4.5% / 5.75% three-year promo; eligibility (24 monthly savings, ≤65 at application, ≤70 at maturity); term up to 30 years not beyond age 70; MRI/SRI and fire insurance; one-month Housing Loan Reserve Payment. Circular No. 491 (Board meeting 2026-05-11): loans up to ₱10M, above ₱6M subject to 90% loan-to-appraised value.",
+  "source_url": "https://www.pagibigfund.gov.ph/Availmentofnewloan.html",
+  "circular_491_url": "https://www.pagibigfund.gov.ph/documents/Circular%20No.%20491%20-%20Guidelines%20on%20the%20Maximum%20Loanable%20Amount%20of%20up%20to%20Ten%20Million%20Pesos%20under%20the%20Pag-IBIG%20Fund%20Housing%20Programs.pdf"
+ }
 }

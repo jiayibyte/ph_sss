@@ -1,0 +1,110 @@
+---
+import ToolPageLayout from '../layouts/ToolPageLayout.astro';
+import PagibigHousingLoanCalculator from '../islands/PagibigHousingLoanCalculator';
+import pagibigJson from '../data/pagibig/2026.json';
+import type { PagibigRules } from '../lib/rules/types';
+import { monthlyAmortization } from '../lib/engine/pagibigSavings';
+import { peso } from '../lib/format';
+
+const rules = pagibigJson as unknown as PagibigRules;
+const H = rules.housing_loan;
+const A = H.affordable;
+const pct = (r: number) => `${+(r * 100).toFixed(3)}%`;
+const until = new Date(H.rates_valid_until + 'T00:00:00').toLocaleDateString('en-PH', { month: 'long', day: 'numeric', year: 'numeric' });
+const loans = [1000000, 2000000, 3000000, 5000000, 10000000];
+const r5 = H.regular_rates[0]!;
+const r30 = H.regular_rates[H.regular_rates.length - 1]!;
+const promoLow = H.promo[0]!;
+const promoHigh = H.promo[1]!;
+
+const faqs = [
+  { q: 'What are the Pag-IBIG housing loan interest rates in 2026?', a: `Pag-IBIG's regular rates until ${until} depend on how long you fix the rate: ${H.regular_rates.map((r) => `${pct(r.rate)} for ${r.years} years`).join(', ')}. A promo rate of ${pct(promoLow.rate)} applies to loans up to ₱4.9 million and ${pct(promoHigh.rate)} to loans above ₱4.9 million up to ₱10 million, for the first ${promoLow.years} years of the loan. Socialized homes under the Affordable Housing Program get ${pct(A.rate)} for the first ${A.rate_years} years.` },
+  { q: 'How much is the monthly payment on a ₱2 million Pag-IBIG loan?', a: `Over 30 years: about ${peso(monthlyAmortization(2000000, promoLow.rate, 30))} a month at the ${pct(promoLow.rate)} promo rate, ${peso(monthlyAmortization(2000000, r5.rate, 30))} at ${pct(r5.rate)} (5-year fixing) or ${peso(monthlyAmortization(2000000, r30.rate, 30))} at ${pct(r30.rate)} (fixed for 30 years). These are principal and interest only; mortgage redemption and fire insurance are billed on top, and the rate reprices at the end of the fixing period.` },
+  { q: 'How much can I borrow from Pag-IBIG?', a: `Up to ${peso(H.max_loan)} (Circular No. 491, approved by the Board on May 11, 2026), with loans above ₱6 million limited to ${H.ltv_above_6m * 100}% of the appraised value. The actual amount is the lowest of your actual need, the amount you apply for, what your income can pay, and the loan-to-appraised-value ratio.` },
+  { q: 'Who qualifies for a Pag-IBIG housing loan?', a: `At least ${H.min_monthly_savings} monthly savings (a lump-sum payment of the required savings is allowed), not more than ${H.max_age_at_application} years old at application and ${H.max_age_at_maturity} at the end of the loan, legal capacity to mortgage property, satisfactory credit and employment checks, no Pag-IBIG short-term loan in arrears, and no previous Pag-IBIG housing loan that was foreclosed, cancelled or bought back.` },
+  { q: 'Who qualifies for the 3% Affordable Housing Loan?', a: `Members buying, building or refinancing a socialized home whose gross monthly income is below ${peso(A.income_ceiling_ncr)} if working in NCR or ${peso(A.income_ceiling_outside_ncr)} outside NCR (OFWs qualify whatever their income), with at least ${A.min_contributions} monthly contributions. Loans go up to ${peso(A.caps[0]!.max_loan)} for a socialized house and lot and ${peso(A.caps[2]!.max_loan)} for a socialized condominium unit of 27 sqm or more, with 100% loan-to-value. The ${pct(A.rate)} rate runs for the first ${A.rate_years} years; ${A.extension_note.charAt(0).toLowerCase() + A.extension_note.slice(1)}` },
+  { q: 'What is the maximum loan term?', a: `Thirty years, but not beyond the borrower's age ${H.max_age_at_maturity}. A 45-year-old can borrow for up to 25 years.` },
+  { q: 'What is the Housing Loan Reserve Payment?', a: 'An amount equal to one monthly amortization set aside from your loan proceeds on release. It protects your insurance coverage and shields you from late-payment penalties if a payment is delayed; any unused reserve is applied to your last amortization. It does not replace your regular monthly payments.' },
+  { q: 'Magkano ang hulog sa Pag-IBIG housing loan na ₱1.5 milyon?', a: `Sa 30 taon: mga ${peso(monthlyAmortization(1500000, promoLow.rate, 30))} kada buwan sa ${pct(promoLow.rate)} promo rate (unang ${promoLow.years} taon), ${peso(monthlyAmortization(1500000, r5.rate, 30))} sa ${pct(r5.rate)} (5 taong fixed), o ${peso(monthlyAmortization(1500000, r30.rate, 30))} kung fixed ang ${pct(r30.rate)} sa buong 30 taon. Hiwalay pa ang MRI at fire insurance.` },
+];
+---
+
+<ToolPageLayout
+  title="Pag-IBIG Housing Loan Calculator 2026 – Monthly Amortization"
+  description={`Pag-IBIG housing loan amortization at the official rates until ${until}: ${pct(promoLow.rate)} promo, ${pct(r5.rate)}–${pct(r30.rate)} regular, ${pct(A.rate)} Affordable Housing. Up to ₱10M.`}
+  path="/pagibig-housing-loan-calculator/"
+  h1="Pag-IBIG Housing Loan Calculator"
+  faqs={faqs}
+  related={['pagibigMp2', 'pagibig', 'takeHome', 'minimumWage']}
+>
+  <Fragment slot="answer">
+    <p>
+      A <strong>Pag-IBIG housing loan</strong> goes up to <strong>{peso(H.max_loan)}</strong> for up to 30 years. Until {until}
+      the rates are a <strong>{pct(promoLow.rate)} promo</strong> for loans up to ₱4.9M ({pct(promoHigh.rate)} above) for the
+      first {promoLow.years} years, or regular rates from <strong>{pct(r5.rate)}</strong> (fixed 5 years) to {pct(r30.rate)}
+      (fixed 30 years); socialized homes get <strong>{pct(A.rate)}</strong> for five years under the Affordable Housing Program.
+      A ₱2,000,000 loan over 30 years is about <strong>{peso(monthlyAmortization(2000000, promoLow.rate, 30))}</strong> a month
+      at the promo rate, before insurance. Enter your loan below.
+    </p>
+  </Fragment>
+  <Fragment slot="calculator">
+    <PagibigHousingLoanCalculator client:idle />
+  </Fragment>
+
+  <h2>Pag-IBIG Interest Rates Until {until}</h2>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Rate</th><th>Applies to</th></tr></thead>
+      <tbody>
+        <tr><td><strong>{pct(promoLow.rate)}</strong> promo</td><td>Loans up to ₱4.9M, first {promoLow.years} years of the loan term</td></tr>
+        <tr><td><strong>{pct(promoHigh.rate)}</strong> promo</td><td>Loans over ₱4.9M to ₱10M, first {promoHigh.years} years</td></tr>
+        {H.regular_rates.map((r) => (<tr><td><strong>{pct(r.rate)}</strong></td><td>Regular rate, repricing every {r.years} years</td></tr>))}
+        <tr><td><strong>{pct(A.rate)}</strong></td><td>Affordable Housing Program (socialized homes), first {A.rate_years} years</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Monthly Amortization Table (30 Years)</h2>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Loan</th><th>{pct(promoLow.rate)}</th><th>{pct(r5.rate)} (5-yr)</th><th>{pct(H.regular_rates[1]!.rate)} (10-yr)</th><th>{pct(r30.rate)} (30-yr)</th></tr></thead>
+      <tbody>
+        {loans.map((l) => (<tr><td><strong>{peso(l)}</strong></td><td>{peso(monthlyAmortization(l, l <= promoLow.max_loan ? promoLow.rate : promoHigh.rate, 30))}</td><td>{peso(monthlyAmortization(l, r5.rate, 30))}</td><td>{peso(monthlyAmortization(l, H.regular_rates[1]!.rate, 30))}</td><td>{peso(monthlyAmortization(l, r30.rate, 30))}</td></tr>))}
+      </tbody>
+    </table>
+  </div>
+  <p>Principal and interest only; the promo column uses {pct(promoHigh.rate)} for loans above ₱4.9M. Rates reprice at the end of the fixing or promo period.</p>
+
+  <h2>Affordable Housing Program (Socialized Homes)</h2>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Property</th><th>Loan up to</th><th>Pag-IBIG's sample monthly payment ({pct(A.rate)}, 30 years)</th></tr></thead>
+      <tbody>
+        {A.caps.map((c) => (<tr><td>{c.type}</td><td>{peso(c.max_loan)}</td><td>{peso(c.sample_monthly)}</td></tr>))}
+      </tbody>
+    </table>
+  </div>
+  <p>
+    Gross monthly income below {peso(A.income_ceiling_ncr)} (NCR) or {peso(A.income_ceiling_outside_ncr)} (outside NCR); OFWs
+    qualify regardless of income; at least {A.min_contributions} monthly contributions; 100% loan-to-value. {A.extension_note}
+    The calculator reproduces these official samples exactly.
+  </p>
+
+  <h2>Eligibility, Term and Costs</h2>
+  <ul>
+    <li><strong>Membership:</strong> at least {H.min_monthly_savings} monthly savings ({A.min_contributions} for Affordable Housing); a lump sum of the required savings is allowed.</li>
+    <li><strong>Age and term:</strong> not over {H.max_age_at_application} at application, not over {H.max_age_at_maturity} at maturity; term up to {H.max_term_years} years.</li>
+    <li><strong>Amount:</strong> up to {peso(H.max_loan)}; above ₱6M limited to {H.ltv_above_6m * 100}% of appraised value; overall the lowest of need, amount applied for, capacity to pay and loan-to-value.</li>
+    <li><strong>Insurance:</strong> Mortgage Redemption (or Sales Redemption) Insurance and Fire and Allied Perils Insurance are required and billed with the amortization.</li>
+    <li><strong>Reserve payment:</strong> one month's amortization is set aside from the proceeds and applied to your last payment if unused.</li>
+    <li><strong>Apply:</strong> at any Pag-IBIG branch, through an accredited developer, or start online in Virtual Pag-IBIG (Apply for or Manage Loans).</li>
+  </ul>
+
+  <h2>Official Source</h2>
+  <p>
+    <a href={H.source_url} target="_blank" rel="noopener">Pag-IBIG Fund — Regular Housing Loan</a> (rates until {until}, eligibility, FAQ),
+    <a href={A.source_url} target="_blank" rel="noopener">Affordable Housing Loan</a>, and
+    <a href={H.circular_491_url} target="_blank" rel="noopener">Circular No. 491</a> (₱10M maximum). Read September 23, 2026. Your
+    actual amortization is in Pag-IBIG's disclosure statement; AyTool is independent.
+  </p>
+</ToolPageLayout>

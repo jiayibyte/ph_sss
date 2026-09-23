@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import { SITE } from '../../site.config';
-import { ALL_TOOLS } from '../lib/pages';
+import { CATEGORY_LABELS, pagesIn, type PageCategory } from '../lib/pages';
 import { datasetLastVerified } from '../lib/lastmod.mjs';
 import sss from '../data/sss/2026.json';
 import philhealth from '../data/philhealth/2026.json';
@@ -80,9 +80,8 @@ const facts = [
   },
 ];
 
-const p0 = ALL_TOOLS.filter((t) => t.priority === 'P0');
-const p1 = ALL_TOOLS.filter((t) => t.priority === 'P1');
-const p2 = ALL_TOOLS.filter((t) => t.priority === 'P2');
+const cardSections: PageCategory[] = ['contributions', 'pay', 'benefits', 'guides'];
+const examPages = pagesIn('exams');
 ---
 
 <BaseLayout
@@ -127,11 +126,32 @@ const p2 = ALL_TOOLS.filter((t) => t.priority === 'P2');
       </ul>
     </section>
 
-    <section aria-labelledby="core-tools">
-      <h2 id="core-tools" class="mt-10 text-xl font-bold text-ink">Contribution Calculators</h2>
+    {
+      cardSections.map((cat) => (
+        <section aria-labelledby={`cat-${cat}`}>
+          <h2 id={`cat-${cat}`} class="mt-10 text-xl font-bold text-ink">{CATEGORY_LABELS[cat]}</h2>
+          <ul class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {pagesIn(cat).map((t) => (
+              <li>
+                <a
+                  href={t.href}
+                  class="block h-full rounded-xl border border-line bg-surface p-5 shadow-sm transition-colors hover:border-accent"
+                >
+                  <span class="text-base font-bold text-accent-strong">{t.label}</span>
+                  <span class="mt-2 block text-sm leading-relaxed text-ink-soft">{t.blurb}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+
+    <section aria-labelledby="cat-exams">
+      <h2 id="cat-exams" class="mt-10 text-xl font-bold text-ink">{CATEGORY_LABELS.exams}</h2>
       <ul class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {
-          p0.map((t) => (
+          examPages.slice(0, 3).map((t) => (
             <li>
               <a
                 href={t.href}
@@ -144,39 +164,12 @@ const p2 = ALL_TOOLS.filter((t) => t.priority === 'P2');
           ))
         }
       </ul>
-    </section>
-
-    <section aria-labelledby="pay-tools">
-      <h2 id="pay-tools" class="mt-10 text-xl font-bold text-ink">Pay &amp; Payroll Calculators</h2>
-      <ul class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <ul class="mt-4 flex flex-wrap gap-2 text-sm">
         {
-          p1.map((t) => (
+          examPages.slice(3).map((t) => (
             <li>
-              <a
-                href={t.href}
-                class="block h-full rounded-xl border border-line bg-surface p-5 shadow-sm transition-colors hover:border-accent"
-              >
-                <span class="text-base font-bold text-accent-strong">{t.label}</span>
-                <span class="mt-2 block text-sm leading-relaxed text-ink-soft">{t.blurb}</span>
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </section>
-
-    <section aria-labelledby="guides">
-      <h2 id="guides" class="mt-10 text-xl font-bold text-ink">Guides &amp; Schedules</h2>
-      <ul class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {
-          p2.map((t) => (
-            <li>
-              <a
-                href={t.href}
-                class="block h-full rounded-xl border border-line bg-surface p-5 shadow-sm transition-colors hover:border-accent"
-              >
-                <span class="text-base font-bold text-accent-strong">{t.label}</span>
-                <span class="mt-2 block text-sm leading-relaxed text-ink-soft">{t.blurb}</span>
+              <a href={t.href} class="inline-block rounded-full border border-line bg-surface px-3 py-1.5 text-ink-soft hover:border-accent hover:text-accent-strong">
+                {t.short}
               </a>
             </li>
           ))

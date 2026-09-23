@@ -1,7 +1,7 @@
 ---
 import '../styles/global.css';
 import { SITE, NOT_AFFILIATED } from '../../site.config';
-import { TOOL_PAGES, TRUST_PAGES, ALL_TOOLS } from '../lib/pages';
+import { TOOL_PAGES, TRUST_PAGES, FOOTER_GROUPS } from '../lib/pages';
 import { pageDates } from '../lib/lastmod.mjs';
 
 interface Props {
@@ -205,7 +205,7 @@ const navLinks = [
       <slot />
     </main>
     <footer class="mt-16 border-t border-line bg-surface-soft">
-      <div class="mx-auto grid max-w-wide gap-8 px-4 py-10 sm:grid-cols-3">
+      <div class="mx-auto grid max-w-wide gap-8 px-4 py-10 sm:grid-cols-2 lg:grid-cols-5">
         <div>
           <p class="flex items-center gap-2 font-bold text-ink">AyTool</p>
           <p class="mt-2 text-sm italic text-ink-soft">{SITE.slogan}</p>
@@ -217,20 +217,22 @@ const navLinks = [
             >
           </p>
         </div>
-        <nav aria-label="Related Philippine payroll calculators">
-          <h2 class="text-sm font-semibold text-ink">Related Philippine Payroll Calculators</h2>
-          <ul class="mt-2 space-y-1 text-sm">
-            {
-              ALL_TOOLS.map((t) => (
-                <li>
-                  <a href={t.href} class="text-ink-soft hover:text-accent-strong">
-                    {t.label}
-                  </a>
-                </li>
-              ))
-            }
-          </ul>
-        </nav>
+        {
+          FOOTER_GROUPS.map((g) => (
+            <nav aria-label={g.label}>
+              <h2 class="text-sm font-semibold text-ink">{g.label}</h2>
+              <ul class="mt-2 space-y-1 text-sm">
+                {g.pages.map((t) => (
+                  <li>
+                    <a href={t.href} class="text-ink-soft hover:text-accent-strong">
+                      {t.short}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </nav>
+          ))
+        }
         <nav aria-label="About this site">
           <h2 class="text-sm font-semibold text-ink">About this site</h2>
           <ul class="mt-2 space-y-1 text-sm">

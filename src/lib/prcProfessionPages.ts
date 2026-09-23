@@ -445,7 +445,7 @@ export const PROFESSION_PAGES: ProfessionPage[] = [
     extraFaqs: [
       {
         q: 'Was the August 2026 psychometrician board exam rescheduled?',
-        a: 'Yes. PRC moved both the Psychometricians and the Psychologists exams from August 19–20 to September 1–2, 2026 because of PAGASA heavy-rainfall warnings (advisory posted August 17, 2026); the Pampanga testing center sat later, on September 17–18. As of September 22, 2026 PRC has not released the September 2026 psychometrician results — the original target was August 27. Source: <a href="https://www.prc.gov.ph/article/rescheduling-august-2026-psychologists-and-psychometricians-licensure-examination" target="_blank" rel="noopener">prc.gov.ph</a>.',
+        a: 'Yes. PRC moved both the Psychometricians and the Psychologists exams from August 19–20 to September 1–2, 2026 because of PAGASA heavy-rainfall warnings (advisory posted August 17, 2026); the Pampanga testing center sat later, on September 17–18. As of September 23, 2026 PRC has not released the September 2026 psychometrician results — the original target was August 27; the Psychologists exam on the same dates was released on September 21. Source: <a href="https://www.prc.gov.ph/article/rescheduling-august-2026-psychologists-and-psychometricians-licensure-examination" target="_blank" rel="noopener">prc.gov.ph</a>.',
       },
       {
         q: 'What was the passing rate in the last psychometrician board exam?',

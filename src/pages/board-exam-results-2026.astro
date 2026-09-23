@@ -24,32 +24,40 @@ const pct = (p: number, e: number) => `${((p / e) * 100).toFixed(2)}%`;
 const num = (n: number) => n.toLocaleString('en-PH');
 const hrefFor = (examName: string): string | null =>
   PRC_PROFESSIONS.find((g) => g.exams.includes(examName))?.href ?? null;
-const workingDays = (from: string, to: string): number => {
-  let d = new Date(from + 'T00:00:00Z');
-  const end = new Date(to + 'T00:00:00Z');
-  let n = 0;
-  while (d < end) {
-    d = new Date(d.getTime() + 86_400_000);
-    const w = d.getUTCDay();
-    if (w !== 0 && w !== 6) n++;
-  }
-  return n;
-};
+/* Display name: the written/practical dentistry rows share one release. */
+const label = (e: PrcExamEntry) => e.exam.replace(/ \(Written(, 2nd exam)?\)$/, (_m, second) => (second ? ' (2nd exam)' : ''));
 
 const released = exams
   .filter((e) => e.results_released && e.passers && e.examinees)
   .sort((a, b) => b.results_released!.localeCompare(a.results_released!));
 const releasedNoStats = exams.filter((e) => e.results_released && !e.passers);
+/* Everything without a recorded release, in exam order. A held exam whose
+   target has passed is "not yet recorded here" — PRC may well have released
+   it; we only list figures we have transcribed. */
 const pending = exams
-  .filter((e) => !e.results_released && e.results_target)
-  .sort((a, b) => a.results_target!.localeCompare(b.results_target!));
-const upcomingReleases = pending.filter((e) => e.results_target! >= today);
+  .filter((e) => !e.results_released)
+  .sort((a, b) => (a.results_target ?? a.first_date).localeCompare(b.results_target ?? b.first_date));
+const upcomingReleases = pending.filter((e) => e.results_target && e.results_target >= today);
+const heldCount = exams.filter((e) => e.first_date < today).length;
 
-const totalPassers = released.reduce((s, e) => s + e.passers!, 0);
-const totalExaminees = released.reduce((s, e) => s + e.examinees!, 0);
-const highest = [...released].sort((a, b) => b.passers! / b.examinees! - a.passers! / a.examinees!)[0]!;
-const lowest = [...released].sort((a, b) => a.passers! / a.examinees! - b.passers! / b.examinees!)[0]!;
-const largest = [...released].sort((a, b) => b.examinees! - a.examinees!)[0]!;
+/* Totals and rankings use licensure exams only; rankings also skip tiny
+   cohorts (a 15-of-15 sitting is not a meaningful "highest pass rate"). */
+const MIN_RANKED = 100;
+const licensure = released.filter((e) => !/not a licensure/i.test(e.results_note ?? ''));
+const ranked = licensure.filter((e) => e.examinees! >= MIN_RANKED);
+const totalPassers = licensure.reduce((s, e) => s + e.passers!, 0);
+const totalExaminees = licensure.reduce((s, e) => s + e.examinees!, 0);
+const byRate = [...ranked].sort((a, b) => b.passers! / b.examinees! - a.passers! / a.examinees!);
+const highest = byRate[0]!;
+const lowest = byRate.at(-1)!;
+const largest = [...licensure].sort((a, b) => b.examinees! - a.examinees!)[0]!;
+const days = withDaysList();
+const bigExams = [...licensure].filter((e) => e.results_working_days !== undefined).sort((a, b) => b.examinees! - a.examinees!).slice(0, 5);
+function withDaysList() {
+  const w = released.filter((e) => e.results_working_days !== undefined).map((e) => e.results_working_days!);
+  const sorted = [...w].sort((a, b) => a - b);
+  return { min: sorted[0] ?? 0, max: sorted.at(-1) ?? 0, median: sorted[Math.floor(sorted.length / 2)] ?? 0, count: w.length };
+}
 const latest = released[0]!;
 const nextRelease = upcomingReleases[0];
 
@@ -71,18 +79,17 @@ const datasetSchema = {
 const faqs = [
   {
     q: `Which ${year} board exam had the highest passing rate so far?`,
-    a: `${highest.exam} (${highest.dates_display}): ${num(highest.passers!)} of ${num(highest.examinees!)} passed, ${pct(highest.passers!, highest.examinees!)}, released ${fmt(highest.results_released)}. The lowest was ${lowest.exam} (${lowest.dates_display}) at ${pct(lowest.passers!, lowest.examinees!)} — ${num(lowest.passers!)} of ${num(lowest.examinees!)}.`,
+    a: `Among the ${ranked.length} licensure exams on this page with at least ${MIN_RANKED} examinees, ${label(highest)} (${highest.dates_display}): ${num(highest.passers!)} of ${num(highest.examinees!)} passed, ${pct(highest.passers!, highest.examinees!)}, released ${fmt(highest.results_released)}. The lowest was ${label(lowest)} (${lowest.dates_display}) at ${pct(lowest.passers!, lowest.examinees!)} — ${num(lowest.passers!)} of ${num(lowest.examinees!)}.`,
   },
   {
     q: `What is the biggest board exam of ${year} by number of examinees?`,
-    a: `${largest.exam} (${largest.dates_display}) with ${num(largest.examinees!)} examinees, of whom ${num(largest.passers!)} passed (${pct(largest.passers!, largest.examinees!)}).${largest.results_note ? ` ${largest.results_note}.` : ''} Across the ${released.length} releases on this page, ${num(totalPassers)} of ${num(totalExaminees)} examinees passed (${pct(totalPassers, totalExaminees)}).`,
+    a: `${label(largest)} (${largest.dates_display}) with ${num(largest.examinees!)} examinees, of whom ${num(largest.passers!)} passed (${pct(largest.passers!, largest.examinees!)}).${largest.results_note ? ` ${largest.results_note}.` : ''} Across the ${licensure.length} licensure exam releases on this page, ${num(totalPassers)} of ${num(totalExaminees)} examinees passed (${pct(totalPassers, totalExaminees)}).`,
   },
   {
     q: 'How fast does PRC release board exam results?',
-    a: `Usually within a few working days for computer-scored exams and two to four weeks for the largest ones. Examples from ${year}: ${released
-      .slice(0, 6)
-      .map((e) => `${e.exam} in ${workingDays(e.first_date, e.results_released!)} working days after the first exam day`)
-      .join('; ')}. The LET takes longest because of its size (39 working days for March ${year}).`,
+    a: `Fast for most exams: across the ${days.count} ${year} releases whose headline states it, PRC took ${days.min} to ${days.max} working days after the last exam day, with a median of ${days.median}. The five biggest exams this year: ${bigExams
+      .map((e) => `${label(e)} ${e.results_working_days} working day${e.results_working_days === 1 ? '' : 's'} (${num(e.examinees!)} examinees)`)
+      .join('; ')}.`,
   },
   {
     q: 'Where do I check the official list of passers?',
@@ -91,7 +98,7 @@ const faqs = [
   {
     q: `What board exam results are still coming in ${year}?`,
     a: nextRelease
-      ? `${upcomingReleases.length} exams still have results ahead. Next by target date: ${upcomingReleases
+      ? `${upcomingReleases.length} exams have results due by their target dates. Next: ${upcomingReleases
           .slice(0, 5)
           .map((e) => `${e.exam} (${e.dates_display}) — target ${fmt(e.results_target)}`)
           .join('; ')}. Targets are the dates printed in PRC Resolution No. 2113, s. 2025; the actual release is announced on prc.gov.ph.`
@@ -103,14 +110,14 @@ const faqs = [
   },
   {
     q: `Ilan ang pumasa sa board exam ${year}?`,
-    a: `Sa ${released.length} na board exam na may resulta na ngayong ${year}, ${num(totalPassers)} sa ${num(totalExaminees)} examinees ang pumasa (${pct(totalPassers, totalExaminees)}). Pinakamataas ang passing rate ng ${highest.exam} (${pct(highest.passers!, highest.examinees!)}); pinakamababa ang ${lowest.exam} (${pct(lowest.passers!, lowest.examinees!)}). Ang pinakahuling resulta ay ${latest.exam}, inilabas noong ${fmt(latest.results_released)}.`,
+    a: `Sa ${licensure.length} na licensure exam na may resulta na ngayong ${year}, ${num(totalPassers)} sa ${num(totalExaminees)} examinees ang pumasa (${pct(totalPassers, totalExaminees)}). Pinakamataas ang passing rate ng ${label(highest)} (${pct(highest.passers!, highest.examinees!)}); pinakamababa ang ${label(lowest)} (${pct(lowest.passers!, lowest.examinees!)}). Ang pinakahuling resulta ay ${label(latest)}, inilabas noong ${fmt(latest.results_released)}.`,
   },
 ];
 ---
 
 <ToolPageLayout
   title={`PRC Board Exam Results ${year} – Passing Rates & Release Dates`}
-  description={`Every ${year} PRC board exam result released so far: passers, examinees, passing rate and release date from PRC's press releases, plus the ${upcomingReleases.length} results still ahead.`}
+  description=`Every ${year} PRC board exam result so far: passers, examinees, passing rate and release date from PRC's press releases, plus the results still to come.`
   path="/board-exam-results-2026/"
   h1={`PRC Board Exam Results ${year}: Passing Rates by Exam`}
   faqs={faqs}
@@ -120,11 +127,13 @@ const faqs = [
 >
   <Fragment slot="answer">
     <p>
-      PRC has released <strong>{released.length} of the {exams.length} licensure examinations scheduled for {year}</strong>
-      so far: <strong>{num(totalPassers)} of {num(totalExaminees)} examinees passed ({pct(totalPassers, totalExaminees)})</strong>.
-      The latest is the <strong>{latest.exam}</strong> ({latest.dates_display}), released {fmt(latest.results_released)} —
-      {num(latest.passers!)} of {num(latest.examinees!)} passed ({pct(latest.passers!, latest.examinees!)}). Highest passing
-      rate this year: {highest.exam} at {pct(highest.passers!, highest.examinees!)}; lowest: {lowest.exam} at
+      PRC has released results for <strong>{licensure.length} of the {year} licensure exams</strong> held so far
+      ({heldCount} of {exams.length} scheduled exams have been held): <strong>{num(totalPassers)} of {num(totalExaminees)}
+      examinees passed ({pct(totalPassers, totalExaminees)})</strong>. The latest is the
+      <strong>{label(latest)}</strong> ({latest.dates_display}), released {fmt(latest.results_released)} — {num(latest.passers!)}
+      of {num(latest.examinees!)} passed ({pct(latest.passers!, latest.examinees!)}). Highest passing rate among exams with
+      {MIN_RANKED}+ examinees:
+      {label(highest)} at {pct(highest.passers!, highest.examinees!)}; lowest: {label(lowest)} at
       {pct(lowest.passers!, lowest.examinees!)}.
       {nextRelease && (
         <Fragment>
@@ -154,13 +163,17 @@ const faqs = [
           return (
             <tr id={examSlug(e.exam)}>
               <td>
-                {href ? <a href={href}><strong>{e.exam}</strong></a> : <strong>{e.exam}</strong>}
+                {href ? <a href={href}><strong>{label(e)}</strong></a> : <strong>{label(e)}</strong>}
                 {e.results_note && <div class="text-xs text-ink-soft">{e.results_note}</div>}
               </td>
               <td>{e.dates_display}{e.note && <div class="text-xs text-ink-soft">{e.note}</div>}</td>
               <td>
-                {fmt(e.results_released)}
-                <div class="text-xs text-ink-soft">{workingDays(e.first_date, e.results_released!)} working days</div>
+                {e.results_url ? <a href={e.results_url} target="_blank" rel="noopener">{fmt(e.results_released)}</a> : fmt(e.results_released)}
+                {e.results_working_days !== undefined && (
+                  <div class="text-xs text-ink-soft">
+                    {e.results_working_days} working day{e.results_working_days === 1 ? '' : 's'} (PRC)
+                  </div>
+                )}
               </td>
               <td>{num(e.passers!)}</td>
               <td>{num(e.examinees!)}</td>
@@ -172,11 +185,11 @@ const faqs = [
     </table>
   </div>
   <p class="text-sm text-ink-soft">
-    Counts are as printed by PRC; the pass rate is passers ÷ examinees. "Working days" counts Monday–Friday from the first
-    exam day to the release date.{releasedNoStats.length > 0 && ` ${releasedNoStats.map((e) => e.exam).join(', ')}: released with the paired examination above.`}
+    Each release date links to PRC's own announcement. Counts are as printed by PRC; the pass rate is passers ÷ examinees. "Working days (PRC)" is the figure in PRC's own
+    headline, counted from the last exam day.{releasedNoStats.length > 0 && ` ${releasedNoStats.map((e) => e.exam).join(', ')}: released with the paired examination above.`}
   </p>
 
-  <h2>Results Still Ahead in {year}</h2>
+  <h2>Exams Without a Recorded Result Yet</h2>
   <div class="table-scroll">
     <table>
       <thead>
@@ -189,7 +202,12 @@ const faqs = [
             <tr>
               <td>{href ? <a href={href}>{e.exam}</a> : e.exam}{e.note && <div class="text-xs text-ink-soft">{e.note}</div>}</td>
               <td>{e.dates_display}</td>
-              <td>{fmt(e.results_target)}{e.results_target && e.results_target < today && <span class="text-ink-soft"> (target passed — awaiting PRC)</span>}</td>
+              <td>
+                {e.results_target ? fmt(e.results_target) : 'To be announced'}
+                {e.first_date < today && (!e.results_target || e.results_target < today) && (
+                  <span class="text-ink-soft"> — exam held; not yet recorded here, check prc.gov.ph</span>
+                )}
+              </td>
               <td class="text-xs">{e.first_date >= today && <a href={icsPath(year, e)}>Add to calendar</a>}</td>
             </tr>
           );
