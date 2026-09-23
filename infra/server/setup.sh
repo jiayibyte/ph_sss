@@ -25,11 +25,12 @@ if [ "$("$BASE/node/bin/node" --version 2>/dev/null || true)" != "v$NODE_VERSION
   curl -fsSL --retry 3 -o "$tmp/$f" "https://nodejs.org/dist/v$NODE_VERSION/$f"
   curl -fsSL --retry 3 -o "$tmp/SHASUMS256.txt" "https://nodejs.org/dist/v$NODE_VERSION/SHASUMS256.txt"
   (cd "$tmp" && grep " $f\$" SHASUMS256.txt | sha256sum -c --status) || { echo "Node.js checksum mismatch — aborting" >&2; rm -rf "$tmp"; exit 1; }
-  tar -xJf "$tmp/$f" -C "$BASE"
+  tar --no-same-owner -xJf "$tmp/$f" -C "$BASE"
   rm -rf "$tmp"
   ln -sfn "$BASE/node-v$NODE_VERSION-linux-$arch" "$BASE/node"
 fi
-echo "node $("$BASE/node/bin/node" --version), npm $("$BASE/node/bin/npm" --version 2>/dev/null)"
+chown -R root:root "$BASE/node-v$NODE_VERSION-linux-$arch"   # the tarball carries uid 1000
+echo "node $("$BASE/node/bin/node" --version), npm $(PATH="$BASE/node/bin:$PATH" npm --version)"
 
 # git: the bare repo `make deploy` pushes to, and aytool's build checkout
 [ -d "$BASE/repo.git" ] || git init --quiet --bare "$BASE/repo.git"
@@ -47,5 +48,5 @@ install -m 644 -o root -g root aytool-rebuild.service aytool-rebuild.timer /etc/
 systemd-analyze verify /etc/systemd/system/aytool-rebuild.service /etc/systemd/system/aytool-rebuild.timer
 systemctl daemon-reload
 systemctl enable --now aytool-rebuild.timer
-systemctl list-timers aytool-rebuild.timer --no-pager | head -n 2
+systemctl list-timers aytool-rebuild.timer --no-pager --no-legend || true
 echo "setup ok"

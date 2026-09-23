@@ -181,7 +181,7 @@ cmd_status() {
   echo "live: $live  ($(prov_of "$live" || echo 'no commit recorded'))"
   echo "releases (newest first):"
   for rel in $(releases_desc); do echo "  $rel  $(prov_of "$rel" || echo legacy)$([ "$rel" = "$live" ] && echo '  ← live')"; done
-  systemctl list-timers aytool-rebuild.timer --no-pager 2>/dev/null | head -n 2 || true
+  systemctl list-timers aytool-rebuild.timer --no-pager --no-legend 2>/dev/null || true
   systemctl show aytool-rebuild.service -p Result -p ExecMainExitTimestamp --no-pager 2>/dev/null || true
 }
 
