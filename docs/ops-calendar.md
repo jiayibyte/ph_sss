@@ -25,7 +25,7 @@
 
 | 提醒 | 动作（合计约 10 分钟） |
 |---|---|
-| **每月 1 日** | ① GSC：收录数、impressions 趋势、出现 impression 的新 query（决定是否开闸扩页）② GA4：流量 + AI 渠道分组占比 ③ 服务器跑一次 AI bot 抓取统计：`ssh 139 "grep -icE 'GPTBot\|ClaudeBot\|PerplexityBot\|Google-Extended' /var/log/nginx/aytool.access.log"` ④ UptimeRobot 有无告警记录 ⑥ `make nightly-status`：最后一次夜间重建 `Result=success`、线上版本的提交没有标 uncommitted（标了说明上次是带未提交改动部署的，夜间重建会跳过，需要提交后重新部署）；失败时 `make nightly-log` 看原因——失败只会让站点停在上一版，不会发布坏版本 ⑤ 打开 [prc.gov.ph/articles/exam-results](https://www.prc.gov.ph/articles/exam-results)，凡上月放榜的考试，把 PRC 文章的 "Posted on" 日期写进 `src/data/prc/<年>.json` 对应行的 `results_released`，并把文章里的 "X out of Y passed" 写进 `passers` / `examinees`（表格、专业区块、专业页会自动改显示 "released"，/board-exam-results-2026/ 汇总页与各专业页的通过率 FAQ 自动更新；有分级的如 LET 用 `results_note` 写明细），`last_verified` 顺带更新后部署 |
+| **每月 1 日** | ① GSC：收录数、impressions 趋势、出现 impression 的新 query（决定是否开闸扩页）② GA4：流量 + AI 渠道分组占比 ③ 服务器跑一次 AI bot 抓取统计：`ssh 139 "grep -icE 'GPTBot\|ClaudeBot\|PerplexityBot\|Google-Extended' /var/log/nginx/aytool.access.log"` ④ UptimeRobot 有无告警记录 ⑤ 打开 [prc.gov.ph/articles/exam-results](https://www.prc.gov.ph/articles/exam-results)，凡上月放榜的考试，把 PRC 文章的 "Posted on" 日期写进 `src/data/prc/<年>.json` 对应行的 `results_released`，并把文章里的 "X out of Y passed" 写进 `passers` / `examinees`（表格、专业区块、专业页会自动改显示 "released"，/board-exam-results-2026/ 汇总页与各专业页的通过率 FAQ 自动更新；有分级的如 LET 用 `results_note` 写明细），`last_verified` 顺带更新后部署 ⑥ `make nightly-status`：最后一次夜间重建 `Result=success`、线上版本的提交没有标 uncommitted（标了说明上次是带未提交改动部署的，夜间重建会跳过，需要提交后重新部署）；失败时 `make nightly-log` 看原因——失败只会让站点停在上一版，不会发布坏版本 |
 
 ## 三、里程碑节点（一次性，2026）
 
