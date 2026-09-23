@@ -428,6 +428,7 @@ export const TRUST_PAGES: Array<{ href: string; label: string }> = [
   { href: '/about/', label: 'About' },
   { href: '/methodology/', label: 'Methodology' },
   { href: '/sources/', label: 'Sources' },
+  { href: '/free-calculator-widgets/', label: 'Free widgets for your site' },
   { href: '/privacy/', label: 'Privacy' },
   { href: '/disclaimer/', label: 'Disclaimer' },
 ];

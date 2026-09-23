@@ -78,4 +78,5 @@ Key facts currently in force (last verified 2026-08-19):
 
 - [Methodology](https://aytool.com/methodology/): how rules are versioned and verified.
 - [Sources](https://aytool.com/sources/): every official issuance used, by agency.
+- [Free Calculator Widgets](https://aytool.com/free-calculator-widgets/): every calculator any site can embed with one iframe snippet (take-home pay, SSS, PhilHealth, Pag-IBIG, 13th month, final pay, income tax, SSS benefits, Pag-IBIG loans); free, no sign-up, no ads or analytics inside the widget, rates update on their own.
 - [About](https://aytool.com/about/), [Privacy](https://aytool.com/privacy/), [Disclaimer](https://aytool.com/disclaimer/).

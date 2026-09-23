@@ -1,0 +1,117 @@
+---
+/**
+ * Hub for the /embed/<slug>/ widgets: one place to link from outreach emails
+ * and from every tool page's "Embed this calculator" box. The list is read
+ * from src/pages/embed/, so a new embed page shows up here on its own
+ * (src/lib/embed.test.ts fails if an embed has no TOOL_PAGES entry).
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { SITE, NOT_AFFILIATED } from '../../site.config';
+import { CATEGORY_KEYS, CATEGORY_LABELS, pagesIn, type PageCategory } from '../lib/pages';
+import { embedSnippet, embedUrl, pageSlug, EMBED_HEIGHT } from '../lib/embed';
+
+const embedSlugs = new Set(
+  Object.keys(import.meta.glob('./embed/*.astro')).map((f) => f.replace('./embed/', '').replace(/\.astro$/, '')),
+);
+
+const groups = (Object.keys(CATEGORY_KEYS) as PageCategory[])
+  .map((cat) => ({ cat, label: CATEGORY_LABELS[cat], pages: pagesIn(cat).filter((p) => embedSlugs.has(pageSlug(p.href))) }))
+  .filter((g) => g.pages.length > 0);
+
+const listed = groups.reduce((n, g) => n + g.pages.length, 0);
+if (listed !== embedSlugs.size) {
+  throw new Error(`free-calculator-widgets: ${embedSlugs.size} embed pages but only ${listed} matched a category`);
+}
+
+const example = embedSnippet('/take-home-pay-calculator/', 'Take-Home Pay Calculator Philippines');
+---
+
+<BaseLayout
+  title="Free Philippine Payroll Calculator Widgets – AyTool"
+  description={`Embed ${listed} free Philippine payroll calculators on your site: take-home pay, SSS, PhilHealth, Pag-IBIG, 13th month, tax. No sign-up, no ads.`}
+  path="/free-calculator-widgets/"
+  pageName="Free Calculator Widgets"
+>
+  <article class="content-prose mx-auto max-w-content px-4 pt-8">
+    <h1 class="text-2xl font-bold text-ink sm:text-3xl">Free Philippine Payroll Calculator Widgets</h1>
+    <p class="mt-4">
+      Any website can embed AyTool's calculators for free: <strong>{listed} widgets</strong> covering
+      take-home pay, SSS, PhilHealth and Pag-IBIG contributions, 13th month pay, overtime, holiday
+      pay, final pay, income tax, SSS benefits and Pag-IBIG loans. Copy one HTML snippet, paste it
+      into your page, and the calculator keeps following the official rates on its own. There is
+      no sign-up and no fee.
+    </p>
+    <p>
+      They are built for HR and payroll blogs, accounting and bookkeeping firms, cooperatives, OFW
+      community sites, schools and review centers, and public employment service pages: anywhere
+      people ask "how much will I actually get?"
+    </p>
+
+    <h2>How to embed a calculator</h2>
+    <ol>
+      <li>Pick a calculator below and open <em>Get the code</em>.</li>
+      <li>Paste the snippet into your page's HTML (WordPress: a <em>Custom HTML</em> block; Blogger and most site builders have an equivalent).</li>
+      <li>Keep the credit line under the iframe. It links to the full page with the formula, sources and FAQs.</li>
+    </ol>
+    <p>Every snippet has the same shape. This one is for the take-home pay calculator:</p>
+    <pre class="overflow-x-auto rounded-md bg-surface-soft p-3 text-xs leading-relaxed"><code>{example}</code></pre>
+    <p>
+      The iframe is {EMBED_HEIGHT}px tall and at most 720px wide, and it shrinks to fit phone screens. If a
+      calculator's results run longer on your layout, raise the <code>height</code> value; nothing else
+      needs changing.
+    </p>
+
+    <h2>What the widgets do and don't do</h2>
+    <ul>
+      <li><strong>Always current.</strong> Rates come from the SSS, PhilHealth, Pag-IBIG, BIR and DOLE issuances listed on our <a href="/sources/">Sources</a> page. When a rate changes we update it once, and every embedded copy updates with it.</li>
+      <li><strong>Private.</strong> Calculations run in your visitor's browser. The embed pages load no analytics and no ads, and they never ask for SSS numbers, TINs or passwords.</li>
+      <li><strong>Independent.</strong> {NOT_AFFILIATED}</li>
+    </ul>
+  </article>
+
+  <div class="mx-auto max-w-wide px-4">
+    {
+      groups.map((g) => (
+        <section aria-labelledby={`w-${g.cat}`}>
+          <h2 id={`w-${g.cat}`} class="mt-10 text-xl font-bold text-ink">{g.label}</h2>
+          <ul class="mt-4 grid gap-4 md:grid-cols-2">
+            {g.pages.map((p) => (
+              <li class="min-w-0 rounded-xl border border-line bg-surface p-5 shadow-sm">
+                <a href={p.href} class="text-base font-bold text-accent-strong hover:underline">{p.label}</a>
+                <p class="mt-2 text-sm leading-relaxed text-ink-soft">{p.blurb}</p>
+                <p class="mt-3 flex flex-wrap gap-3 text-sm">
+                  <a href={embedUrl(p.href).replace(SITE.url, '')} rel="nofollow" class="text-accent-strong underline">Preview the widget</a>
+                </p>
+                <details class="mt-3 text-sm">
+                  <summary class="cursor-pointer font-semibold text-ink">Get the code</summary>
+                  <pre class="mt-2 overflow-x-auto rounded-md bg-surface-soft p-3 text-xs leading-relaxed"><code>{embedSnippet(p.href, p.label)}</code></pre>
+                </details>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+  </div>
+
+  <article class="content-prose mx-auto max-w-content px-4">
+    <h2>Questions</h2>
+    <h3>Is it really free? Do I need an account?</h3>
+    <p>Yes, and no. Paste the snippet and it works. We only ask that the credit line stays.</p>
+    <h3>Can I change the colors or the size?</h3>
+    <p>
+      You can change the width and height on the iframe. The inside of the widget keeps AyTool's
+      styling so that results read the same everywhere.
+    </p>
+    <h3>What if a government rate changes?</h3>
+    <p>
+      Nothing to do on your side. Each widget shows the schedule it follows and its effective date,
+      and we update the rules when the agency publishes a new circular.
+    </p>
+    <h3>Something looks wrong, or you need a calculator that isn't here?</h3>
+    <p>
+      Email <a href={`mailto:${SITE.contactEmail}`}>{SITE.contactEmail}</a>. Corrections are our
+      highest-priority work.
+    </p>
+  </article>
+</BaseLayout>

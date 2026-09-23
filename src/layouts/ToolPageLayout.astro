@@ -6,6 +6,7 @@ import ShareButtons from '../components/ShareButtons.astro';
 import { SITE } from '../../site.config';
 import { TOOL_PAGES, type PageRef } from '../lib/pages';
 import { pageDates } from '../lib/lastmod.mjs';
+import { embedSnippet as buildEmbedSnippet } from '../lib/embed';
 
 export interface Faq {
   q: string;
@@ -58,12 +59,7 @@ const ogSlug = pagePath.replace(/\//g, '');
 const ogPath = `/og/${ogSlug}.png`;
 const ogImage = existsSync(path.join(process.cwd(), 'public', ogPath)) ? ogPath : undefined;
 
-/* Embed snippet: the <a> line is the real backlink; the iframe alone passes
-   almost nothing. Fixed height with max-width so it degrades on phones. */
-const embedUrl = `${SITE.url}/embed/${ogSlug}/`;
-const embedSnippet = embeddable
-  ? `<iframe src="${embedUrl}" title="${h1} – AyTool" width="100%" height="760" style="max-width:720px;border:0" loading="lazy"></iframe>\n<p><a href="${SITE.url}${pagePath}">${h1}</a> by AyTool</p>`
-  : null;
+const embedSnippet = embeddable ? buildEmbedSnippet(pagePath, h1) : null;
 
 const schema: Record<string, unknown>[] = [...extraSchema];
 if (isApp) {
@@ -137,6 +133,9 @@ const relatedPages: PageRef[] = related.map((k) => TOOL_PAGES[k]);
             calculator should appear; it keeps following the official rates on its own.
           </p>
           <pre class="mt-2 overflow-x-auto rounded-md bg-surface-soft p-3 text-xs leading-relaxed"><code>{embedSnippet}</code></pre>
+          <p class="mt-2 text-ink-soft">
+            More widgets: <a href="/free-calculator-widgets/" class="text-accent-strong hover:underline">all free calculator widgets</a>.
+          </p>
         </details>
       )
     }
