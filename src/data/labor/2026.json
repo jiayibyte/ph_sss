@@ -79,5 +79,78 @@
   "exempt_headcount": 10,
   "source_note": "Labor Code Art. 302 (RA 7641) as summarised in the DOLE Handbook 2024, Ch. 15: ½-month salary per year of service = 22.5 days (15 days + 5 days SIL + 1/12 of 13th month); age 60–65 with ≥5 years' service; not applicable to retail/service/agricultural establishments with ≤10 employees; COLA excluded",
   "source_url": "https://lawphil.net/statutes/repacts/ra1992/ra_7641_1992.html"
+ },
+ "leave": {
+  "sil_days_per_year": 5,
+  "sil_min_service_months": 12,
+  "sil_example": {
+   "hired": "2023-01-01",
+   "separated": "2024-03-01",
+   "daily_rate": 610,
+   "days": 5.833,
+   "amount": 3558.13
+  },
+  "sil_exclusions": [
+   "Government employees, including those of GOCCs with original charters",
+   "Persons in the personal service of another",
+   "Managerial employees (manage the establishment or a department, regularly direct two or more employees, and can hire or fire or effectively recommend it)",
+   "Officers or members of a managerial staff meeting the Handbook's four conditions",
+   "Field personnel and others whose time and performance are unsupervised",
+   "Those already enjoying the benefit",
+   "Those with vacation leave with pay of at least five days",
+   "Those in establishments regularly employing fewer than ten employees"
+  ],
+  "types": [
+   {
+    "key": "sil",
+    "name": "Service Incentive Leave",
+    "law": "Labor Code Art. 95",
+    "duration": "5 days with pay a year",
+    "conditions": "At least one year of service, continuous or broken, within 12 months",
+    "cash": "Yes: unused SIL is converted to cash at year-end or on resignation, at the current daily rate, pro rata"
+   },
+   {
+    "key": "maternity",
+    "name": "Maternity Leave",
+    "law": "RA 11210",
+    "duration": "105 days with full pay (120 days for a qualified solo parent); 60 days for miscarriage or emergency termination of pregnancy; optional extra 30 days without pay",
+    "conditions": "At least three monthly SSS contributions in the 12 months before the semester of childbirth, and notice of the pregnancy to the employer",
+    "cash": "Paid as SSS maternity benefit plus the employer's salary differential; up to 7 days may be allocated to the child's father"
+   },
+   {
+    "key": "paternity",
+    "name": "Paternity Leave",
+    "law": "RA 8187",
+    "duration": "7 days with full pay per delivery, for the first four deliveries",
+    "conditions": "Married, cohabiting with the wife, and applied within a reasonable time (no prior application needed for a miscarriage)",
+    "cash": "No: not convertible to cash if unused"
+   },
+   {
+    "key": "solo_parent",
+    "name": "Parental Leave for Solo Parents",
+    "law": "RA 8972 as amended by RA 11861",
+    "duration": "Up to 7 working days with pay every year",
+    "conditions": "At least six months of service, notice to the employer, and a valid Solo Parent ID (SPIC) from the city or municipal social welfare office",
+    "cash": "No, unless agreed with the employer; not cumulative"
+   },
+   {
+    "key": "vawc",
+    "name": "Leave for Victims of VAWC",
+    "law": "RA 9262",
+    "duration": "Up to 10 days with full pay, extendable as the protection order requires",
+    "conditions": "Certification from the punong barangay or kagawad, prosecutor or Clerk of Court that a VAWC action is pending",
+    "cash": "No: not convertible and not cumulative"
+   },
+   {
+    "key": "special_women",
+    "name": "Special Leave for Women",
+    "law": "RA 9710 (Magna Carta of Women)",
+    "duration": "Up to 2 months (60 calendar days) a year with full pay, per the physician's certified recuperation period",
+    "conditions": "Six months' continuous aggregate service in the 12 months before surgery for a gynecological disorder, and an application within a reasonable time",
+    "cash": "No, unless a CBA provides"
+   }
+  ],
+  "source_note": "DOLE Handbook on Workers' Statutory Monetary Benefits, 2024 Edition: summary table of statutory leave benefits and Chapters 7 (SIL, Art. 95, with the ₱610 example), 8 (maternity, RA 11210), 9 (paternity, RA 8187), 10 (solo parents, RA 11861), 11 (VAWC, RA 9262) and 12 (special leave for women, RA 9710).",
+  "source_url": "https://nwpc.dole.gov.ph/wp-content/uploads/2024/11/Workers-Statutory-Monetary-Benefits-Handbook-2024-Edition.pdf"
  }
 }

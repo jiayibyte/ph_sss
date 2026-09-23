@@ -1,0 +1,9 @@
+---
+import EmbedLayout from '../../layouts/EmbedLayout.astro';
+import SeniorDiscountCalculator from '../../islands/SeniorDiscountCalculator';
+import { TOOL_PAGES } from '../../lib/pages';
+---
+
+<EmbedLayout page={TOOL_PAGES.seniorDiscount!}>
+  <SeniorDiscountCalculator client:load />
+</EmbedLayout>

@@ -1,0 +1,114 @@
+---
+import ToolPageLayout from '../layouts/ToolPageLayout.astro';
+import SeniorDiscountCalculator from '../islands/SeniorDiscountCalculator';
+import taxJson from '../data/tax/2026.json';
+import type { TaxRules } from '../lib/rules/types';
+import { privilegedDiscount } from '../lib/engine/discounts';
+import { peso } from '../lib/format';
+
+const tax = taxJson as unknown as TaxRules;
+const D = tax.privileged_discounts;
+const pct = (r: number) => `${Math.round(r * 100)}%`;
+const calc = (price: number, vat = true) => privilegedDiscount({ price, vatRegistered: vat, holder: 'senior' }, tax);
+const prices = [100, 250, 500, 1000, 1120, 2000, 5000];
+const e1120 = calc(1120);
+const e500 = calc(500);
+const e500n = calc(500, false);
+
+const faqs = [
+  {
+    q: 'How is the senior citizen discount computed?',
+    a: `At a VAT-registered seller, remove the ${pct(D.vat_rate)} VAT first, then take ${pct(D.senior_rate)} off the VAT-exempt price: ${peso(1120)} ÷ 1.12 = ${peso(e1120.vatExemptPrice)}, less ${peso(e1120.discount)} (20%) = ${peso(e1120.amountDue)}. BIR's own example in RR 7-2010: a VAT-exempt price of ₱50.00 less the 20% discount of ₱10.00 leaves ₱40.00 to pay. The seller may not bill VAT to a senior citizen for the covered goods and services.`,
+  },
+  {
+    q: 'Is the senior citizen discount 20% or 32%?',
+    a: `The law grants a ${pct(D.senior_rate)} discount plus exemption from VAT (RA 9994 Sec. 4). Together they cut a VAT-inclusive price by about 28.57%: ${peso(1120)} becomes ${peso(e1120.amountDue)}. It is not 32% — the 20% is applied to the price after VAT is removed, not added to the 12%.`,
+  },
+  {
+    q: 'Does the PWD discount work the same way?',
+    a: `Yes. Persons with disability get at least ${pct(D.pwd_rate)} discount and VAT exemption, if applicable, on covered goods and services for their exclusive use (RA 10754, amending Sec. 32 of RA 7277), computed the same way. Proof: a PWD ID issued by the city or municipal mayor or the barangay captain where the PWD lives, the passport, or the NCWDP transportation discount ID. A PWD cannot combine it with a higher store discount or another discount program.`,
+  },
+  {
+    q: 'Can I get the senior discount on top of a promo or sale price?',
+    a: 'No. On items already on promotional discount, the senior citizen gets the promo or the 20% discount, whichever is higher (RA 9994 Sec. 4).',
+  },
+  {
+    q: 'Is the senior discount given on the whole group bill?',
+    a: 'No. Only the senior citizen\'s own food and drinks qualify; restaurants process them separately from non-eligible companions. If everyone at the table is a senior citizen with an ID, each gets the discount (BIR RR 7-2010). The discount does not apply to children\'s meals, pre-contracted party packages or bulk orders; take-out and drive-thru orders qualify when the senior citizen orders in person.',
+  },
+  {
+    q: 'What does a senior citizen need to show?',
+    a: `A senior citizen is a Filipino aged ${D.senior_min_age} or older. RA 9994 accepts the senior citizen ID issued by the Office of Senior Citizens Affairs (OSCA) of the place of residence — honored nationwide — the passport, or other documents that show Philippine citizenship and age of at least ${D.senior_min_age}.`,
+  },
+  {
+    q: 'Do senior citizens get a discount on electricity and water?',
+    a: `Yes, at least ${pct(D.utility_discount.rate)}, when the meter is registered in the senior citizen's name and monthly consumption does not exceed ${D.utility_discount.max_kwh} kWh of electricity and ${D.utility_discount.max_cubic_meters} cubic meters of water; one discount per household regardless of how many seniors live there (RA 9994 Sec. 4(c); BIR RR 7-2010).`,
+  },
+  {
+    q: 'Magkano ang babayaran ng senior sa ₱500 na bill?',
+    a: `Sa VAT-registered na tindahan o restaurant: ${peso(500)} ÷ 1.12 = ${peso(e500.vatExemptPrice)} (tanggal ang VAT), bawas ang 20% (${peso(e500.discount)}), kaya ${peso(e500.amountDue)} ang babayaran. Sa non-VAT na tindahan, 20% lang ang bawas: ${peso(e500n.amountDue)}.`,
+  },
+];
+---
+
+<ToolPageLayout
+  title="Senior Citizen & PWD Discount Calculator – 20% + VAT Exempt"
+  description={`Compute the senior citizen and PWD discount the way BIR requires: remove the 12% VAT, then take 20% off (RA 9994, RA 10754, RR 7-2010). ₱1,120 becomes ${peso(e1120.amountDue)}.`}
+  path="/senior-citizen-discount-calculator/"
+  h1="Senior Citizen and PWD Discount Calculator (20% + VAT Exemption)"
+  faqs={faqs}
+  related={['sssPension', 'retirementPay', 'holidays', 'incomeTax']}
+>
+  <Fragment slot="answer">
+    <p>
+      Senior citizens (RA 9994) and persons with disability (RA 10754) get a <strong>{pct(D.senior_rate)} discount and VAT
+      exemption</strong> on covered goods and services for their own use. At a VAT-registered seller the VAT comes off first and
+      the 20% is taken from the VAT-exempt price: <strong>{peso(1120)} ÷ 1.12 = {peso(e1120.vatExemptPrice)}, less 20% = {peso(e1120.amountDue)}</strong>
+      — a total cut of about 28.57%, not 32%. BIR's RR 7-2010 illustrates the same order: ₱50.00 VAT-exempt, less ₱10.00, pays ₱40.00.
+    </p>
+  </Fragment>
+
+  <Fragment slot="calculator">
+    <SeniorDiscountCalculator client:idle />
+  </Fragment>
+
+  <h2>Senior Citizen Discount Table (VAT-Registered Sellers)</h2>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Menu or shelf price</th><th>VAT-exempt price (÷ 1.12)</th><th>20% discount</th><th>Amount to pay</th></tr></thead>
+      <tbody>
+        {prices.map((p) => {
+          const r = calc(p);
+          return (
+            <tr>
+              <td><strong>{peso(p)}</strong></td>
+              <td>{peso(r.vatExemptPrice)}</td>
+              <td>− {peso(r.discount)}</td>
+              <td><strong>{peso(r.amountDue)}</strong></td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  </div>
+
+  <h2>The Rules That Decide the Discount</h2>
+  <ul>
+    {D.rules.map((x) => <li>{x}</li>)}
+  </ul>
+
+  <h2>What Is Covered</h2>
+  <p>
+    RA 9994 lists medicines (including influenza and pneumococcal vaccines) and essential medical supplies, professional fees of
+    doctors and medical and dental services in private facilities, domestic air and sea travel and public land transport,
+    hotels, restaurants and recreation centers, admission to theaters, cinemas and other places of leisure, and funeral and
+    burial services. RA 10754 gives PWDs a parallel list, from hotels and restaurants to medicines and transport fares. Both
+    apply only to the holder's exclusive use and enjoyment.
+  </p>
+
+  <h2>Official Sources</h2>
+  <ul>
+    {D.sources.map((s) => <li><a href={s.url} target="_blank" rel="noopener">{s.label}</a></li>)}
+  </ul>
+  <p class="text-sm text-ink-soft">AyTool is independent and not affiliated with BIR, DSWD or NCDA.</p>
+</ToolPageLayout>

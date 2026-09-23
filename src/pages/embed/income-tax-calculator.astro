@@ -1,0 +1,9 @@
+---
+import EmbedLayout from '../../layouts/EmbedLayout.astro';
+import IncomeTaxCalculator from '../../islands/IncomeTaxCalculator';
+import { TOOL_PAGES } from '../../lib/pages';
+---
+
+<EmbedLayout page={TOOL_PAGES.incomeTax!}>
+  <IncomeTaxCalculator client:load />
+</EmbedLayout>

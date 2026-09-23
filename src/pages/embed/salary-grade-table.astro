@@ -1,0 +1,9 @@
+---
+import EmbedLayout from '../../layouts/EmbedLayout.astro';
+import SalaryGradeCalculator from '../../islands/SalaryGradeCalculator';
+import { TOOL_PAGES } from '../../lib/pages';
+---
+
+<EmbedLayout page={TOOL_PAGES.salaryGrade!}>
+  <SalaryGradeCalculator client:load />
+</EmbedLayout>

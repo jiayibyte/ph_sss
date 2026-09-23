@@ -25,7 +25,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const DATA_DIR = path.join(ROOT, 'src/data');
 
 /** Every rule dataset directory under src/data/. */
-export const DATASETS = ['sss', 'philhealth', 'pagibig', 'labor', 'tax', 'holidays', 'prc', 'wages'];
+export const DATASETS = ['sss', 'philhealth', 'pagibig', 'labor', 'tax', 'holidays', 'prc', 'wages', 'ssl'];
 
 /** Rule datasets rendered by each page (path → dataset keys). */
 export const PAGE_DATA = {
@@ -45,6 +45,12 @@ export const PAGE_DATA = {
   '/pagibig-mp2-calculator/': ['pagibig'],
   '/pagibig-housing-loan-calculator/': ['pagibig'],
   '/take-home-pay-calculator/': ['sss', 'philhealth', 'pagibig', 'tax'],
+  '/income-tax-calculator/': ['tax', 'sss', 'philhealth', 'pagibig'],
+  '/freelancer-tax-calculator/': ['tax'],
+  '/pagibig-salary-loan-calculator/': ['pagibig'],
+  '/service-incentive-leave-calculator/': ['labor', 'wages'],
+  '/senior-citizen-discount-calculator/': ['tax'],
+  '/salary-grade-table/': ['ssl', 'tax', 'philhealth', 'pagibig'],
   '/minimum-wage-philippines/': ['wages'],
   '/13th-month-pay-calculator/': ['labor'],
   '/holiday-pay-calculator/': ['holidays', 'labor'],
@@ -129,6 +135,8 @@ export const SCHEDULED = {
   '/daily-rate-calculator/': ['wages', (w) => [w.ncr?.upcoming?.effectivity]],
   // The "rates may have changed" notice appears the day after the published rates lapse.
   '/pagibig-housing-loan-calculator/': ['pagibig', (p) => [dayAfter(p.housing_loan?.rates_valid_until)]],
+  // The salary grade table moves to the next EO 64 tranche on its January 1 effectivity.
+  '/salary-grade-table/': ['ssl', (d) => (d.tranches ?? []).map((t) => t.effective)],
 };
 
 /** Distinct scheduled change dates for a page that have been reached by `asOf` (ISO, ascending). */

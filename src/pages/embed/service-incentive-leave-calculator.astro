@@ -1,0 +1,9 @@
+---
+import EmbedLayout from '../../layouts/EmbedLayout.astro';
+import SilCalculator from '../../islands/SilCalculator';
+import { TOOL_PAGES } from '../../lib/pages';
+---
+
+<EmbedLayout page={TOOL_PAGES.silLeave!}>
+  <SilCalculator client:load />
+</EmbedLayout>

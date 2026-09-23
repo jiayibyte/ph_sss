@@ -1,0 +1,213 @@
+---
+import ToolPageLayout from '../layouts/ToolPageLayout.astro';
+import IncomeTaxCalculator from '../islands/IncomeTaxCalculator';
+import taxJson from '../data/tax/2026.json';
+import sssJson from '../data/sss/2026.json';
+import philhealthJson from '../data/philhealth/2026.json';
+import pagibigJson from '../data/pagibig/2026.json';
+import type { PagibigRules, PhilhealthRules, SssRules, TaxBracket, TaxRules } from '../lib/rules/types';
+import { compensationTax, withholdingTable } from '../lib/engine/tax';
+import { computeSss } from '../lib/engine/sss';
+import { computePhilhealth } from '../lib/engine/philhealth';
+import { computePagibig } from '../lib/engine/pagibig';
+import { peso, round2 } from '../lib/format';
+
+const tax = taxJson as unknown as TaxRules;
+const sss = sssJson as unknown as SssRules;
+const philhealth = philhealthJson as unknown as PhilhealthRules;
+const pagibig = pagibigJson as unknown as PagibigRules;
+const meta = tax.meta;
+const CAP = tax.exclusions.thirteenth_month_and_other_benefits_cap;
+const pct = (r: number) => `${Math.round(r * 100)}%`;
+const exempt = tax.annual_brackets[0]!.up_to!; // ₱250,000
+const monthlyExempt = tax.brackets[0]!.up_to!; // ₱20,833
+
+const contrib = (basic: number) =>
+  round2(computeSss(basic, 'employee', sss).employeeShare + computePhilhealth(basic, 'employed', philhealth).employeeShare + computePagibig(basic, 'employee', pagibig).employeeShare);
+const forSalary = (basic: number) => {
+  const c = contrib(basic);
+  return { basic, c, r: compensationTax({ monthlyBasic: basic, annualBonuses: basic, monthlyContributions: c }, tax) };
+};
+// Highest whole-peso basic pay with no withholding tax for a private employee.
+let taxFreeBasic = monthlyExempt;
+while (compensationTax({ monthlyBasic: taxFreeBasic + 1, annualBonuses: 0, monthlyContributions: contrib(taxFreeBasic + 1) }, tax).monthly.tax === 0) taxFreeBasic++;
+
+const salaries = [20000, 25000, 30000, 35000, 40000, 50000, 60000, 75000, 100000, 150000, 200000];
+const rows = salaries.map(forSalary);
+const s25 = forSalary(25000);
+const s30 = forSalary(30000);
+const s50 = forSalary(50000);
+
+const bracketRow = (b: TaxBracket, i: number) => ({
+  range: b.up_to === null ? `Over ${peso(b.over)}` : i === 0 ? `${peso(b.up_to)} and below` : `Over ${peso(b.over)} to ${peso(b.up_to)}`,
+  tax: b.rate === 0 ? '₱0' : `${b.base_tax > 0 ? `${peso(b.base_tax)} + ` : ''}${pct(b.rate)} of the excess over ${peso(b.over)}`,
+});
+const tables: Array<{ id: string; title: string; brackets: TaxBracket[] }> = [
+  { id: 'monthly', title: 'Monthly', brackets: withholdingTable('monthly', tax) },
+  { id: 'semi-monthly', title: 'Semi-monthly', brackets: withholdingTable('semi_monthly', tax) },
+  { id: 'weekly', title: 'Weekly', brackets: withholdingTable('weekly', tax) },
+  { id: 'daily', title: 'Daily', brackets: withholdingTable('daily', tax) },
+];
+
+const faqs = [
+  {
+    q: 'How much income is tax-free in the Philippines in 2026?',
+    a: `The first ${peso(exempt)} of taxable income a year, which is ${peso(monthlyExempt)} of taxable compensation a month (NIRC Sec. 24(A)(2)(a), schedule in force since January 1, 2023). Taxable compensation is gross pay minus your SSS or GSIS, PhilHealth and Pag-IBIG contributions, and 13th month pay and other benefits up to ${peso(CAP)} a year are excluded too. For a private-sector employee that means no withholding tax on a basic pay of up to about ${peso(taxFreeBasic)} a month.`,
+  },
+  {
+    q: 'How much is the withholding tax on a ₱30,000 salary?',
+    a: `${peso(s30.r.monthly.tax)} a month. SSS, PhilHealth and Pag-IBIG take ${peso(s30.c)}, leaving ${peso(s30.r.monthlyTaxable)} taxable; the BIR monthly table charges 15% of the excess over ${peso(monthlyExempt)}. Over a year with a 13th month of ${peso(30000)} (fully tax-free), the income tax comes to ${peso(s30.r.annual.tax)}. On ${peso(50000)} a month it is ${peso(s50.r.monthly.tax)} a month.`,
+  },
+  {
+    q: 'What is the BIR income tax table for 2026?',
+    a: `The TRAIN schedule that took effect on January 1, 2023 still applies: ${tax.annual_brackets.map((b, i) => `${bracketRow(b, i).range}: ${bracketRow(b, i).tax}`).join('; ')}. RA 10963 set no later step, so employers keep withholding with BIR's revised table in Annex E of RR 11-2018.`,
+  },
+  {
+    q: 'Is the 13th month pay taxable?',
+    a: `Only the part above ${peso(CAP)}. The 13th month pay and other benefits — Christmas bonus, productivity incentives, other cash bonuses — are excluded from gross income up to ${peso(CAP)} a year in total (NIRC Sec. 32(B)(7)(e) as amended by TRAIN). Your employer adds any excess to your taxable pay at year-end.`,
+  },
+  {
+    q: 'Do minimum wage earners pay income tax?',
+    a: 'No tax on their statutory minimum wage, or on the holiday pay, overtime pay, night shift differential and hazard pay they receive (NIRC Sec. 24(A)(2) as amended by TRAIN). Other taxable pay such as commissions, and 13th month pay and bonuses above ₱90,000, is still taxable.',
+  },
+  {
+    q: 'Are SSS, PhilHealth and Pag-IBIG contributions taxable?',
+    a: 'No. The employee share of GSIS, SSS, PhilHealth (Medicare) and Pag-IBIG contributions, and union dues, are excluded from gross income (NIRC Sec. 32(B)(7)(f)), so they are subtracted before the tax table is applied.',
+  },
+  {
+    q: 'How is withholding tax computed on a semi-monthly salary?',
+    a: `Each payday uses the semi-monthly table: nothing up to ${peso(tax.withholding_tables.semi_monthly[0]!.up_to!)} of taxable pay, then 15% of the excess over ${peso(tax.withholding_tables.semi_monthly[1]!.over)}, then ${peso(tax.withholding_tables.semi_monthly[2]!.base_tax)} + 20% of the excess over ${peso(tax.withholding_tables.semi_monthly[2]!.over)}, and so on (tables below). ₱15,000 of taxable pay per payday means ₱687.45 withheld each cutoff.`,
+  },
+  {
+    q: 'Why was my December tax higher, or why did I get a refund?',
+    a: 'At the last payroll of the year your employer compares the income tax due on your whole year of taxable pay with the tax already withheld — the annualization. A bonus above ₱90,000 or a raise during the year can leave a shortfall, which is withheld in December; unpaid leave or too much withholding earlier in the year leads to a refund. The employer then issues BIR Form 2316, your certificate of compensation and tax withheld.',
+  },
+  {
+    q: 'Do I need to file an income tax return?',
+    a: 'Not if all your income for the year was salary from one employer in the Philippines and the employer withheld the correct tax: under substituted filing (NIRC Sec. 51-A, added by TRAIN) your employer\'s certificate of withholding serves as your return. You file your own return if you had two or more employers in the year, or if you also earn from business or a profession — see the Freelancer Tax Calculator for that case.',
+  },
+  {
+    q: 'Magkano ang tax sa ₱25,000 na sahod?',
+    a: `${peso(s25.r.monthly.tax)} kada buwan. Ibabawas muna ang SSS, PhilHealth at Pag-IBIG (${peso(s25.c)}), kaya ${peso(s25.r.monthlyTaxable)} ang taxable. 15% ng sobra sa ${peso(monthlyExempt)} ang withholding tax. Walang tax ang 13th month hanggang ${peso(CAP)}.`,
+  },
+];
+---
+
+<ToolPageLayout
+  title="Income Tax Calculator Philippines 2026 – BIR Tax Table"
+  description={`BIR withholding and income tax for 2026: TRAIN rates 0–35% (tax-free up to ${peso(exempt)} a year), the monthly to daily tables, and the ${peso(CAP)} bonus exemption.`}
+  path="/income-tax-calculator/"
+  h1="Income Tax Calculator Philippines (BIR Tax Table 2026)"
+  faqs={faqs}
+  related={['takeHome', 'freelancerTax', 'thirteenth', 'tinNumber']}
+>
+  <Fragment slot="answer">
+    <p>
+      In 2026 the first <strong>{peso(exempt)}</strong> of taxable income a year — <strong>{peso(monthlyExempt)} a month</strong> —
+      is tax-free; above that the TRAIN rates run from <strong>15% to 35%</strong>. Taxable compensation is your gross pay minus
+      SSS/GSIS, PhilHealth and Pag-IBIG contributions; 13th month pay and other bonuses up to {peso(CAP)} are excluded, and
+      minimum wage earners pay no income tax on their minimum wage. A {peso(30000)} salary has {peso(s30.r.monthly.tax)} withheld
+      a month. The rates are the schedule in force since January 1, 2023 — unchanged for 2026.
+    </p>
+  </Fragment>
+
+  <Fragment slot="calculator">
+    <IncomeTaxCalculator client:idle />
+  </Fragment>
+
+  <h2>BIR Income Tax Table 2026 (Annual)</h2>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Taxable income for the year</th><th>Income tax</th></tr></thead>
+      <tbody>
+        {tax.annual_brackets.map((b, i) => {
+          const row = bracketRow(b, i);
+          return <tr><td>{row.range}</td><td>{row.tax}</td></tr>;
+        })}
+      </tbody>
+    </table>
+  </div>
+  <p class="text-sm text-ink-soft">
+    Source: <a href={tax.annual_source.url} target="_blank" rel="noopener">{tax.annual_source.label}</a>. The same rates apply
+    to employees, freelancers and professionals on graduated rates; freelancers may instead choose 8% of gross — see the
+    <a href="/freelancer-tax-calculator/">Freelancer Tax Calculator</a>.
+  </p>
+
+  <h2>BIR Withholding Tax Tables: Monthly, Semi-Monthly, Weekly and Daily</h2>
+  <p>
+    Employers apply the table that matches the payroll period to the taxable compensation of each pay (Annex E of RR 11-2018,
+    effective January 1, 2023 and onwards). Mandatory contributions are deducted first; the 13th month and bonuses are left out
+    until they pass {peso(CAP)} for the year.
+  </p>
+  {
+    tables.map((t) => (
+      <Fragment>
+        <h3 id={`${t.id}-table`}>{t.title} withholding tax table</h3>
+        <div class="table-scroll">
+          <table>
+            <thead><tr><th>{t.title} taxable compensation</th><th>Withholding tax</th></tr></thead>
+            <tbody>
+              {t.brackets.map((b, i) => {
+                const row = bracketRow(b, i);
+                return <tr><td>{row.range}</td><td>{row.tax}</td></tr>;
+              })}
+            </tbody>
+          </table>
+        </div>
+      </Fragment>
+    ))
+  }
+  <p class="text-sm text-ink-soft">
+    {tax.withholding_note} Source: <a href={meta.official_source_url} target="_blank" rel="noopener">{meta.official_source_label}</a>.
+  </p>
+
+  <h2>Tax on Common Monthly Salaries (Private Employees, 2026)</h2>
+  <p>
+    SSS, PhilHealth and Pag-IBIG employee shares at the 2026 rates; a 13th month equal to one month's basic pay; no other
+    taxable allowances.
+  </p>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Monthly basic pay</th><th>Contributions</th><th>Taxable per month</th><th>Withholding tax per month</th><th>Income tax for the year</th></tr></thead>
+      <tbody>
+        {rows.map(({ basic, c, r }) => (
+          <tr>
+            <td><strong>{peso(basic)}</strong></td>
+            <td>{peso(c)}</td>
+            <td>{peso(r.monthlyTaxable)}</td>
+            <td><strong>{peso(r.monthly.tax)}</strong></td>
+            <td>{peso(r.annual.tax)}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+
+  <h2>What Is Not Taxed</h2>
+  <ul>
+    <li><strong>Mandatory contributions:</strong> your share of SSS or GSIS, PhilHealth and Pag-IBIG, and union dues (NIRC Sec. 32(B)(7)(f)).</li>
+    <li><strong>13th month pay and other benefits</strong> up to {peso(CAP)} a year in total (Sec. 32(B)(7)(e)).</li>
+    <li><strong>Minimum wage earners:</strong> their statutory minimum wage, and the holiday pay, overtime pay, night shift differential and hazard pay they receive (Sec. 24(A)(2)).</li>
+    <li><strong>De minimis benefits</strong> within the limits set by BIR regulations, such as rice subsidy and uniform allowance.</li>
+  </ul>
+
+  <h2>Year-End Adjustment, BIR Form 2316 and Filing</h2>
+  <p>
+    Monthly withholding is an estimate; the tax for the year is computed on your whole year's taxable pay at the annual rates.
+    Your employer does this at the last payroll (annualization), withholds any shortfall or refunds any excess, and gives you
+    BIR Form 2316. If your only income for the year was salary from one employer and the tax was withheld correctly, that form
+    is your return — you do not file one yourself (substituted filing, NIRC Sec. 51-A). Two employers in one year, or income
+    from a business or profession, means filing your own return.
+  </p>
+
+  <h2>Official Sources</h2>
+  <ul>
+    <li><a href={meta.official_source_url} target="_blank" rel="noopener">{meta.official_source_label}</a></li>
+    <li><a href={tax.annual_source.url} target="_blank" rel="noopener">RA 10963 (TRAIN Law)</a> — NIRC Secs. 24(A)(2), 32(B)(7)(e) and 51-A as amended</li>
+    <li><a href="https://lawphil.net/statutes/repacts/ra1997/ra_8424_1997.html" target="_blank" rel="noopener">NIRC of 1997 (RA 8424)</a> — Sec. 32(B)(7)(f), contributions excluded from gross income</li>
+  </ul>
+  <p class="text-sm text-ink-soft">
+    Last verified {new Date(meta.last_verified + 'T00:00:00').toLocaleDateString('en-PH', { month: 'long', day: 'numeric', year: 'numeric' })}.
+    AyTool is independent and not affiliated with BIR; your payslip and BIR Form 2316 are the final word.
+  </p>
+</ToolPageLayout>

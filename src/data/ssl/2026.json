@@ -1,0 +1,1152 @@
+{
+ "meta": {
+  "rule_version": "Executive Order No. 64, s. 2024 — Salary Schedule for Civilian Government Personnel; 2026 third tranche per DBM NBC No. 601",
+  "effective_from": "2026-01-01",
+  "effective_to": null,
+  "last_verified": "2026-09-23",
+  "official_source_url": "https://www.dbm.gov.ph/wp-content/uploads/Issuances/2026/National-Budget-Circular/NATIONAL-BUDGET-CIRCULAR-NO.-601_NEW.pdf",
+  "official_source_label": "DBM National Budget Circular No. 601 (January 22, 2026), Annex A (dbm.gov.ph)"
+ },
+ "order": "Executive Order No. 64, s. 2024 (August 2, 2024)",
+ "order_url": "https://lawphil.net/executive/execord/eo2024/pdf/eo_64_2024.pdf",
+ "tranches": [
+  {
+   "year": 2025,
+   "effective": "2025-01-01",
+   "tranche": "second",
+   "issuance": "DBM National Budget Circular No. 597 (January 20, 2025), Annex A",
+   "issuance_url": "https://www.dbm.gov.ph/wp-content/uploads/Issuances/2025/National-Budget-Circular/NBC-No.-597.pdf",
+   "grades": {
+    "1": [
+     14061,
+     14164,
+     14278,
+     14393,
+     14509,
+     14626,
+     14743,
+     14862
+    ],
+    "2": [
+     14925,
+     15035,
+     15146,
+     15258,
+     15371,
+     15484,
+     15599,
+     15714
+    ],
+    "3": [
+     15852,
+     15971,
+     16088,
+     16208,
+     16329,
+     16448,
+     16571,
+     16693
+    ],
+    "4": [
+     16833,
+     16958,
+     17084,
+     17209,
+     17337,
+     17464,
+     17594,
+     17724
+    ],
+    "5": [
+     17866,
+     18000,
+     18133,
+     18267,
+     18401,
+     18538,
+     18676,
+     18813
+    ],
+    "6": [
+     18957,
+     19098,
+     19239,
+     19383,
+     19526,
+     19670,
+     19816,
+     19963
+    ],
+    "7": [
+     20110,
+     20258,
+     20408,
+     20560,
+     20711,
+     20865,
+     21019,
+     21175
+    ],
+    "8": [
+     21448,
+     21642,
+     21839,
+     22035,
+     22234,
+     22435,
+     22638,
+     22843
+    ],
+    "9": [
+     23226,
+     23411,
+     23599,
+     23788,
+     23978,
+     24170,
+     24364,
+     24558
+    ],
+    "10": [
+     25586,
+     25790,
+     25996,
+     26203,
+     26412,
+     26623,
+     26835,
+     27050
+    ],
+    "11": [
+     30024,
+     30308,
+     30597,
+     30889,
+     31185,
+     31486,
+     31790,
+     32099
+    ],
+    "12": [
+     32245,
+     32529,
+     32817,
+     33108,
+     33403,
+     33702,
+     34004,
+     34310
+    ],
+    "13": [
+     34421,
+     34733,
+     35049,
+     35369,
+     35694,
+     36022,
+     36354,
+     36691
+    ],
+    "14": [
+     37024,
+     37384,
+     37749,
+     38118,
+     38491,
+     38869,
+     39252,
+     39640
+    ],
+    "15": [
+     40208,
+     40604,
+     41006,
+     41413,
+     41824,
+     42241,
+     42662,
+     43090
+    ],
+    "16": [
+     43560,
+     43996,
+     44438,
+     44885,
+     45338,
+     45796,
+     46261,
+     46730
+    ],
+    "17": [
+     47247,
+     47727,
+     48213,
+     48705,
+     49203,
+     49708,
+     50218,
+     50735
+    ],
+    "18": [
+     51304,
+     51832,
+     52367,
+     52907,
+     53456,
+     54010,
+     54572,
+     55140
+    ],
+    "19": [
+     56390,
+     57165,
+     57953,
+     58753,
+     59567,
+     60394,
+     61235,
+     62089
+    ],
+    "20": [
+     62967,
+     63842,
+     64732,
+     65637,
+     66557,
+     67479,
+     68409,
+     69342
+    ],
+    "21": [
+     70013,
+     71000,
+     72004,
+     73024,
+     74061,
+     75115,
+     76151,
+     77239
+    ],
+    "22": [
+     78162,
+     79277,
+     80411,
+     81564,
+     82735,
+     83887,
+     85096,
+     86324
+    ],
+    "23": [
+     87315,
+     88574,
+     89855,
+     91163,
+     92592,
+     94043,
+     95518,
+     96955
+    ],
+    "24": [
+     98185,
+     99721,
+     101283,
+     102871,
+     104483,
+     106123,
+     107739,
+     109431
+    ],
+    "25": [
+     111727,
+     113476,
+     115254,
+     117062,
+     118899,
+     120766,
+     122664,
+     124591
+    ],
+    "26": [
+     126252,
+     128228,
+     130238,
+     132280,
+     134356,
+     136465,
+     138608,
+     140788
+    ],
+    "27": [
+     142663,
+     144897,
+     147169,
+     149407,
+     151752,
+     153850,
+     156267,
+     158723
+    ],
+    "28": [
+     160469,
+     162988,
+     165548,
+     167994,
+     170634,
+     173320,
+     175803,
+     178572
+    ],
+    "29": [
+     180492,
+     183332,
+     186218,
+     189151,
+     192131,
+     194797,
+     197870,
+     200993
+    ],
+    "30": [
+     203200,
+     206401,
+     209558,
+     212766,
+     216022,
+     219434,
+     222797,
+     226319
+    ],
+    "31": [
+     293191,
+     298773,
+     304464,
+     310119,
+     315883,
+     321846,
+     327895,
+     334059
+    ],
+    "32": [
+     347888,
+     354743,
+     361736,
+     368694,
+     375969,
+     383391,
+     390963,
+     398686
+    ],
+    "33": [
+     438844,
+     451713
+    ]
+   }
+  },
+  {
+   "year": 2026,
+   "effective": "2026-01-01",
+   "tranche": "third",
+   "issuance": "DBM National Budget Circular No. 601 (January 22, 2026), Annex A",
+   "issuance_url": "https://www.dbm.gov.ph/wp-content/uploads/Issuances/2026/National-Budget-Circular/NATIONAL-BUDGET-CIRCULAR-NO.-601_NEW.pdf",
+   "grades": {
+    "1": [
+     14634,
+     14730,
+     14849,
+     14968,
+     15089,
+     15211,
+     15333,
+     15456
+    ],
+    "2": [
+     15522,
+     15636,
+     15752,
+     15869,
+     15986,
+     16103,
+     16223,
+     16342
+    ],
+    "3": [
+     16486,
+     16610,
+     16732,
+     16856,
+     16982,
+     17106,
+     17234,
+     17360
+    ],
+    "4": [
+     17506,
+     17636,
+     17767,
+     17898,
+     18031,
+     18163,
+     18298,
+     18433
+    ],
+    "5": [
+     18581,
+     18720,
+     18858,
+     18998,
+     19137,
+     19280,
+     19423,
+     19565
+    ],
+    "6": [
+     19716,
+     19862,
+     20009,
+     20158,
+     20307,
+     20456,
+     20609,
+     20761
+    ],
+    "7": [
+     20914,
+     21069,
+     21224,
+     21382,
+     21539,
+     21699,
+     21859,
+     22022
+    ],
+    "8": [
+     22423,
+     22627,
+     22832,
+     23038,
+     23246,
+     23456,
+     23668,
+     23883
+    ],
+    "9": [
+     24329,
+     24523,
+     24720,
+     24917,
+     25117,
+     25318,
+     25521,
+     25725
+    ],
+    "10": [
+     26917,
+     27131,
+     27347,
+     27565,
+     27786,
+     28007,
+     28230,
+     28456
+    ],
+    "11": [
+     31705,
+     31820,
+     32109,
+     32401,
+     32697,
+     32998,
+     33302,
+     33611
+    ],
+    "12": [
+     33947,
+     34069,
+     34357,
+     34648,
+     34943,
+     35242,
+     35544,
+     35850
+    ],
+    "13": [
+     36125,
+     36283,
+     36599,
+     36919,
+     37244,
+     37572,
+     37904,
+     38241
+    ],
+    "14": [
+     38764,
+     39141,
+     39523,
+     39910,
+     40300,
+     40696,
+     41097,
+     41503
+    ],
+    "15": [
+     42178,
+     42594,
+     43015,
+     43442,
+     43874,
+     44310,
+     44753,
+     45202
+    ],
+    "16": [
+     45694,
+     46152,
+     46615,
+     47084,
+     47559,
+     48040,
+     48528,
+     49020
+    ],
+    "17": [
+     49562,
+     50066,
+     50576,
+     51092,
+     51614,
+     52144,
+     52678,
+     53221
+    ],
+    "18": [
+     53818,
+     54371,
+     54933,
+     55499,
+     56075,
+     56657,
+     57246,
+     57842
+    ],
+    "19": [
+     59153,
+     59966,
+     60793,
+     61632,
+     62486,
+     63353,
+     64236,
+     65132
+    ],
+    "20": [
+     66052,
+     66970,
+     67904,
+     68853,
+     69818,
+     70772,
+     71727,
+     72671
+    ],
+    "21": [
+     73303,
+     74337,
+     75388,
+     76456,
+     77542,
+     78645,
+     79692,
+     80831
+    ],
+    "22": [
+     81796,
+     82963,
+     84151,
+     85356,
+     86582,
+     87746,
+     89011,
+     90295
+    ],
+    "23": [
+     91306,
+     92622,
+     93962,
+     95330,
+     96823,
+     98341,
+     99883,
+     101318
+    ],
+    "24": [
+     102603,
+     104209,
+     105841,
+     107500,
+     109185,
+     110898,
+     112533,
+     114301
+    ],
+    "25": [
+     116643,
+     118469,
+     120326,
+     122212,
+     124131,
+     126079,
+     128061,
+     130073
+    ],
+    "26": [
+     131807,
+     133870,
+     135968,
+     138100,
+     140268,
+     142469,
+     144707,
+     146983
+    ],
+    "27": [
+     148940,
+     151273,
+     153644,
+     155906,
+     158353,
+     160235,
+     162752,
+     165310
+    ],
+    "28": [
+     167129,
+     169752,
+     172418,
+     174797,
+     177545,
+     180339,
+     182660,
+     185537
+    ],
+    "29": [
+     187531,
+     190482,
+     193480,
+     196528,
+     199624,
+     202005,
+     205191,
+     208430
+    ],
+    "30": [
+     210718,
+     214038,
+     217207,
+     220425,
+     223691,
+     227224,
+     230595,
+     234240
+    ],
+    "31": [
+     300961,
+     306691,
+     312532,
+     318182,
+     323938,
+     329989,
+     336092,
+     342310
+    ],
+    "32": [
+     356237,
+     363257,
+     370418,
+     377359,
+     384805,
+     392400,
+     400150,
+     408055
+    ],
+    "33": [
+     449157,
+     462329
+    ]
+   }
+  },
+  {
+   "year": 2027,
+   "effective": "2027-01-01",
+   "tranche": "fourth and final",
+   "issuance": null,
+   "issuance_url": null,
+   "grades": {
+    "1": [
+     15208,
+     15304,
+     15423,
+     15542,
+     15663,
+     15784,
+     15906,
+     16030
+    ],
+    "2": [
+     16118,
+     16233,
+     16349,
+     16466,
+     16582,
+     16700,
+     16820,
+     16939
+    ],
+    "3": [
+     17120,
+     17244,
+     17366,
+     17490,
+     17616,
+     17740,
+     17868,
+     17994
+    ],
+    "4": [
+     18180,
+     18309,
+     18440,
+     18571,
+     18704,
+     18836,
+     18971,
+     19106
+    ],
+    "5": [
+     19296,
+     19434,
+     19573,
+     19712,
+     19852,
+     19994,
+     20137,
+     20280
+    ],
+    "6": [
+     20474,
+     20620,
+     20767,
+     20916,
+     21065,
+     21215,
+     21367,
+     21520
+    ],
+    "7": [
+     21872,
+     22034,
+     22196,
+     22362,
+     22526,
+     22693,
+     22860,
+     23030
+    ],
+    "8": [
+     23399,
+     23603,
+     23808,
+     24014,
+     24221,
+     24432,
+     24644,
+     24859
+    ],
+    "9": [
+     25433,
+     25627,
+     25823,
+     26021,
+     26220,
+     26421,
+     26624,
+     26828
+    ],
+    "10": [
+     28247,
+     28462,
+     28678,
+     28896,
+     29116,
+     29337,
+     29561,
+     29787
+    ],
+    "11": [
+     33387,
+     33501,
+     33790,
+     34082,
+     34378,
+     34679,
+     34983,
+     35292
+    ],
+    "12": [
+     35650,
+     35771,
+     36059,
+     36350,
+     36645,
+     36944,
+     37246,
+     37552
+    ],
+    "13": [
+     37828,
+     37987,
+     38303,
+     38623,
+     38948,
+     39276,
+     39608,
+     39945
+    ],
+    "14": [
+     40505,
+     40882,
+     41263,
+     41650,
+     42040,
+     42436,
+     42837,
+     43243
+    ],
+    "15": [
+     44148,
+     44564,
+     44985,
+     45412,
+     45844,
+     46281,
+     46723,
+     47172
+    ],
+    "16": [
+     47829,
+     48286,
+     48750,
+     49219,
+     49694,
+     50175,
+     50662,
+     51154
+    ],
+    "17": [
+     51877,
+     52381,
+     52891,
+     53407,
+     53929,
+     54459,
+     54993,
+     55536
+    ],
+    "18": [
+     56332,
+     56885,
+     57447,
+     58013,
+     58589,
+     59171,
+     59760,
+     60356
+    ],
+    "19": [
+     61916,
+     62729,
+     63556,
+     64395,
+     65249,
+     66116,
+     66999,
+     67895
+    ],
+    "20": [
+     69138,
+     70056,
+     70990,
+     71938,
+     72903,
+     73857,
+     74813,
+     75756
+    ],
+    "21": [
+     76594,
+     77628,
+     78679,
+     79747,
+     80833,
+     81936,
+     82982,
+     84121
+    ],
+    "22": [
+     85431,
+     86598,
+     87785,
+     88991,
+     90216,
+     91380,
+     92645,
+     93930
+    ],
+    "23": [
+     95296,
+     96612,
+     97952,
+     99320,
+     100814,
+     102331,
+     103873,
+     105308
+    ],
+    "24": [
+     107022,
+     108627,
+     110260,
+     111918,
+     113603,
+     115317,
+     116952,
+     118719
+    ],
+    "25": [
+     121559,
+     123385,
+     125242,
+     127128,
+     129047,
+     130995,
+     132977,
+     134989
+    ],
+    "26": [
+     137362,
+     139425,
+     141523,
+     143655,
+     145823,
+     148024,
+     150262,
+     152538
+    ],
+    "27": [
+     155217,
+     157550,
+     159921,
+     162184,
+     164630,
+     166512,
+     169030,
+     171587
+    ],
+    "28": [
+     173788,
+     176411,
+     179077,
+     181457,
+     184205,
+     186999,
+     189319,
+     192196
+    ],
+    "29": [
+     194570,
+     197521,
+     200519,
+     203567,
+     206663,
+     209044,
+     212230,
+     215469
+    ],
+    "30": [
+     218237,
+     221556,
+     224726,
+     227943,
+     231209,
+     234743,
+     238113,
+     241758
+    ],
+    "31": [
+     308730,
+     314460,
+     320302,
+     325952,
+     331707,
+     337758,
+     343862,
+     350080
+    ],
+    "32": [
+     364586,
+     371607,
+     378767,
+     385708,
+     393154,
+     400750,
+     408500,
+     416404
+    ],
+    "33": [
+     459469,
+     472641
+    ]
+   },
+   "note": "Fourth and final tranche, scheduled by EO No. 64 Secs. 3 and 5; DBM's implementing circular normally comes out in January of the tranche year."
+  }
+ ],
+ "contributions": {
+  "gsis_personal": 0.09,
+  "gsis_government": 0.12,
+  "source": "RA 8291 Sec. 5(a): member 9%, government 12% of monthly compensation",
+  "source_url": "https://lawphil.net/statutes/repacts/ra1997/ra_8291_1997.html",
+  "caveat": "RA 8291 lets the GSIS Board set a monthly compensation limit above which the member share is 2% on the excess; whether a limit applies today could not be verified (gsis.gov.ph blocks automated reading). The calculator applies 9% to the whole basic salary, the usual payroll practice — check your payslip."
+ },
+ "allowances": [
+  {
+   "key": "pera",
+   "name": "Personnel Economic Relief Allowance (PERA)",
+   "amount": "₱2,000 a month",
+   "rule": "Civilian personnel stationed in the Philippines — regular, contractual or casual, appointive or elective (FY 2026 GAA, RA 12314, Gen. Prov. Sec. 63).",
+   "source_url": "https://www.dbm.gov.ph/wp-content/uploads/GAA/GAA2026/VolumeIB/GENPRO.pdf"
+  },
+  {
+   "key": "clothing",
+   "name": "Uniform or clothing allowance",
+   "amount": "Up to ₱7,000 a year",
+   "rule": "Qualified employees who render at least six months of service in the year (RA 12314 Sec. 64; DBM Budget Circular 2024-1).",
+   "source_url": "https://www.dbm.gov.ph/wp-content/uploads/GAA/GAA2026/VolumeIB/GENPRO.pdf"
+  },
+  {
+   "key": "mid_year",
+   "name": "Mid-year bonus",
+   "amount": "One month's basic salary as of May 15",
+   "rule": "At least four months of service from July 1 of the previous year to May 15, still in service on May 15, and at least a satisfactory rating; released not earlier than May 15 (RA 12314 Sec. 74; RA 11466 Sec. 8).",
+   "source_url": "https://www.dbm.gov.ph/wp-content/uploads/GAA/GAA2026/VolumeIB/GENPRO.pdf"
+  },
+  {
+   "key": "year_end",
+   "name": "Year-end bonus",
+   "amount": "One month's basic salary as of October 31",
+   "rule": "At least four months of service from January 1 to October 31 and still in service on October 31; paid with the first agency payroll in November (RA 12314 Sec. 75; DBM Budget Circular 2024-3).",
+   "source_url": "https://www.dbm.gov.ph/wp-content/uploads/GAA/GAA2026/VolumeIB/GENPRO.pdf"
+  },
+  {
+   "key": "cash_gift",
+   "name": "Cash gift",
+   "amount": "₱5,000 a year",
+   "rule": "Paid together with the year-end bonus in November (RA 6686 as amended by RA 8441; RA 12314 Sec. 75).",
+   "source_url": "https://www.dbm.gov.ph/wp-content/uploads/GAA/GAA2026/VolumeIB/GENPRO.pdf"
+  },
+  {
+   "key": "medical",
+   "name": "Medical allowance",
+   "amount": "Up to ₱7,000 a year",
+   "rule": "Subsidy for HMO-type benefits from FY 2025 (EO No. 64 Sec. 7; RA 12314 Sec. 65; DBM Budget Circular 2024-6). Not for those already receiving HMO benefits under special laws, or the legislative and judicial branches and other offices with fiscal autonomy.",
+   "source_url": "https://lawphil.net/executive/execord/eo2024/pdf/eo_64_2024.pdf"
+  },
+  {
+   "key": "teaching",
+   "name": "Teaching allowance (public school teachers)",
+   "amount": "₱10,000 a school year",
+   "rule": "From School Year 2025–2026 onward; not subject to income tax (RA 11997 Sec. 4).",
+   "source_url": "https://lawphil.net/statutes/repacts/ra2024/ra_11997_2024.html"
+  }
+ ],
+ "positions": [
+  {
+   "title": "Teacher I",
+   "sg": 11,
+   "source_url": "https://www.dbm.gov.ph/wp-content/uploads/Issuances/2022/Budget-Circular/VOLUME-I.pdf#page=50"
+  },
+  {
+   "title": "Teacher II",
+   "sg": 12,
+   "source_url": "https://www.dbm.gov.ph/wp-content/uploads/Issuances/2022/Budget-Circular/VOLUME-I.pdf#page=50"
+  },
+  {
+   "title": "Teacher III",
+   "sg": 13,
+   "source_url": "https://www.dbm.gov.ph/wp-content/uploads/Issuances/2022/Budget-Circular/VOLUME-I.pdf#page=50"
+  },
+  {
+   "title": "Master Teacher I",
+   "sg": 18,
+   "source_url": "https://www.dbm.gov.ph/wp-content/uploads/Issuances/2022/Budget-Circular/VOLUME-I.pdf#page=50"
+  },
+  {
+   "title": "Nurse I",
+   "sg": 15,
+   "source_url": "https://www.dbm.gov.ph/wp-content/uploads/Issuances/2022/Budget-Circular/VOLUME-I.pdf#page=45"
+  },
+  {
+   "title": "Nurse II",
+   "sg": 16,
+   "source_url": "https://www.dbm.gov.ph/wp-content/uploads/Issuances/2022/Budget-Circular/VOLUME-I.pdf#page=45"
+  },
+  {
+   "title": "Administrative Aide I",
+   "sg": 1,
+   "source_url": "https://www.dbm.gov.ph/wp-content/uploads/Issuances/2022/Budget-Circular/VOLUME-I.pdf#page=2"
+  },
+  {
+   "title": "Administrative Assistant I",
+   "sg": 7,
+   "source_url": "https://www.dbm.gov.ph/wp-content/uploads/Issuances/2022/Budget-Circular/VOLUME-I.pdf#page=2"
+  },
+  {
+   "title": "Administrative Officer I",
+   "sg": 10,
+   "source_url": "https://www.dbm.gov.ph/wp-content/uploads/Issuances/2022/Budget-Circular/VOLUME-I.pdf#page=2"
+  },
+  {
+   "title": "Engineer I",
+   "sg": 12,
+   "source_url": "https://www.dbm.gov.ph/wp-content/uploads/Issuances/2022/Budget-Circular/VOLUME-I.pdf#page=18"
+  },
+  {
+   "title": "Accountant I",
+   "sg": 12,
+   "source_url": "https://www.dbm.gov.ph/wp-content/uploads/Issuances/2022/Budget-Circular/VOLUME-I.pdf#page=7"
+  },
+  {
+   "title": "Medical Officer III",
+   "sg": 21,
+   "source_url": "https://www.dbm.gov.ph/wp-content/uploads/Issuances/2022/Budget-Circular/VOLUME-I.pdf#page=44"
+  },
+  {
+   "title": "Attorney I",
+   "sg": 16,
+   "source_url": "https://www.dbm.gov.ph/wp-content/uploads/Issuances/2022/Budget-Circular/VOLUME-I.pdf#page=69"
+  },
+  {
+   "title": "Attorney III",
+   "sg": 21,
+   "source_url": "https://www.dbm.gov.ph/wp-content/uploads/Issuances/2022/Budget-Circular/VOLUME-I.pdf#page=69"
+  }
+ ],
+ "rules": {
+  "new_hires": "New hires start at Step 1 of the position's salary grade (NBC No. 601, item 5.1.4).",
+  "incumbents": "Incumbents move to the new rate of the same grade and step they held on December 31 of the previous year (NBC No. 601, item 5.1.1).",
+  "casual": "Casual daily wage = monthly rate ÷ 22 working days (NBC No. 601, item 5.1.5).",
+  "lgu": "Local governments apply the schedule only with sanggunian approval and within their personal-services limit, at a share set by income class: provinces and cities 100% (special and 1st class) down to 80% (5th class); municipalities 90% (1st class) down to 70% (5th class). An LGU may adopt the full schedule (EO No. 64 Sec. 4; DBM LBC No. 172).",
+  "excluded": "Not covered: military and uniformed personnel (police, soldiers, fire, jail and coast guard personnel have a separate base-pay schedule), agencies exempt from RA 6758 with their own compensation plans, GOCCs under the GCG compensation framework, and job orders, contracts of service and consultants (NBC No. 601, item 4.0)."
+ },
+ "source_note": "Salary tables: EO No. 64 (signed scan hosted by LawPhil, matching the PCO copy) and DBM NBC No. 597 (2025) and No. 601 (2026) Annex A — every cell agrees across the documents; 2027 from EO No. 64 only. Cross-checks: SG 1 Step 1 ₱14,634 in 2026; Teacher I (SG 11) ₱31,705 in 2026 and ₱33,387 in 2027 (DBM press release, September 5, 2026). Position grades: DBM Index of Occupational Services, 2022 edition."
+}

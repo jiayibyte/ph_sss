@@ -1,0 +1,149 @@
+---
+import ToolPageLayout from '../layouts/ToolPageLayout.astro';
+import PagibigLoanCalculator from '../islands/PagibigLoanCalculator';
+import pagibigJson from '../data/pagibig/2026.json';
+import type { PagibigRules } from '../lib/rules/types';
+import { computeShortTermLoan } from '../lib/engine/pagibigLoans';
+import { peso } from '../lib/format';
+
+const rules = pagibigJson as unknown as PagibigRules;
+const L = rules.short_term_loans;
+const M = L.mpl;
+const C = L.calamity;
+const share = `${Math.round(L.tav_share * 100)}%`;
+const mplRate = `${+(M.rate_monthly * 100).toFixed(4)}%`;
+const calRate = `${+(C.rate_annual * 100).toFixed(2)}%`;
+const penalty = `${+(L.penalty_per_day * 100).toFixed(2)}%`;
+const loan = (type: 'mpl' | 'calamity', amount: number, months: number) =>
+  computeShortTermLoan({ type, tav: amount / L.tav_share, termMonths: months }, rules);
+const amounts = [10000, 20000, 30000, 50000, 80000, 100000, 150000];
+const ex = loan('mpl', 50000, 24);
+const exCal = loan('calamity', 50000, 24);
+const ex36 = loan('mpl', 50000, 36);
+
+const faqs = [
+  {
+    q: 'How much can I borrow from a Pag-IBIG Multi-Purpose Loan?',
+    a: `Up to ${share} of your Total Accumulated Value (TAV) — your own monthly savings, your employer's counterpart and the dividends credited to them — minus any outstanding Multi-Purpose, Calamity or HELPs loan balance. The loan is the lowest of that entitlement, the amount you apply for, and what your take-home pay can support (Pag-IBIG Fund Circular No. 469, item 5). With ${peso(50000 / L.tav_share)} of savings you can borrow ${peso(50000)}.`,
+  },
+  {
+    q: 'What is the interest rate of the Pag-IBIG salary loan?',
+    a: `${mplRate} a month on the diminishing balance, including during the ${M.grace_months}-month grace period (Circular No. 469, item 6) — about ${+(M.rate_monthly * 1200).toFixed(1)}% a year. The Calamity Loan is much cheaper at ${calRate} a year (Circular No. 470). Pag-IBIG notes that much of the interest income returns to members as dividends.`,
+  },
+  {
+    q: 'How much is the monthly payment on a ₱50,000 Pag-IBIG loan?',
+    a: `About ${peso(ex.monthlyAmortization)} a month for 24 months (${peso(ex36.monthlyAmortization)} over 36 months) as a Multi-Purpose Loan, with the grace-period interest included; about ${peso(exCal.monthlyAmortization)} a month for 24 months as a Calamity Loan. Pag-IBIG's disclosure statement gives the exact amortization when the loan is approved.`,
+  },
+  {
+    q: 'How many contributions do I need for a Pag-IBIG loan?',
+    a: `At least ${L.min_monthly_savings} monthly membership savings (or total savings equal to ${L.min_monthly_savings} months), and you must be active: ${L.active_rule_local}, or for OFWs ${L.active_rule_ofw}. Any existing MPL, Calamity Loan or HELPs must not be in default, and you need proof of income (Circular No. 469, item 4).`,
+  },
+  {
+    q: 'When do I start paying my Pag-IBIG MPL?',
+    a: `After a ${M.grace_months}-month grace period: payments start on the ${M.first_payment_month}rd month from the date of the disbursement voucher or check and are due on or before the 15th of each month, usually by salary deduction. Terms are ${L.terms_months.join(', ')} months; if you do not choose, the term is ${L.default_term_months / 12} years.`,
+  },
+  {
+    q: 'When can I renew my Pag-IBIG Multi-Purpose Loan?',
+    a: `After paying at least ${M.renewal_after_amortizations} monthly amortizations and not earlier than the ${M.renewal_not_before_month}th month after the release of the current loan; the outstanding balance is deducted from the new loan. If you pay the loan in full early, you can apply for a new one any time (Circular No. 469, item 14.3).`,
+  },
+  {
+    q: 'What is the penalty for late Pag-IBIG loan payments?',
+    a: `One-twentieth of one percent (${penalty}) of the unpaid amount for every day of delay. Missing three consecutive amortizations — or three consecutive monthly savings — puts the loan in default, and Pag-IBIG then offsets the whole balance against your savings (Circular No. 469, items 10, 12 and 13).`,
+  },
+  {
+    q: 'Who can get a Pag-IBIG Calamity Loan?',
+    a: `A member with at least ${L.min_monthly_savings} monthly savings who lives or works in an area declared under a state of calamity and applies within ${C.apply_within_days} days of the declaration. It lends up to ${share} of your savings at ${calRate} a year, payable in ${L.terms_months.join(', ')} months with a ${C.grace_months}-month grace period (payments start on the ${C.first_payment_month}th month). It covers typhoons, storm surges, tornadoes, landslides, earthquakes, tsunamis, volcanic eruptions, El Niño and La Niña, and man-made hazards (Circular No. 470).`,
+  },
+  {
+    q: 'Magkano ang pwedeng utangin sa Pag-IBIG MPL?',
+    a: `Hanggang ${share} ng kabuuang ipon mo sa Pag-IBIG Regular Savings (sariling hulog, hulog ng employer at dividends), bawas ang natitirang balanse ng MPL, Calamity Loan o HELPs. Kung ${peso(50000 / L.tav_share)} ang ipon mo, ${peso(50000)} ang pwede; ang hulog ay mga ${peso(ex.monthlyAmortization)} kada buwan sa loob ng 24 buwan sa ${mplRate} kada buwan.`,
+  },
+];
+---
+
+<ToolPageLayout
+  title="Pag-IBIG Salary Loan Calculator 2026 – MPL & Calamity Loan"
+  description={`Pag-IBIG Multi-Purpose (salary) and Calamity Loan calculator: up to ${share} of your savings, ${mplRate} a month or ${calRate} a year, 12 to 36 months (Circulars 469, 470).`}
+  path="/pagibig-salary-loan-calculator/"
+  h1="Pag-IBIG Salary Loan (MPL) & Calamity Loan Calculator"
+  faqs={faqs}
+  related={['pagibig', 'pagibigMp2', 'sssLoan', 'pagibigHousingLoan']}
+>
+  <Fragment slot="answer">
+    <p>
+      The <strong>Pag-IBIG Multi-Purpose Loan</strong> — the "Pag-IBIG salary loan" — lends up to <strong>{share} of your total
+      Regular Savings</strong> at <strong>{mplRate} a month</strong> on the diminishing balance, payable in 12, 24 or 36 months after
+      a {M.grace_months}-month grace period. You need {L.min_monthly_savings} monthly savings. A {peso(50000)} loan over 24 months is
+      about <strong>{peso(ex.monthlyAmortization)} a month</strong>. After a declared calamity, the <strong>Calamity Loan</strong> lends
+      the same {share} at <strong>{calRate} a year</strong> with a {C.grace_months}-month grace period; apply within {C.apply_within_days} days.
+    </p>
+  </Fragment>
+
+  <Fragment slot="calculator">
+    <PagibigLoanCalculator client:idle />
+  </Fragment>
+
+  <h2>Multi-Purpose Loan vs Calamity Loan</h2>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th></th><th>Multi-Purpose Loan (MPL)</th><th>Calamity Loan</th></tr></thead>
+      <tbody>
+        <tr><td>Loan amount</td><td colspan="2">Up to {share} of your Total Accumulated Value, less outstanding MPL, Calamity Loan and HELPs balances; the three loans together never exceed {share}</td></tr>
+        <tr><td>Interest</td><td>{mplRate} a month, diminishing balance</td><td>{calRate} a year</td></tr>
+        <tr><td>Term</td><td colspan="2">{L.terms_months.join(', ')} months (default {L.default_term_months})</td></tr>
+        <tr><td>Grace period / first payment</td><td>{M.grace_months} months; pay from the {M.first_payment_month}rd month</td><td>{C.grace_months} months; pay from the {C.first_payment_month}th month</td></tr>
+        <tr><td>Who qualifies</td><td>{L.min_monthly_savings} monthly savings, active member, no loan in default, proof of income</td><td>Same, plus living or working in an area under a declared state of calamity; apply within {C.apply_within_days} days</td></tr>
+        <tr><td>Renewal</td><td>After {M.renewal_after_amortizations} payments and from the {M.renewal_not_before_month}th month</td><td>Any time another calamity hits the same area</td></tr>
+        <tr><td>Late payment</td><td colspan="2">{penalty} of the unpaid amount per day</td></tr>
+        <tr><td>Rules</td><td><a href={M.circular_url} target="_blank" rel="noopener">Circular No. 469</a></td><td><a href={C.circular_url} target="_blank" rel="noopener">Circular No. 470</a></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Monthly Payment Table (Multi-Purpose Loan)</h2>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Loan amount</th><th>Savings needed ({share} rule)</th><th>12 months</th><th>24 months</th><th>36 months</th></tr></thead>
+      <tbody>
+        {amounts.map((a) => (
+          <tr>
+            <td><strong>{peso(a)}</strong></td>
+            <td>{peso(a / L.tav_share)}</td>
+            <td>{peso(loan('mpl', a, 12).monthlyAmortization)}</td>
+            <td><strong>{peso(loan('mpl', a, 24).monthlyAmortization)}</strong></td>
+            <td>{peso(loan('mpl', a, 36).monthlyAmortization)}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  <p class="text-sm text-ink-soft">
+    Estimates: equal monthly amortizations at {mplRate} a month on the diminishing balance, with interest for the
+    {' '}{M.grace_months}-month grace period added to the balance. Pag-IBIG's disclosure statement is the official figure.
+  </p>
+
+  <h2>Requirements and How to Apply</h2>
+  <ul>
+    <li><strong>Forms and documents:</strong> the Multi-Purpose (or Calamity) Loan application form, one valid ID, proof of income, and a Pag-IBIG Loyalty Card Plus or partner-bank cash card to receive the money.</li>
+    <li><strong>Online:</strong> through Virtual Pag-IBIG — upload the form and requirements with a selfie holding your ID and card, or fill in the online form if your employer is enrolled in Virtual Pag-IBIG for Employers.</li>
+    <li><strong>Over the counter:</strong> at any Pag-IBIG branch, personally or through your employer.</li>
+    <li><strong>Proof of income:</strong> employees have the employer fill in the certificate of net pay on the form or attach a recent payslip; self-employed members and OFWs submit documents such as an ITR, bank statements or an employment contract.</li>
+    <li><strong>Processing:</strong> Pag-IBIG says loans can be released in as fast as 3 days; its Calamity Loan page cites 2–3 working days.</li>
+  </ul>
+  <p>
+    Your savings balance — the basis of the loan — is shown in Virtual Pag-IBIG. Your regular savings are the mandatory
+    contributions; MP2 savings are a separate account. See the <a href="/pagibig-contribution/">Pag-IBIG Contribution
+    Calculator</a> for the monthly contribution and the <a href="/pagibig-mp2-calculator/">MP2 Calculator</a> for voluntary savings.
+  </p>
+
+  <h2>Official Sources</h2>
+  <ul>
+    <li><a href={M.page_url} target="_blank" rel="noopener">Pag-IBIG Fund — Multi-Purpose Loan</a> and <a href={C.page_url} target="_blank" rel="noopener">Calamity Loan</a> pages (read {new Date('2026-09-23T00:00:00').toLocaleDateString('en-PH', { month: 'long', day: 'numeric', year: 'numeric' })})</li>
+    <li><a href={M.circular_url} target="_blank" rel="noopener">{M.circular}</a></li>
+    <li><a href={C.circular_url} target="_blank" rel="noopener">{C.circular}</a></li>
+  </ul>
+  <p class="text-sm text-ink-soft">
+    AyTool is independent and not affiliated with Pag-IBIG Fund. Circular No. 469 replaced the earlier MPL guidelines,
+    Circular No. 448, so articles written before 2025 may describe superseded terms.
+  </p>
+</ToolPageLayout>

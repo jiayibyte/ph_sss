@@ -1,0 +1,121 @@
+---
+import ToolPageLayout from '../layouts/ToolPageLayout.astro';
+import SilCalculator from '../islands/SilCalculator';
+import laborJson from '../data/labor/2026.json';
+import type { LaborRules } from '../lib/rules/types';
+import { computeSil } from '../lib/engine/leave';
+import { peso } from '../lib/format';
+
+const labor = laborJson as unknown as LaborRules;
+const L = labor.leave;
+const ex = L.sil_example;
+const fmt = (d: string) => new Date(d + 'T00:00:00').toLocaleDateString('en-PH', { month: 'long', day: 'numeric', year: 'numeric' });
+const t = (key: string) => L.types.find((x) => x.key === key)!;
+const oneYear = computeSil({ months: 12, dailyRate: 695 }, labor);
+const sourceDetail = L.source_note.slice(L.source_note.indexOf(': ') + 2);
+
+const faqs = [
+  {
+    q: 'How many days is service incentive leave in the Philippines?',
+    a: `Five days with pay every year, for every employee who has rendered at least one year of service (Labor Code Art. 95). "One year of service" means 12 months, continuous or broken, counted from the start date, including authorized absences, unworked rest days and paid regular holidays. SIL can be used for sickness, vacation or any other purpose.`,
+  },
+  {
+    q: 'Is service incentive leave convertible to cash?',
+    a: `Yes. Unused SIL can be converted to its money value at the end of the year, and any SIL neither used nor converted must be paid when you resign or are separated. The conversion uses your daily rate on the date of conversion and may be pro-rated (DOLE Handbook 2024, Ch. 7). Five unused days at ${peso(695)} a day are worth ${peso(oneYear.cashValue)}.`,
+  },
+  {
+    q: 'How is SIL computed when I resign?',
+    a: `Count the SIL earned and not yet used or converted, including a pro-rated share of the current year, and multiply by your daily rate at separation. DOLE's example: an employee hired on ${fmt(ex.hired)} who resigned on ${fmt(ex.separated)} at ${peso(ex.daily_rate)} a day earned 5 days for 2023 plus 2/12 × 5 = 0.833 days for January–February 2024, a total of ${ex.days} days worth ${peso(ex.amount)}. It is part of your final pay.`,
+  },
+  {
+    q: 'Who is not entitled to service incentive leave?',
+    a: `${L.sil_exclusions.join('; ')} (DOLE Handbook 2024, Ch. 7).`,
+  },
+  {
+    q: 'Are vacation leave and sick leave required by law?',
+    a: 'The only general paid leave in the Labor Code is the five-day SIL, which may be used as sick or vacation leave. Separate vacation and sick leave credits come from company policy, the employment contract or a collective bargaining agreement; an employer that already gives at least five days of paid vacation leave does not have to add SIL on top.',
+  },
+  {
+    q: 'How many days is paternity leave in 2026?',
+    a: `${t('paternity').duration} (${t('paternity').law}). Who qualifies: ${t('paternity').conditions}. Unused paternity leave is not converted to cash. A mother may also transfer up to 7 days of her maternity leave to the child's father under RA 11210, over and above his paternity leave.`,
+  },
+  {
+    q: 'How many days is solo parent leave?',
+    a: `${t('solo_parent').duration} under ${t('solo_parent').law}, the Expanded Solo Parents Welfare Act. Who qualifies: ${t('solo_parent').conditions}. It is on top of other leaves, not cumulative, and not convertible to cash unless the employer agreed to it.`,
+  },
+  {
+    q: 'What is the special leave for women under the Magna Carta of Women?',
+    a: `${t('special_women').duration} after surgery caused by a gynecological disorder, such as dilatation and curettage, hysterectomy, ovariectomy or mastectomy (${t('special_women').law}). Who qualifies: ${t('special_women').conditions}. The pay is based on gross monthly compensation — basic pay plus mandatory allowances.`,
+  },
+  {
+    q: 'Ilang araw ang service incentive leave at paano ito kinukuwenta?',
+    a: `Limang araw kada taon na may bayad, pagkatapos ng isang taon ng serbisyo (Labor Code Art. 95). Kung hindi nagamit, pwedeng i-convert sa pera sa katapusan ng taon o kapag nag-resign: bilang ng hindi nagamit na araw × daily rate mo sa araw ng conversion. Halimbawa: 5 araw × ${peso(695)} = ${peso(oneYear.cashValue)}.`,
+  },
+];
+---
+
+<ToolPageLayout
+  title="Service Incentive Leave Calculator 2026 – SIL Pay & Leave Laws"
+  description={`Convert unused service incentive leave to cash (${L.sil_days_per_year} days a year, Labor Code Art. 95), plus the maternity, paternity, solo parent, VAWC and special leave rules.`}
+  path="/service-incentive-leave-calculator/"
+  h1="Service Incentive Leave (SIL) Calculator and Leave Benefits"
+  faqs={faqs}
+  related={['finalPay', 'thirteenth', 'dailyRate', 'sssMaternity']}
+>
+  <Fragment slot="answer">
+    <p>
+      Every employee with at least one year of service gets <strong>{L.sil_days_per_year} days of service incentive leave with
+      pay a year</strong> (Labor Code Art. 95). Unused SIL is converted to cash at year-end or when you leave, at your daily rate
+      on that date, pro rata. In DOLE's example, an employee hired {fmt(ex.hired)} who resigned {fmt(ex.separated)} at
+      {' '}{peso(ex.daily_rate)} a day is owed {ex.days} days, or <strong>{peso(ex.amount)}</strong>. Other paid leaves: 105-day
+      maternity, 7-day paternity, 7-day solo parent, 10-day VAWC and up to 2 months' special leave for women.
+    </p>
+  </Fragment>
+
+  <Fragment slot="calculator">
+    <SilCalculator client:idle />
+  </Fragment>
+
+  <h2>Statutory Leave Benefits in the Philippines (2026)</h2>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Leave</th><th>Law</th><th>Paid days</th><th>Who qualifies</th><th>Cash if unused?</th></tr></thead>
+      <tbody>
+        {L.types.map((x) => (
+          <tr>
+            <td><strong>{x.name}</strong></td>
+            <td>{x.law}</td>
+            <td>{x.duration}</td>
+            <td>{x.conditions}</td>
+            <td>{x.cash}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  <p class="text-sm text-ink-soft">
+    These are minimums for private-sector employees. A company policy, contract or CBA may give more; where an existing
+    benefit is greater, the greater benefit applies. Maternity pay is computed on the
+    {' '}<a href="/sss-maternity-benefit-calculator/">SSS Maternity Benefit Calculator</a>.
+  </p>
+
+  <h2>How Service Incentive Leave Is Converted to Cash</h2>
+  <ol>
+    <li><strong>Check entitlement:</strong> at least {L.sil_min_service_months} months of service, continuous or broken, counting authorized absences, unworked rest days and paid regular holidays.</li>
+    <li><strong>Count unused days:</strong> {L.sil_days_per_year} days per year of service, pro-rated for part of a year (months ÷ 12 × {L.sil_days_per_year}), minus days used or already converted.</li>
+    <li><strong>Multiply by the daily rate</strong> on the date of conversion. For monthly-paid employees, the daily rate is monthly salary × 12 ÷ the days paid per year — see the <a href="/daily-rate-calculator/">Daily Rate Calculator</a>.</li>
+    <li><strong>On resignation or separation,</strong> the value of all unused SIL is paid with your <a href="/final-pay-calculator/">final pay</a>.</li>
+  </ol>
+
+  <h2>Who Is Not Entitled to SIL</h2>
+  <ul>
+    {L.sil_exclusions.map((e) => <li>{e}</li>)}
+  </ul>
+
+  <h2>Official Source</h2>
+  <p>
+    <a href={L.source_url} target="_blank" rel="noopener">DOLE — Handbook on Workers' Statutory Monetary Benefits, 2024 Edition</a>:
+    {' '}{sourceDetail} AyTool is independent and
+    not affiliated with DOLE.
+  </p>
+</ToolPageLayout>

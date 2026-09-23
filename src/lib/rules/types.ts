@@ -254,6 +254,20 @@ export interface PagibigRules {
     source_url: string;
     circular_491_url: string;
   };
+  /** Multi-Purpose (salary) Loan and Calamity Loan — Circulars 469 and 470. */
+  short_term_loans: {
+    /** Loan entitlement as a share of the Total Accumulated Value. */
+    tav_share: number;
+    min_monthly_savings: number;
+    active_rule_local: string;
+    active_rule_ofw: string;
+    penalty_per_day: number;
+    terms_months: number[];
+    default_term_months: number;
+    mpl: { rate_monthly: number; grace_months: number; first_payment_month: number; renewal_after_amortizations: number; renewal_not_before_month: number; circular: string; circular_url: string; page_url: string };
+    calamity: { rate_annual: number; grace_months: number; first_payment_month: number; apply_within_days: number; circular: string; circular_url: string; page_url: string };
+    source_note: string;
+  };
 }
 
 /* --------------------------------- Labor --------------------------------- */
@@ -302,6 +316,16 @@ export interface LaborRules {
     source_note: string;
     source_url: string;
   };
+  /** Statutory leave benefits — DOLE Handbook 2024, Chs. 7–12. */
+  leave: {
+    sil_days_per_year: number;
+    sil_min_service_months: number;
+    sil_example: { hired: string; separated: string; daily_rate: number; days: number; amount: number };
+    sil_exclusions: string[];
+    types: Array<{ key: string; name: string; law: string; duration: string; conditions: string; cash: string }>;
+    source_note: string;
+    source_url: string;
+  };
 }
 
 /* -------------------------------- Holidays ------------------------------- */
@@ -342,10 +366,66 @@ export interface TaxBracket {
   rate: number;
 }
 
+export type WithholdingPeriod = 'daily' | 'weekly' | 'semi_monthly' | 'monthly';
+
 export interface TaxRules {
   meta: RuleMeta;
   period: 'monthly';
+  /** Monthly withholding table (Annex E). */
   brackets: TaxBracket[];
+  withholding_note: string;
+  /** The other Annex E tables; monthly is `brackets`. */
+  withholding_tables: Record<Exclude<WithholdingPeriod, 'monthly'>, TaxBracket[]>;
+  /** Annual graduated rates, NIRC Sec. 24(A)(2)(a), 2023 onwards. */
+  annual_brackets: TaxBracket[];
+  annual_source: { label: string; url: string };
+  exclusions: { thirteenth_month_and_other_benefits_cap: number; thirteenth_month_source: string; minimum_wage_earner: string };
+  self_employed: {
+    eight_percent_rate: number;
+    /** Deducted from gross under the 8% option — purely self-employed only, not mixed income earners. */
+    eight_percent_exempt_portion: number;
+    vat_threshold: number;
+    osd_rate: number;
+    percentage_tax_rate: number;
+    sources: Array<{ label: string; url: string }>;
+  };
+  /** Senior citizen (RA 9994) and PWD (RA 10754) discounts, computed per BIR RR 7-2010. */
+  privileged_discounts: {
+    vat_rate: number;
+    senior_rate: number;
+    pwd_rate: number;
+    senior_min_age: number;
+    utility_discount: { rate: number; max_kwh: number; max_cubic_meters: number };
+    rules: string[];
+    sources: Array<{ label: string; url: string }>;
+  };
+}
+
+/* ------------------------- Government salary grades ------------------------ */
+
+export interface SslTranche {
+  year: number;
+  /** ISO date the tranche takes effect (January 1). */
+  effective: string;
+  tranche: string;
+  /** DBM circular that implemented it (null until issued). */
+  issuance: string | null;
+  issuance_url: string | null;
+  note?: string;
+  /** Salary grade "1".."33" → monthly salary for steps 1..8 (SG 33 has only steps 1–2). */
+  grades: Record<string, number[]>;
+}
+
+export interface SslRules {
+  meta: RuleMeta;
+  order: string;
+  order_url: string;
+  tranches: SslTranche[];
+  contributions: { gsis_personal: number; gsis_government: number; source: string; source_url: string; caveat: string };
+  allowances: Array<{ key: string; name: string; amount: string; rule: string; source_url: string }>;
+  positions: Array<{ title: string; sg: number; note?: string; source_url: string }>;
+  rules: { new_hires: string; incumbents: string; casual: string; lgu: string; excluded: string };
+  source_note: string;
 }
 
 /* ----------------------------------- PRC ---------------------------------- */

@@ -134,6 +134,46 @@ export const TOOL_PAGES: Record<string, PageRef> = {
     priority: 'P1',
     ogKicker: 'Free · Independent · Pag-IBIG rates until Dec 31, 2026',
   },
+  incomeTax: {
+    href: '/income-tax-calculator/',
+    label: 'Income Tax Calculator (BIR Tax Table 2026)',
+    short: 'Income Tax',
+    blurb: 'Monthly withholding and annual income tax under the TRAIN rates, the BIR monthly to daily tables, the ₱90,000 bonus exemption and the year-end adjustment.',
+    priority: 'P0',
+    ogKicker: 'Free · Independent · BIR Annex E / TRAIN rates',
+  },
+  freelancerTax: {
+    href: '/freelancer-tax-calculator/',
+    label: 'Freelancer Tax Calculator (8% vs Graduated)',
+    short: 'Freelancer Tax',
+    blurb: 'Compare the 8% income tax option with graduated rates plus 3% percentage tax — for freelancers, professionals and employees with a side business.',
+    priority: 'P1',
+    ogKicker: 'Free · Independent · RR 8-2018 / TRAIN',
+  },
+  pagibigLoan: {
+    href: '/pagibig-salary-loan-calculator/',
+    label: 'Pag-IBIG Salary Loan Calculator (MPL & Calamity)',
+    short: 'Pag-IBIG Salary Loan',
+    blurb: 'Loanable amount (90% of your savings), monthly amortization and total interest of a Pag-IBIG Multi-Purpose or Calamity Loan, 12 to 36 months.',
+    priority: 'P1',
+    ogKicker: 'Free · Independent · Pag-IBIG Circulars 469 & 470',
+  },
+  silLeave: {
+    href: '/service-incentive-leave-calculator/',
+    label: 'Service Incentive Leave (SIL) Calculator',
+    short: 'SIL & Leave Benefits',
+    blurb: 'Cash value of unused service incentive leave (5 days a year) on resignation or at year-end, plus maternity, paternity, solo parent, VAWC and special leave rules.',
+    priority: 'P1',
+    ogKicker: 'Free · Independent · Labor Code Art. 95 / DOLE Handbook 2024',
+  },
+  salaryGrade: {
+    href: '/salary-grade-table/',
+    label: 'Salary Grade Table (Government, EO 64)',
+    short: 'Salary Grade Table',
+    blurb: 'Government salary grades 1–33, Steps 1–8, under EO No. 64 — this year and next year — with net pay after GSIS, PhilHealth, Pag-IBIG and tax, PERA and bonuses.',
+    priority: 'P0',
+    ogKicker: 'Free · Independent · EO No. 64 / DBM NBC 601',
+  },
   takeHome: {
     href: '/take-home-pay-calculator/',
     label: 'Take-Home Pay Calculator',
@@ -183,6 +223,22 @@ export const TOOL_PAGES: Record<string, PageRef> = {
     short: 'OEC Exemption',
     blurb: 'Check in five questions whether you qualify for an OEC exemption, and how to get it through official DMW channels.',
     priority: 'P2',
+  },
+  seniorDiscount: {
+    href: '/senior-citizen-discount-calculator/',
+    label: 'Senior Citizen & PWD Discount Calculator',
+    short: 'Senior / PWD Discount',
+    blurb: 'The 20% discount and VAT exemption the way BIR computes it — VAT off first, then 20% — for senior citizens (RA 9994) and PWDs (RA 10754).',
+    priority: 'P1',
+    ogKicker: 'Free · Independent · RA 9994 / RA 10754 / RR 7-2010',
+  },
+  firstTimeJobseeker: {
+    href: '/first-time-jobseeker/',
+    label: 'First Time Jobseeker Certificate (RA 11261)',
+    short: 'First Time Jobseeker',
+    blurb: 'Free NBI and police clearance, PSA birth certificate, barangay clearance, TIN and more for first-time jobseekers — who qualifies and how to get the barangay certificate.',
+    priority: 'P1',
+    ogKicker: 'Free · Independent · RA 11261 and its 2023 guidelines',
   },
   sssNumber: {
     href: '/how-to-get-sss-number/',
@@ -386,17 +442,17 @@ export type PageCategory = 'contributions' | 'pay' | 'benefits' | 'guides' | 'ex
 
 export const CATEGORY_LABELS: Record<PageCategory, string> = {
   contributions: 'Contribution Calculators',
-  pay: 'Pay, Wage & Separation Calculators',
+  pay: 'Pay, Tax, Wage & Separation Calculators',
   benefits: 'SSS & Pag-IBIG Benefits, Loans & Savings',
-  guides: 'Government IDs, Holidays & OFW Guides',
+  guides: 'Government IDs, Discounts, Holidays & OFW Guides',
   exams: 'PRC Board Exam Schedules & Results',
 };
 
 export const CATEGORY_KEYS: Record<PageCategory, Array<keyof typeof TOOL_PAGES>> = {
   contributions: ['sssTable', 'sssCalculator', 'philhealth', 'pagibig'],
-  pay: ['takeHome', 'minimumWage', 'dailyRate', 'thirteenth', 'overtime', 'holidayPay', 'nightDiff', 'finalPay', 'separationPay', 'retirementPay'],
-  benefits: ['sssPension', 'sssMaternity', 'sssSickness', 'sssUnemployment', 'sssLoan', 'pagibigMp2', 'pagibigHousingLoan'],
-  guides: ['sssNumber', 'tinNumber', 'pagibigMid', 'philhealthPin', 'holidays', 'oec'],
+  pay: ['takeHome', 'incomeTax', 'freelancerTax', 'salaryGrade', 'minimumWage', 'dailyRate', 'thirteenth', 'overtime', 'holidayPay', 'nightDiff', 'silLeave', 'finalPay', 'separationPay', 'retirementPay'],
+  benefits: ['sssPension', 'sssMaternity', 'sssSickness', 'sssUnemployment', 'sssLoan', 'pagibigLoan', 'pagibigMp2', 'pagibigHousingLoan'],
+  guides: ['firstTimeJobseeker', 'sssNumber', 'tinNumber', 'pagibigMid', 'philhealthPin', 'seniorDiscount', 'holidays', 'oec'],
   exams: [
     'prc', 'prcResults', 'nursingSchedule', 'letSchedule', 'criminologySchedule', 'cpaSchedule', 'civilEngSchedule',
     'physicianSchedule', 'medtechSchedule', 'pharmacySchedule', 'midwiferySchedule', 'psychometricianSchedule',

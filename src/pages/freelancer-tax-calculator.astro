@@ -1,0 +1,146 @@
+---
+import ToolPageLayout from '../layouts/ToolPageLayout.astro';
+import FreelancerTaxCalculator from '../islands/FreelancerTaxCalculator';
+import taxJson from '../data/tax/2026.json';
+import type { TaxRules } from '../lib/rules/types';
+import { selfEmployedTax } from '../lib/engine/tax';
+import { peso } from '../lib/format';
+
+const tax = taxJson as unknown as TaxRules;
+const S = tax.self_employed;
+const pct = (r: number) => `${Math.round(r * 100)}%`;
+const opt = (gross: number, comp = 0, expenses: number | null = null) => {
+  const r = selfEmployedTax({ grossReceipts: gross, expenses, compensationTaxable: comp }, tax);
+  const o = (k: string) => r.options.find((x) => x.key === k)!;
+  return { r, eight: o('eight'), osd: o('osd'), itemized: o('itemized') };
+};
+const grosses = [300000, 500000, 750000, 1000000, 1500000, 2000000, 2500000, 3000000];
+const table = grosses.map((g) => ({ g, ...opt(g) }));
+const e1m = opt(1000000);
+const e500 = opt(500000);
+const mixed = opt(600000, 400000);
+const sources = S.sources;
+
+const faqs = [
+  {
+    q: 'What is the 8% income tax option?',
+    a: `A flat ${pct(S.eight_percent_rate)} tax on your gross sales or receipts (and other non-operating income) above ${peso(S.eight_percent_exempt_portion)}, paid instead of both the graduated income tax rates and the ${pct(S.percentage_tax_rate)} percentage tax (NIRC Sec. 24(A)(2)(b) as amended by TRAIN). There are no deductions: expenses do not lower the tax. It is open to self-employed individuals and professionals whose gross sales or receipts for the year do not exceed the ${peso(S.vat_threshold)} VAT threshold.`,
+  },
+  {
+    q: 'Should I choose 8% or the graduated rates?',
+    a: `Compare the totals. With few expenses, 8% usually wins: on ${peso(1000000)} of receipts it is ${peso(e1m.eight.total)}, against ${peso(e1m.osd.incomeTax)} of income tax plus ${peso(e1m.osd.percentageTax)} of percentage tax (${peso(e1m.osd.total)}) on the graduated rates with the ${pct(S.osd_rate)} optional standard deduction. The graduated rates can win only when your real, deductible expenses are large — about half or more of your receipts at typical freelance incomes — because itemized deductions cut the taxable income while 8% ignores expenses. The calculator above compares all three for your numbers.`,
+  },
+  {
+    q: 'Is the first ₱250,000 tax-free for freelancers?',
+    a: `Yes under the 8% option if you are purely self-employed: the ${pct(S.eight_percent_rate)} applies only to the excess over ${peso(S.eight_percent_exempt_portion)}, so ${peso(250000)} of receipts means ₱0 income tax. On the graduated rates the first ${peso(250000)} of taxable (net) income is taxed at 0%, but the ${pct(S.percentage_tax_rate)} percentage tax is still due on gross receipts. Mixed income earners get no ${peso(250000)} deduction under 8%, because their salary already used the 0% bracket (BIR, RR No. 8-2018).`,
+  },
+  {
+    q: 'How and when do I choose the 8% rate?',
+    a: 'At the start of each year. New registrants choose it on their BIR Form 1901 registration or their first quarterly return; existing taxpayers file BIR Form 1905 at the beginning of the year to drop the quarterly percentage tax, and signify the 8% option in the first-quarter income tax return (1701Q) or percentage tax return (2551Q). If you do not signify it, BIR treats you as on graduated rates for the whole year, and the choice cannot be changed once made (RR No. 8-2018; RMO No. 23-2018). It has to be signified again every taxable year.',
+  },
+  {
+    q: 'I have a job and a side hustle. How am I taxed?',
+    a: `Your salary is always taxed at the graduated rates. Your business or freelance income can be taxed at 8% of gross (no ${peso(250000)} deduction) or added to your salary and taxed at the graduated rates, plus the ${pct(S.percentage_tax_rate)} percentage tax. Example: ${peso(400000)} of taxable salary (${peso(mixed.r.compensationTaxAlone)} of tax) and ${peso(600000)} of freelance receipts: 8% gives ${peso(mixed.eight.total)} in total; graduated rates with the ${pct(S.osd_rate)} OSD give ${peso(mixed.osd.incomeTax)} plus ${peso(mixed.osd.percentageTax)} percentage tax.`,
+  },
+  {
+    q: 'Do I pay tax on income from Upwork, Fiverr or foreign clients?',
+    a: 'Yes. A Filipino citizen living in the Philippines is taxed on income from all sources, inside and outside the country (NIRC Sec. 23(A)), so payments from foreign clients and platforms count as gross receipts, the same as local clients. A Philippine client may withhold tax on your fees; that withholding is credited against the income tax on your return.',
+  },
+  {
+    q: 'What happens if my income goes over ₱3 million?',
+    a: `Above the ${peso(S.vat_threshold)} VAT threshold the 8% option is no longer available: you are taxed at the graduated rates for the year, become liable to VAT from then on, and attach audited financial statements to the annual return (RMO No. 23-2018). The percentage tax does not apply to VAT-registered persons.`,
+  },
+  {
+    q: 'What is the optional standard deduction (OSD)?',
+    a: `Instead of listing actual expenses, an individual on graduated rates may deduct a flat ${pct(S.osd_rate)} of gross sales or receipts (NIRC Sec. 34(L)); no receipts for expenses are needed and financial statements need not be attached. The election is made in the first-quarter return and applies for the whole year.`,
+  },
+  {
+    q: 'Magkano ang tax ng freelancer na kumikita ng ₱500,000 kada taon?',
+    a: `Sa 8% option: ${peso(e500.eight.total)} — 8% ng sobra sa ${peso(250000)}, at wala nang percentage tax. Sa graduated rates na may ${pct(S.osd_rate)} OSD: ${peso(e500.osd.incomeTax)} na income tax at ${peso(e500.osd.percentageTax)} na ${pct(S.percentage_tax_rate)} percentage tax, kabuuang ${peso(e500.osd.total)}. Piliin ang 8% sa unang quarterly return ng taon.`,
+  },
+];
+---
+
+<ToolPageLayout
+  title="Freelancer Tax Calculator Philippines – 8% vs Graduated"
+  description={`Compare the ${pct(S.eight_percent_rate)} income tax option with graduated rates plus ${pct(S.percentage_tax_rate)} percentage tax for freelancers, professionals and mixed income earners (2026 rules).`}
+  path="/freelancer-tax-calculator/"
+  h1="Freelancer & Self-Employed Tax Calculator (8% vs Graduated)"
+  faqs={faqs}
+  related={['incomeTax', 'tinNumber', 'sssCalculator', 'philhealth']}
+>
+  <Fragment slot="answer">
+    <p>
+      Freelancers, professionals and sole proprietors with gross receipts up to <strong>{peso(S.vat_threshold)}</strong> a year
+      choose between a flat <strong>{pct(S.eight_percent_rate)} of gross receipts above {peso(S.eight_percent_exempt_portion)}</strong>
+      — no percentage tax, no deductions — and the <strong>graduated rates (0–35%)</strong> on net income plus a
+      {' '}{pct(S.percentage_tax_rate)} percentage tax on gross. On {peso(1000000)} of receipts, 8% comes to
+      {' '}<strong>{peso(e1m.eight.total)}</strong>; the graduated rates with the {pct(S.osd_rate)} optional standard deduction come
+      to {peso(e1m.osd.total)}. The 8% option has to be chosen in the first-quarter return and cannot be changed for the year.
+    </p>
+  </Fragment>
+
+  <Fragment slot="calculator">
+    <FreelancerTaxCalculator client:idle />
+  </Fragment>
+
+  <h2>The Three Ways a Freelancer Can Be Taxed</h2>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Option</th><th>Income tax</th><th>Percentage tax</th><th>Records</th></tr></thead>
+      <tbody>
+        <tr><td><strong>{pct(S.eight_percent_rate)} on gross</strong> (≤ {peso(S.vat_threshold)})</td><td>{pct(S.eight_percent_rate)} of gross receipts above {peso(S.eight_percent_exempt_portion)} (no deduction for mixed income earners)</td><td>None — the 8% replaces it</td><td>Books and invoices; no financial statements with the annual return</td></tr>
+        <tr><td><strong>Graduated + OSD</strong></td><td>0–35% on {100 - Math.round(S.osd_rate * 100)}% of gross (a flat {pct(S.osd_rate)} deduction)</td><td>{pct(S.percentage_tax_rate)} of gross, quarterly (non-VAT)</td><td>No expense receipts needed for the deduction</td></tr>
+        <tr><td><strong>Graduated + itemized</strong></td><td>0–35% on gross minus actual deductible expenses</td><td>{pct(S.percentage_tax_rate)} of gross, quarterly (non-VAT)</td><td>Receipts for every expense; financial statements</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>8% vs Graduated at Common Income Levels (Purely Self-Employed)</h2>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Gross receipts for the year</th><th>8% option</th><th>Graduated + 40% OSD: income tax</th><th>+ 3% percentage tax</th><th>Graduated total</th></tr></thead>
+      <tbody>
+        {table.map((t) => (
+          <tr>
+            <td><strong>{peso(t.g)}</strong></td>
+            <td><strong>{peso(t.eight.total)}</strong></td>
+            <td>{peso(t.osd.incomeTax)}</td>
+            <td>{peso(t.osd.percentageTax)}</td>
+            <td>{peso(t.osd.total)}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  <p class="text-sm text-ink-soft">
+    With the optional standard deduction the 8% option is lower at every level up to {peso(S.vat_threshold)}. Itemized
+    deductions only beat it when real, receipted expenses are a large share of receipts.
+  </p>
+
+  <h2>Who Can Choose 8%</h2>
+  <ul>
+    <li>Individuals earning from self-employment, a business or a profession — including mixed income earners who also have a salary.</li>
+    <li>Gross sales or receipts and other non-operating income that do not exceed {peso(S.vat_threshold)} for the year.</li>
+    <li>Not VAT-registered, and not subject to percentage taxes other than the {pct(S.percentage_tax_rate)} tax of Sec. 116; partners of a general professional partnership cannot use it on their share of the partnership's income.</li>
+    <li>The option is signified at registration or in the first-quarter return, every taxable year; otherwise the graduated rates apply.</li>
+  </ul>
+
+  <h2>Filing: Quarterly and Annual</h2>
+  <p>
+    Self-employed individuals file quarterly income tax returns (BIR Form 1701Q) and an annual return. On the 8% option you do
+    not file the quarterly percentage tax return; on the graduated rates, non-VAT taxpayers pay the {pct(S.percentage_tax_rate)}
+    percentage tax quarterly on BIR Form 2551Q. Register first: self-employed individuals register with BIR Form 1901 through
+    ORUS — see <a href="/how-to-get-tin-number/">How to Get a TIN</a>.
+  </p>
+
+  <h2>Official Sources</h2>
+  <ul>
+    {sources.map((s) => <li><a href={s.url} target="_blank" rel="noopener">{s.label}</a></li>)}
+    <li><a href="https://lawphil.net/statutes/repacts/ra1997/ra_8424_1997.html" target="_blank" rel="noopener">NIRC of 1997 (RA 8424)</a> — Sec. 23(A), residents taxed on income from all sources</li>
+  </ul>
+  <p class="text-sm text-ink-soft">
+    AyTool is independent and not affiliated with BIR. The figures are estimates for planning; VAT, final taxes on passive income
+    and penalties are not computed.
+  </p>
+</ToolPageLayout>

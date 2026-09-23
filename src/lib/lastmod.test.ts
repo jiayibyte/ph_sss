@@ -32,6 +32,7 @@ describe('lastmod', () => {
       '/how-to-get-tin-number/',
       '/how-to-get-pagibig-mid-number/',
       '/how-to-get-philhealth-number/',
+      '/first-time-jobseeker/',
     ]);
     const expected = ALL_TOOLS.map((t) => t.href).filter((h) => !proseOnly.has(h));
     for (const href of expected) expect(Object.keys(PAGE_DATA)).toContain(href);

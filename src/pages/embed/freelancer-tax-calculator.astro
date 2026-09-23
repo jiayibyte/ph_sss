@@ -1,0 +1,9 @@
+---
+import EmbedLayout from '../../layouts/EmbedLayout.astro';
+import FreelancerTaxCalculator from '../../islands/FreelancerTaxCalculator';
+import { TOOL_PAGES } from '../../lib/pages';
+---
+
+<EmbedLayout page={TOOL_PAGES.freelancerTax!}>
+  <FreelancerTaxCalculator client:load />
+</EmbedLayout>

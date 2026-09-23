@@ -141,6 +141,8 @@ export function ResultCard(props: {
   copyText: string;
   onReset: () => void;
   children?: ComponentChildren;
+  /** Replaces the "Effective from" date when the rule's start is not a single known date. */
+  effectiveText?: string;
 }) {
   const [copied, setCopied] = useState(false);
   const copy = async () => {
@@ -205,7 +207,7 @@ export function ResultCard(props: {
           <strong>Schedule used:</strong> {props.meta.rule_version}
         </p>
         <p>
-          <strong>Effective from:</strong> {fmt(props.meta.effective_from)} ·{' '}
+          <strong>{props.effectiveText ? 'In effect:' : 'Effective from:'}</strong> {props.effectiveText ?? fmt(props.meta.effective_from)} ·{' '}
           <strong>Last verified:</strong> {fmt(props.meta.last_verified)}
         </p>
         <p>

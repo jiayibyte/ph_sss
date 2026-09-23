@@ -1,0 +1,161 @@
+---
+/**
+ * RA 11261 guide. Facts from the law (lawphil), its IRR (JMC No. 001, s. 2019),
+ * the FTJAA Joint Operational Guidelines of May 12, 2023 and the DOLE-BLE forms
+ * revised June 16, 2021; fees from the NBI, PNP and PSA sites (read 2026-09-23).
+ */
+import ToolPageLayout from '../layouts/ToolPageLayout.astro';
+
+const LAW = 'https://lawphil.net/statutes/repacts/ra2019/ra_11261_2019.html';
+const IRR = 'https://ble.dole.gov.ph/wp-content/uploads/2022/06/SIGNED-JMC-on-the-First-Time-Jobseekers-Law-and-IRR.pdf';
+const JOG = 'https://ble.dole.gov.ph/wp-content/uploads/2024/05/SIGNED-FTJAA-JOG.pdf';
+const FORM1 = 'https://ble.dole.gov.ph/wp-content/uploads/2022/06/FORM1-Barangay-Certification_asof16June2021.pdf';
+const FORM2 = 'https://ble.dole.gov.ph/wp-content/uploads/2022/06/FORM2-Oath-of-Undertaking-asof16June2021.pdf';
+const ADVISORY = 'https://ble.dole.gov.ph/wp-content/uploads/2022/06/FTJAA-DOLE-Labor-Advisory-No.-7-re-Encouraging-Private-Establishments-to-Issue-Photocopies.pdf';
+const NBI_FTJ = 'https://nbi.gov.ph/citizens-charter/nbi-clearance-first-time-job-seekers/';
+const PNP = 'https://pnpclearance.ph/';
+const PSA = 'https://www.psaserbilis.com.ph/';
+
+const documents = [
+  { doc: 'Barangay Certification (first time jobseeker)', from: 'Your barangay', normal: 'Free', note: 'The proof you are eligible; valid one year; no notarization.' },
+  { doc: 'Barangay clearance', from: 'Your barangay', normal: 'Set by each barangay', note: 'Free with the certification.' },
+  { doc: 'NBI clearance', from: 'NBI', normal: '₱130 + ₱30 e-payment fee = ₱160', note: 'Register on the first-time-jobseeker portal and use the FTJ lane; bring the original certification, the Oath and a PhilSys ID or two valid IDs.' },
+  { doc: 'Police clearance', from: 'PNP (local station or National Police Clearance)', normal: '₱150 + a convenience fee that varies by payment channel', note: 'Bring the certification and one valid ID; the clearance is valid six months.' },
+  { doc: 'Birth or marriage certificate', from: 'PSA', normal: '₱155 at a PSA outlet; ₱330 delivered through PSA Serbilis', note: 'One free copy. PSA Serbilis has no waiver option, so claim it at a PSA outlet.' },
+  { doc: 'Medical certificate', from: 'Public (government) hospitals', normal: 'Varies', note: 'The certificate only; laboratory tests and procedures are paid.' },
+  { doc: 'Transcript, diploma, certificate of graduation; report cards and permanent records', from: 'State and local universities and colleges; DepEd and other public schools', normal: 'Varies', note: 'Private schools are not covered by the law.' },
+  { doc: 'TIN', from: 'BIR', normal: '—', note: 'Listed in the law; see How to Get a TIN for the steps.' },
+  { doc: 'UMID card', from: 'SSS or GSIS', normal: 'Varies', note: 'In the law and the 2023 guidelines (the 2019 IRR list had left it out).' },
+  { doc: 'Other government documents employers require', from: 'CSC, PhilHealth, the mayor’s office, MARINA, TESDA, DMW/POEA', normal: 'Varies', note: 'CSC Certificate of Eligibility, PhilHealth ID, Mayor’s Clearance for employment, MARINA basic-training and ship-security certificates, TESDA certificates (if you took the assessment), OEC.' },
+];
+
+const faqs = [
+  {
+    q: 'Who is a first time jobseeker under RA 11261?',
+    a: 'A Filipino citizen who is actively looking for a job, in the Philippines or abroad, for the first time, as certified by the barangay (IRR Sec. 2(d)). That covers new college, tech-voc and senior high graduates, early school leavers and out-of-school youth, people not in work or school, students on leave, and students who want to work while enrolled. Past work as a business owner or independent contractor, or in government programs such as GIP, SPES or TUPAD, does not count as employment. JobStart beneficiaries are not covered.',
+  },
+  {
+    q: 'What documents are free for first time jobseekers?',
+    a: 'Barangay clearance, police clearance, NBI clearance, a medical certificate from a public hospital (not the lab tests), PSA birth and marriage certificates, school records from state, local and other public schools, TIN, UMID, and other government documents employers require, such as a CSC Certificate of Eligibility, PhilHealth ID or Mayor\'s Clearance (RA 11261 Sec. 4; IRR Sec. 5; 2023 Joint Operational Guidelines). You get one free copy of each.',
+  },
+  {
+    q: 'How do I get a first time jobseeker certificate?',
+    a: 'Go to the barangay hall where you have lived for at least six months, sign the Oath of Undertaking before the Punong Barangay or an authorized barangay officer, and receive the Barangay Certification — free, on the barangay\'s letterhead with its dry seal, valid for one year. Neither form needs to be notarized. If you are 15 to 17, a parent or guardian signs the consent part of the Oath.',
+  },
+  {
+    q: 'How long is the first time jobseeker certificate valid?',
+    a: 'One year from the date the barangay issues it (IRR Sec. 4; 2023 Joint Operational Guidelines Sec. III). The benefit can be used only once: one free copy of each covered document, all within that year. Extra copies are charged.',
+  },
+  {
+    q: 'Is there an age limit?',
+    a: 'Neither the law nor its rules set a minimum or maximum age. Applicants aged 15 to under 18 need a parent\'s or guardian\'s written consent on the Oath of Undertaking, and can be employed only under DOLE\'s rules for working minors.',
+  },
+  {
+    q: 'Is the NBI clearance free for first time jobseekers?',
+    a: 'Yes. NBI\'s Citizen\'s Charter lists no fee for first time jobseekers: register through the First Time Jobseekers button on clearance.nbi.gov.ph, go to the jobseeker lane at an NBI branch, and bring the original barangay certification, the Oath of Undertaking and a PhilSys ID or two valid government IDs. A regular NBI clearance costs ₱130 plus a ₱30 e-payment fee.',
+  },
+  {
+    q: 'Which fees are not waived?',
+    a: 'The PRC licensure exam application, the DFA passport and document authentication or apostille, the CSC Career Service Examination, and the LTO driver\'s license (RA 11261 Sec. 8), plus laboratory tests for a medical certificate and any second copy of a document. Documents from private schools and private hospitals are outside the law, which binds only government offices.',
+  },
+  {
+    q: 'What can I do if a government office still charges me?',
+    a: 'File a complaint with the head of that office, who must act within three working days; if it stays unresolved, it goes to the Inter-Agency Monitoring Committee chaired by the DOLE Secretary, which can recommend an administrative case (IRR Sec. 14; RA 11261 Secs. 11–12). The law sets no fine or jail term for officials; refusing to comply is handled as an administrative offense. Falsifying a certificate, on the other hand, is punishable under the Revised Penal Code.',
+  },
+  {
+    q: 'Do employers have to accept photocopies?',
+    a: 'DOLE Labor Advisory No. 07, s. 2020 encourages private employers to accept certified true copies from the issuing agency while you apply and to ask for originals only after a job offer — useful because the free benefit covers one copy of each document.',
+  },
+  {
+    q: 'Paano makakuha ng first time jobseeker certificate?',
+    a: 'Pumunta sa barangay kung saan ka nakatira nang hindi bababa sa anim na buwan, pumirma sa Oath of Undertaking, at kunin ang libreng Barangay Certification (may dry seal, bisa isang taon). Dalhin ang orihinal sa NBI, PNP, PSA at iba pang ahensya para sa libreng NBI clearance, police clearance, birth certificate at iba pa — isang kopya bawat dokumento, isang beses lang.',
+  },
+];
+---
+
+<ToolPageLayout
+  title="First Time Jobseeker (RA 11261): Free Documents & Certificate"
+  description="Free NBI and police clearance, PSA birth certificate and barangay clearance for first time jobseekers (RA 11261): who qualifies and how to get the certificate."
+  path="/first-time-jobseeker/"
+  h1="First Time Jobseeker Certificate (RA 11261): Free Documents Guide"
+  faqs={faqs}
+  related={['sssNumber', 'tinNumber', 'philhealthPin', 'pagibigMid']}
+  isApp={false}
+>
+  <Fragment slot="answer">
+    <p>
+      Under the <strong>First Time Jobseekers Assistance Act (RA 11261)</strong>, a Filipino looking for work for the first time
+      gets key pre-employment documents <strong>free</strong> — once, one copy each, within a year. Get a free
+      <strong> Barangay Certification</strong> (and sign the Oath of Undertaking) at the barangay where you have lived for at least
+      six months, then present the original to each office: <strong>NBI clearance</strong> (normally ₱160),
+      <strong>police clearance</strong> (₱150 plus fees), <strong>PSA birth certificate</strong> (₱155), barangay clearance, TIN,
+      UMID, a public-hospital medical certificate and public-school records. Passports, the PRC and CSC exams and driver's
+      licenses are not free.
+    </p>
+  </Fragment>
+
+  <h2>Who Qualifies</h2>
+  <ul>
+    <li><strong>A Filipino citizen</strong> actively looking for a job, in the Philippines or abroad, <strong>for the first time</strong>.</li>
+    <li><strong>A resident of the barangay for at least six months</strong> (IRR Sec. 4(d)). The 2023 guidelines word it as "a resident of the barangay as of a particular date", but NBI's 2025 Citizen's Charter still asks for six months, so expect it.</li>
+    <li><strong>Included:</strong> college, tech-voc and senior high graduates; early school leavers and out-of-school youth; people not in work, education or training; students on leave; students who want to work while enrolled.</li>
+    <li><strong>Earlier work that does not count as employment:</strong> running your own business, independent contracting, and government programs such as GIP, SPES and TUPAD.</li>
+    <li><strong>Age:</strong> no limit in the law or its rules; 15- to 17-year-olds need a parent's or guardian's consent and may work only under DOLE's rules for minors.</li>
+    <li><strong>Not covered:</strong> beneficiaries of the JobStart Program (RA 10869) or of other laws with similar exemptions.</li>
+  </ul>
+
+  <h2>Documents You Can Get for Free (and What They Normally Cost)</h2>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Document</th><th>Issued by</th><th>Normal fee</th><th>Notes</th></tr></thead>
+      <tbody>
+        {documents.map((d) => (
+          <tr><td><strong>{d.doc}</strong></td><td>{d.from}</td><td>{d.normal}</td><td>{d.note}</td></tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  <p class="text-sm text-ink-soft">
+    Normal fees as published by <a href={NBI_FTJ} target="_blank" rel="noopener">NBI</a>, <a href={PNP} target="_blank" rel="noopener">PNP</a>
+    and <a href={PSA} target="_blank" rel="noopener">PSA Serbilis</a>, checked September 23, 2026. Coverage: RA 11261 Sec. 4, IRR Sec. 5
+    and the 2023 Joint Operational Guidelines Sec. II. Getting a TIN is covered on <a href="/how-to-get-tin-number/">How to Get a TIN</a>.
+  </p>
+
+  <h2>Not Covered: Fees You Still Pay</h2>
+  <ul>
+    <li>PRC professional licensure exam applications.</li>
+    <li>DFA passport applications, and authentication or apostille of documents.</li>
+    <li>The CSC Career Service Examination and the LTO driver's license.</li>
+    <li>Laboratory tests and procedures needed for a medical certificate.</li>
+    <li>Second and later copies, and anything after the one-time benefit is used or the certificate's year runs out.</li>
+    <li>Documents from private schools, hospitals and other private offices — the law covers government offices only.</li>
+  </ul>
+
+  <h2>How to Get the Barangay Certification</h2>
+  <ol>
+    <li>Go to the barangay hall where you have lived for at least six months.</li>
+    <li>Fill out and sign the <a href={FORM2} target="_blank" rel="noopener">Oath of Undertaking</a> before the Punong Barangay or an authorized barangay officer; if you are 15 to 17, a parent or guardian signs the consent part.</li>
+    <li>Receive the free <a href={FORM1} target="_blank" rel="noopener">Barangay Certification</a>: an original on the barangay's letterhead with its dry seal, signed, valid one year. The barangay keeps its own copy. Neither form needs notarizing.</li>
+    <li>Within the year, bring the original to each office with the IDs it asks for; you get one free copy of each document.</li>
+    <li>Tell the barangay once you get a job — it is one of the undertakings in the Oath.</li>
+  </ol>
+
+  <h2>If an Office Still Charges You</h2>
+  <p>
+    Complain to the head of that office, who must act within three working days; unresolved cases go to the Inter-Agency
+    Monitoring Committee chaired by the DOLE Secretary, which can recommend an administrative case (IRR Sec. 14). RA 11261 has no
+    fine or jail term for officials — refusal is an administrative offense — while an applicant who falsifies a certificate is
+    liable under the Revised Penal Code. When in doubt, the law says any ambiguity is read in the applicant's favor (Sec. 11).
+  </p>
+
+  <h2>Official Sources</h2>
+  <ul>
+    <li><a href={LAW} target="_blank" rel="noopener">Republic Act No. 11261 — First Time Jobseekers Assistance Act (approved April 10, 2019)</a></li>
+    <li><a href={IRR} target="_blank" rel="noopener">Implementing Rules and Regulations — Joint Memorandum Circular No. 001, s. 2019 (DOLE Bureau of Local Employment)</a></li>
+    <li><a href={JOG} target="_blank" rel="noopener">FTJAA Joint Operational Guidelines, May 12, 2023 (DOLE and 15 agencies)</a></li>
+    <li><a href={FORM1} target="_blank" rel="noopener">RA 11261 Form 1 (Barangay Certification)</a> and <a href={FORM2} target="_blank" rel="noopener">Form 2 (Oath of Undertaking)</a>, revised June 16, 2021</li>
+    <li><a href={ADVISORY} target="_blank" rel="noopener">DOLE Labor Advisory No. 07, s. 2020 — certified true copies during applications</a></li>
+    <li><a href={NBI_FTJ} target="_blank" rel="noopener">NBI Citizen's Charter — NBI clearance for first time jobseekers</a></li>
+  </ul>
+  <p class="text-sm text-ink-soft">AyTool is independent and not affiliated with DOLE, NBI, PNP or PSA.</p>
+</ToolPageLayout>
