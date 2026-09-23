@@ -68,6 +68,7 @@
 | 2026-09-23 | Uneed | 免费队列，**2027-02-20 自动上线** | 账号 cherryeveli-10e6；描述改掉了 AI 自动填的"每年更新"；标签 Productivity / Personal Finances；logo + 3 张图。规则：上线当天投票分 ≥10 才能保留，≥20 才给 dofollow。付费插队（$14.99 / $29.99）和 $249 的"100+ 目录提交"都没买 |
 | 2026-09-23 | Fazier | **不做** | 免费档要求在我方首页或页脚放 Fazier 回链徽章，等于链接交换，违反 playbook；付费档 $29–$99 |
 | 2026-09-23 | SaaSHub | **不做**（用户决定） | |
+| 2026-09-23 | 挂件外联邮件（草稿见 backlinks-drafts-2026-09.md §4） | 已发 4 封，定时 7 封，跳过 1 封 | 从用户 Gmail（cherryeveli@gmail.com）发出，署名 JJ。**09-23 已发**：#2 Tax and Accounting Center、#7 filipinos.sg、#4 FilePino、#6 iScale。**09-24 08:00 定时**：#3 Triple i、#8 Dubai OFW、#9 Pilipino sa Kuwait（pilipinosakuwait@gmail.com，对方 /about-us/ 公布，Cloudflare 混淆解码核实）、#11 PHRI。**09-28 08:00 定时**：#10 PMAP、#1 Accountaholics、#12 UC Career Center。**跳过** #5 Manila Recruitment：只有招聘业务的销售表单，必填电话且选项不对口。回信跟进：约 7 天后没回的，可以发一封简短的跟进，只发一次 |
 | — | Reddit | 需手动发 | Claude in Chrome 对 reddit.com 有安全限制，自动化打不开 |
 
 Quora 待答队列（新号一天 ≤4 条、同类题隔天；每条先完整作答再附链接并注明"我做的"）：
@@ -78,3 +79,5 @@ Quora 待答队列（新号一天 ≤4 条、同类题隔天；每条先完整�
 - Do we still get a Senior Citizen discount on the doctor's fee after having an HMO discount?（需先核实 RA 9994 与 HMO 的叠加规则再答）→ /senior-citizen-discount-calculator/
 
 Quora 编辑器坑：行首输入 "1)" 会自动转编号列表且一直延续，列表结束要连按两次回车跳出；网址后紧跟句号有被吞进链接的风险，用括号隔开。
+
+**Gmail 操作注意**：这个账号**开着 Gmail 键盘快捷键**。写信框没抢到焦点就开始输入时，字符会落到主界面上被当成快捷键执行。09-23 发生过两次，事后查了已发、定时、垃圾、星标、静音、回收站、归档和标签，都没有被误操作。以后写邮件一律用 `https://mail.google.com/mail/u/0/?view=cm&fs=1&to=…&su=…&body=…` 预填打开，完全不在主界面上打字；定时发送用发送按钮旁的箭头 → "安排发送时间"。
