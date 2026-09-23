@@ -155,6 +155,76 @@ export function computeMaternity(input: MaternityInput, rules: SssRules): Matern
   };
 }
 
+/* --------------------------------- Sickness benefit -------------------------------- */
+
+export interface SicknessInput {
+  /** Monthly salary credits in the 12 months before the semester of sickness (top 6 are used). */
+  mscs: number[];
+  /** Days of confinement being claimed (must exceed 3 to be compensable). */
+  days: number;
+  /** Compensable days already used this calendar year (for the 120-day cap). */
+  daysUsedThisYear?: number;
+}
+
+export interface SicknessResult {
+  topMscs: number[];
+  sumTopMscs: number;
+  averageDailySalaryCredit: number;
+  /** 90% of the ADSC. */
+  dailyBenefit: number;
+  daysClaimed: number;
+  /** Days actually payable after the 120-day annual cap. */
+  daysPayable: number;
+  benefit: number;
+  notCompensable: boolean;
+  insufficientContributions: boolean;
+  mscCapped: boolean;
+}
+
+export function computeSickness(input: SicknessInput, rules: SssRules): SicknessResult {
+  const sk = rules.benefits.sickness;
+  const cap = benefitMscCap(rules);
+  const posted = input.mscs.filter((v) => v > 0);
+  const topMscs = posted.map((v) => Math.min(v, cap)).sort((a, b) => b - a).slice(0, sk.top_msc_count);
+  const sumTopMscs = round2(topMscs.reduce((a, b) => a + b, 0));
+  const adsc = round2(sumTopMscs / sk.divisor);
+  const dailyBenefit = round2(adsc * sk.pct_of_adsc);
+  const daysClaimed = Math.max(0, Math.floor(input.days));
+  const remaining = Math.max(0, sk.max_days_per_year - Math.max(0, Math.floor(input.daysUsedThisYear ?? 0)));
+  const notCompensable = daysClaimed < sk.min_confinement_days;
+  const daysPayable = notCompensable ? 0 : Math.min(daysClaimed, remaining, sk.max_days_same_confinement);
+  return {
+    topMscs,
+    sumTopMscs,
+    averageDailySalaryCredit: adsc,
+    dailyBenefit,
+    daysClaimed,
+    daysPayable,
+    benefit: round2((sumTopMscs * sk.pct_of_adsc * daysPayable) / sk.divisor),
+    notCompensable,
+    insufficientContributions: posted.length < sk.min_contributions,
+    mscCapped: posted.some((v) => v > cap),
+  };
+}
+
+/* ------------------------------- Unemployment benefit ------------------------------- */
+
+export interface UnemploymentResult {
+  amsc: number;
+  monthlyBenefit: number;
+  months: number;
+  total: number;
+  amscCapped: boolean;
+}
+
+export function computeUnemployment(amscInput: number, rules: SssRules): UnemploymentResult {
+  const u = rules.benefits.unemployment;
+  const cap = benefitMscCap(rules);
+  const amsc = Math.min(Math.max(amscInput, 0), cap);
+  const monthlyBenefit = round2(amsc * u.pct_of_amsc);
+  return { amsc, monthlyBenefit, months: u.months, total: round2(monthlyBenefit * u.months), amscCapped: amscInput > cap };
+}
+
 /* ---------------------------------- Salary loan ---------------------------------- */
 
 export interface SalaryLoanInput {

@@ -22,6 +22,11 @@ export function rateRange(rules: WageRules): { high: number; low: number } {
   return { high: Math.max(...rates), low: Math.min(...rates) };
 }
 
+/** Hourly rate from a daily rate (normal hours per day, default 8). */
+export function hourlyFromDaily(daily: number, hoursPerDay = 8): number {
+  return round2(daily / hoursPerDay);
+}
+
 /** Is a given daily pay at or above a tier's minimum? Returns the shortfall (0 if compliant). */
 export function shortfall(dailyPay: number, minimum: number): number {
   return round2(Math.max(0, minimum - dailyPay));

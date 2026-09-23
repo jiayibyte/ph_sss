@@ -1,0 +1,223 @@
+---
+/**
+ * Results hub: every 2026 PRC board exam whose results PRC has released, with
+ * passers / examinees / pass rate / release date from PRC's press releases
+ * (recorded in src/data/prc/2026.json), plus the target dates still ahead.
+ * No lists of passers — aggregate figures only.
+ */
+import ToolPageLayout from '../layouts/ToolPageLayout.astro';
+import prcRules from '../data/prc/2026.json';
+import { PRC_PROFESSIONS, examSlug } from '../lib/prcProfessions';
+import { icsPath } from '../lib/prcCalendar';
+import type { PrcExamEntry, PrcRules } from '../lib/rules/types';
+import { SITE } from '../../site.config';
+
+const rules = prcRules as unknown as PrcRules;
+const meta = rules.meta;
+const year = rules.year;
+const exams = rules.exams as PrcExamEntry[];
+const today = new Date().toISOString().slice(0, 10);
+
+const fmt = (d: string | null | undefined): string =>
+  d ? new Date(d + 'T00:00:00').toLocaleDateString('en-PH', { month: 'long', day: 'numeric', year: 'numeric' }) : 'to be announced';
+const pct = (p: number, e: number) => `${((p / e) * 100).toFixed(2)}%`;
+const num = (n: number) => n.toLocaleString('en-PH');
+const hrefFor = (examName: string): string | null =>
+  PRC_PROFESSIONS.find((g) => g.exams.includes(examName))?.href ?? null;
+const workingDays = (from: string, to: string): number => {
+  let d = new Date(from + 'T00:00:00Z');
+  const end = new Date(to + 'T00:00:00Z');
+  let n = 0;
+  while (d < end) {
+    d = new Date(d.getTime() + 86_400_000);
+    const w = d.getUTCDay();
+    if (w !== 0 && w !== 6) n++;
+  }
+  return n;
+};
+
+const released = exams
+  .filter((e) => e.results_released && e.passers && e.examinees)
+  .sort((a, b) => b.results_released!.localeCompare(a.results_released!));
+const releasedNoStats = exams.filter((e) => e.results_released && !e.passers);
+const pending = exams
+  .filter((e) => !e.results_released && e.results_target)
+  .sort((a, b) => a.results_target!.localeCompare(b.results_target!));
+const upcomingReleases = pending.filter((e) => e.results_target! >= today);
+
+const totalPassers = released.reduce((s, e) => s + e.passers!, 0);
+const totalExaminees = released.reduce((s, e) => s + e.examinees!, 0);
+const highest = [...released].sort((a, b) => b.passers! / b.examinees! - a.passers! / a.examinees!)[0]!;
+const lowest = [...released].sort((a, b) => a.passers! / a.examinees! - b.passers! / b.examinees!)[0]!;
+const largest = [...released].sort((a, b) => b.examinees! - a.examinees!)[0]!;
+const latest = released[0]!;
+const nextRelease = upcomingReleases[0];
+
+const datasetSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Dataset',
+  name: `PRC Board Exam Results ${year}: passers, examinees and release dates`,
+  description: `Aggregate results of every ${year} Philippine licensure examination released so far — passers, examinees, pass rate and release date — transcribed from PRC's results press releases.`,
+  url: `${SITE.url}/board-exam-results-2026/`,
+  creator: { '@type': 'Organization', name: 'Professional Regulation Commission (source data)' },
+  isBasedOn: 'https://www.prc.gov.ph/articles/exam-results',
+  dateModified: meta.last_verified,
+  keywords: ['board exam results 2026', 'PRC passing rate', 'licensure examination results', 'Philippines'],
+  distribution: [{ '@type': 'DataDownload', encodingFormat: 'application/json', contentUrl: `${SITE.url}/data/prc-board-exam-schedule-${year}.json` }],
+  temporalCoverage: `${meta.effective_from}/${meta.effective_to}`,
+  spatialCoverage: { '@type': 'Place', name: 'Philippines' },
+};
+
+const faqs = [
+  {
+    q: `Which ${year} board exam had the highest passing rate so far?`,
+    a: `${highest.exam} (${highest.dates_display}): ${num(highest.passers!)} of ${num(highest.examinees!)} passed, ${pct(highest.passers!, highest.examinees!)}, released ${fmt(highest.results_released)}. The lowest was ${lowest.exam} (${lowest.dates_display}) at ${pct(lowest.passers!, lowest.examinees!)} — ${num(lowest.passers!)} of ${num(lowest.examinees!)}.`,
+  },
+  {
+    q: `What is the biggest board exam of ${year} by number of examinees?`,
+    a: `${largest.exam} (${largest.dates_display}) with ${num(largest.examinees!)} examinees, of whom ${num(largest.passers!)} passed (${pct(largest.passers!, largest.examinees!)}).${largest.results_note ? ` ${largest.results_note}.` : ''} Across the ${released.length} releases on this page, ${num(totalPassers)} of ${num(totalExaminees)} examinees passed (${pct(totalPassers, totalExaminees)}).`,
+  },
+  {
+    q: 'How fast does PRC release board exam results?',
+    a: `Usually within a few working days for computer-scored exams and two to four weeks for the largest ones. Examples from ${year}: ${released
+      .slice(0, 6)
+      .map((e) => `${e.exam} in ${workingDays(e.first_date, e.results_released!)} working days after the first exam day`)
+      .join('; ')}. The LET takes longest because of its size (39 working days for March ${year}).`,
+  },
+  {
+    q: 'Where do I check the official list of passers?',
+    a: 'Only on prc.gov.ph — PRC posts each release as a news article with the alphabetical list of passers, the top 10 and the top-performing schools — and on PRC\'s official Facebook page. Your own per-subject ratings appear in LERIS (online.prc.gov.ph) once PRC opens verification for that exam. AyTool publishes the aggregate figures only and does not host lists of passers.',
+  },
+  {
+    q: `What board exam results are still coming in ${year}?`,
+    a: nextRelease
+      ? `${upcomingReleases.length} exams still have results ahead. Next by target date: ${upcomingReleases
+          .slice(0, 5)
+          .map((e) => `${e.exam} (${e.dates_display}) — target ${fmt(e.results_target)}`)
+          .join('; ')}. Targets are the dates printed in PRC Resolution No. 2113, s. 2025; the actual release is announced on prc.gov.ph.`
+      : `Every ${year} exam with a target date has been released or its target has passed; see the table for exams still awaiting PRC's announcement.`,
+  },
+  {
+    q: 'What happens after I pass?',
+    a: 'PRC announces the online initial registration schedule for the new professionals with each results release (typically two to six weeks later) — you book an appointment through LERIS, bring the system-generated registration form and a valid ID, sign the Roster of Registered Professionals and claim your Professional ID and certificate. Oath-taking dates and venues are announced separately by PRC and the profession\'s accredited organisation.',
+  },
+  {
+    q: `Ilan ang pumasa sa board exam ${year}?`,
+    a: `Sa ${released.length} na board exam na may resulta na ngayong ${year}, ${num(totalPassers)} sa ${num(totalExaminees)} examinees ang pumasa (${pct(totalPassers, totalExaminees)}). Pinakamataas ang passing rate ng ${highest.exam} (${pct(highest.passers!, highest.examinees!)}); pinakamababa ang ${lowest.exam} (${pct(lowest.passers!, lowest.examinees!)}). Ang pinakahuling resulta ay ${latest.exam}, inilabas noong ${fmt(latest.results_released)}.`,
+  },
+];
+---
+
+<ToolPageLayout
+  title={`PRC Board Exam Results ${year} – Passing Rates & Release Dates`}
+  description={`Every ${year} PRC board exam result released so far: passers, examinees, passing rate and release date from PRC's press releases, plus the ${upcomingReleases.length} results still ahead.`}
+  path="/board-exam-results-2026/"
+  h1={`PRC Board Exam Results ${year}: Passing Rates by Exam`}
+  faqs={faqs}
+  related={['prc', 'nursingSchedule', 'letSchedule', 'criminologySchedule']}
+  isApp={false}
+  extraSchema={[datasetSchema]}
+>
+  <Fragment slot="answer">
+    <p>
+      PRC has released <strong>{released.length} of the {exams.length} licensure examinations scheduled for {year}</strong>
+      so far: <strong>{num(totalPassers)} of {num(totalExaminees)} examinees passed ({pct(totalPassers, totalExaminees)})</strong>.
+      The latest is the <strong>{latest.exam}</strong> ({latest.dates_display}), released {fmt(latest.results_released)} —
+      {num(latest.passers!)} of {num(latest.examinees!)} passed ({pct(latest.passers!, latest.examinees!)}). Highest passing
+      rate this year: {highest.exam} at {pct(highest.passers!, highest.examinees!)}; lowest: {lowest.exam} at
+      {pct(lowest.passers!, lowest.examinees!)}.
+      {nextRelease && (
+        <Fragment>
+          {' '}Next result due: <strong>{nextRelease.exam}</strong>, target {fmt(nextRelease.results_target)}.
+        </Fragment>
+      )}
+      {' '}Every figure is transcribed from PRC's results press release; this page carries no lists of passers.
+    </p>
+  </Fragment>
+
+  <h2>{year} Board Exam Results Released So Far</h2>
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>Examination</th>
+          <th>Exam dates</th>
+          <th>Results released</th>
+          <th>Passers</th>
+          <th>Examinees</th>
+          <th>Pass rate</th>
+        </tr>
+      </thead>
+      <tbody>
+        {released.map((e) => {
+          const href = hrefFor(e.exam);
+          return (
+            <tr id={examSlug(e.exam)}>
+              <td>
+                {href ? <a href={href}><strong>{e.exam}</strong></a> : <strong>{e.exam}</strong>}
+                {e.results_note && <div class="text-xs text-ink-soft">{e.results_note}</div>}
+              </td>
+              <td>{e.dates_display}{e.note && <div class="text-xs text-ink-soft">{e.note}</div>}</td>
+              <td>
+                {fmt(e.results_released)}
+                <div class="text-xs text-ink-soft">{workingDays(e.first_date, e.results_released!)} working days</div>
+              </td>
+              <td>{num(e.passers!)}</td>
+              <td>{num(e.examinees!)}</td>
+              <td><strong>{pct(e.passers!, e.examinees!)}</strong></td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  </div>
+  <p class="text-sm text-ink-soft">
+    Counts are as printed by PRC; the pass rate is passers ÷ examinees. "Working days" counts Monday–Friday from the first
+    exam day to the release date.{releasedNoStats.length > 0 && ` ${releasedNoStats.map((e) => e.exam).join(', ')}: released with the paired examination above.`}
+  </p>
+
+  <h2>Results Still Ahead in {year}</h2>
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Examination</th><th>Exam dates</th><th>Target release date</th><th></th></tr>
+      </thead>
+      <tbody>
+        {pending.map((e) => {
+          const href = hrefFor(e.exam);
+          return (
+            <tr>
+              <td>{href ? <a href={href}>{e.exam}</a> : e.exam}{e.note && <div class="text-xs text-ink-soft">{e.note}</div>}</td>
+              <td>{e.dates_display}</td>
+              <td>{fmt(e.results_target)}{e.results_target && e.results_target < today && <span class="text-ink-soft"> (target passed — awaiting PRC)</span>}</td>
+              <td class="text-xs">{e.first_date >= today && <a href={icsPath(year, e)}>Add to calendar</a>}</td>
+            </tr>
+          );
+        })}
+      </tbody>
+    </table>
+  </div>
+  <p>
+    Target dates are those printed in PRC Resolution No. 2113, s. 2025. PRC often releases earlier than the target (the
+    February PNLE came out 13 days early) and occasionally later; the actual release is announced only on prc.gov.ph.
+    The full schedule with filing windows is on the <a href="/prc-board-exam-schedule/">PRC Board Exam Schedule {year}</a>.
+  </p>
+
+  <h2>How to Read a PRC Results Release</h2>
+  <ul>
+    <li><strong>Passers and examinees:</strong> PRC prints "X out of Y passed"; the pass rate is not printed and is computed here.</li>
+    <li><strong>Withheld results:</strong> some releases hold back a handful of examinees "pending final determination of their liabilities" — those are not counted as passers or failures.</li>
+    <li><strong>Top performing schools and topnotchers:</strong> published as separate PDFs linked from the release; not reproduced here.</li>
+    <li><strong>Registration:</strong> each release states when online initial registration for the new professionals opens — usually two to six weeks after the results.</li>
+    <li><strong>Verification of ratings:</strong> your per-subject scores appear in LERIS once PRC opens the service for that exam.</li>
+  </ul>
+
+  <h2>Official Source</h2>
+  <p>
+    Every row is transcribed from the corresponding results press release on
+    <a href="https://www.prc.gov.ph/articles/exam-results" target="_blank" rel="noopener">prc.gov.ph — Exam Results</a>; the
+    per-profession pages linked in the table cite the exact article. Schedule and target dates:
+    <a href={meta.official_source_url} target="_blank" rel="noopener">{meta.official_source_label}</a>. Last verified
+    {fmt(meta.last_verified)}. AyTool is independent, does not host lists of passers, and cannot verify individual ratings.
+  </p>
+</ToolPageLayout>

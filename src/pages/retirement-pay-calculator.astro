@@ -1,0 +1,78 @@
+---
+import ToolPageLayout from '../layouts/ToolPageLayout.astro';
+import RetirementPayCalculator from '../islands/RetirementPayCalculator';
+import laborJson from '../data/labor/2026.json';
+import type { LaborRules } from '../lib/rules/types';
+import { computeRetirementPay } from '../lib/engine/terminalPay';
+import { peso } from '../lib/format';
+
+const labor = laborJson as unknown as LaborRules;
+const meta = labor.meta;
+const RP = labor.retirement_pay;
+const LAW = RP.source_url;
+const HANDBOOK = labor.separation_pay.source_url;
+const dailies = [500, 695, 800, 1000, 1500];
+const yearsList = [5, 10, 20, 30];
+const ex = computeRetirementPay({ dailyRate: 800, years: 20 }, labor);
+
+const faqs = [
+  { q: 'How is retirement pay computed under RA 7641?', a: `Minimum retirement pay = daily rate × ${RP.days_per_year} days × years of service, where a fraction of at least ${RP.fraction_months_counted_as_year} months counts as a whole year. The ${RP.days_per_year} days are one "half-month salary": ${RP.components.salary_days} days' pay, the cash value of ${RP.components.sil_days} days of service incentive leave, and ${RP.components.thirteenth_month_days} days (one-twelfth of the 13th month pay). Example: ₱800 a day × ${RP.days_per_year} × 20 years = ${peso(ex.retirementPay)}.` },
+  { q: 'Who is entitled to retirement pay?', a: `Private-sector employees who retire at ${RP.optional_age} to ${RP.compulsory_age} years old (optional from ${RP.optional_age}, compulsory at ${RP.compulsory_age}) after at least ${RP.min_service_years} years of service with the employer, when there is no retirement plan or the plan pays less than the RA 7641 minimum. Not covered: government employees and employees of retail, service and agricultural establishments regularly employing not more than ${RP.exempt_headcount} workers. Part-time workers are covered in proportion to their pay.` },
+  { q: 'Is COLA included in the daily rate for retirement pay?', a: 'No. The DOLE Handbook states that the cost-of-living allowance is not included in the computation of retirement pay, and the courts exclude allowances from the salary base for retirement benefits (Cebu Institute of Technology v. Ople). Use the basic daily rate; a company plan or CBA may add more.' },
+  { q: 'What if my company has its own retirement plan?', a: 'You get the plan or CBA benefit, provided it is not less than the RA 7641 minimum; if it is less, the employer pays the difference. Where both employer and employee contribute to a fund, the employer\'s contributions plus interest must at least equal the RA 7641 amount.' },
+  { q: 'Do mineworkers and jockeys retire earlier?', a: 'Yes. Underground or surface mine employees may retire at 50 (optional) and 60 (compulsory) after five years of mine service under RA 8558 as amended by RA 10757; licensed racehorse jockeys retire compulsorily at 55 after five years (RA 10789).' },
+  { q: 'Magkano ang retirement pay kung ₱20,000 ang buwanang sahod at 15 taon sa kompanya?', a: `Kunin muna ang daily rate: ₱20,000 × 12 ÷ 313 = ${peso(Math.round((20000 * 12 / 313) * 100) / 100)} kung anim na araw kada linggo ang trabaho. Retirement pay = ${peso(Math.round((20000 * 12 / 313) * 100) / 100)} × ${RP.days_per_year} × 15 = ${peso(computeRetirementPay({ dailyRate: Math.round((20000 * 12 / 313) * 100) / 100, years: 15 }, labor).retirementPay)}. Kailangang ${RP.optional_age} hanggang ${RP.compulsory_age} taong gulang at may ${RP.min_service_years} taon man lang na serbisyo.` },
+];
+---
+
+<ToolPageLayout
+  title="Retirement Pay Calculator Philippines – RA 7641 (22.5 Days)"
+  description={`Compute the minimum retirement pay under RA 7641: daily rate × ${RP.days_per_year} days × years of service (${RP.components.salary_days} days' pay + ${RP.components.sil_days} days SIL + 1/12 of the 13th month). Who qualifies, at what age, and what a company plan changes.`}
+  path="/retirement-pay-calculator/"
+  h1="Retirement Pay Calculator (RA 7641)"
+  faqs={faqs}
+  related={['sssPension', 'finalPay', 'separationPay', 'dailyRate']}
+>
+  <Fragment slot="answer">
+    <p>
+      The <strong>minimum retirement pay</strong> under Article 302 of the Labor Code (RA 7641) is <strong>one-half month
+      salary for every year of service</strong>, and "one-half month" means <strong>{RP.days_per_year} days</strong>:
+      {RP.components.salary_days} days' pay + {RP.components.sil_days} days of service incentive leave + {RP.components.thirteenth_month_days}
+      days for one-twelfth of the 13th month pay. So retirement pay = daily rate × {RP.days_per_year} × years, with a fraction
+      of {RP.fraction_months_counted_as_year} months or more counting as a year. It applies at {RP.optional_age} to {RP.compulsory_age}
+      years old after at least {RP.min_service_years} years' service. Example: ₱800 a day × {RP.days_per_year} × 20 years =
+      <strong>{peso(ex.retirementPay)}</strong>. This is separate from your <a href="/sss-pension-calculator/">SSS pension</a>.
+    </p>
+  </Fragment>
+  <Fragment slot="calculator">
+    <RetirementPayCalculator client:idle />
+  </Fragment>
+
+  <h2>Retirement Pay Table (Daily Rate × {RP.days_per_year} × Years)</h2>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Daily rate</th><th>Half-month salary ({RP.days_per_year} days)</th>{yearsList.map((y) => <th>{y} yrs</th>)}</tr></thead>
+      <tbody>
+        {dailies.map((d) => { const r = computeRetirementPay({ dailyRate: d, years: 1 }, labor); return (<tr><td><strong>{peso(d)}</strong></td><td>{peso(r.halfMonthSalary)}</td>{yearsList.map((y) => <td>{peso(computeRetirementPay({ dailyRate: d, years: y }, labor).retirementPay)}</td>)}</tr>); })}
+      </tbody>
+    </table>
+  </div>
+  <p>Monthly-paid? Convert with the <a href="/daily-rate-calculator/">Daily Rate Calculator</a> (monthly × 12 ÷ 365, 313 or 261 depending on your paid days).</p>
+
+  <h2>Coverage and Conditions</h2>
+  <ul>
+    <li><strong>Age:</strong> optional retirement from {RP.optional_age}, compulsory at {RP.compulsory_age} (earlier for mineworkers and jockeys under their special laws).</li>
+    <li><strong>Service:</strong> at least {RP.min_service_years} years with the establishment.</li>
+    <li><strong>Exempt employers:</strong> the government, and retail, service and agricultural establishments regularly employing not more than {RP.exempt_headcount} employees.</li>
+    <li><strong>Salary base:</strong> the latest basic daily rate; COLA and other allowances are excluded unless the employer agrees or a CBA includes them.</li>
+    <li><strong>Company plans and CBAs:</strong> prevail when they pay more; the employer tops up when they pay less.</li>
+    <li><strong>Paid-by-results and part-time workers:</strong> use the average daily salary of the last 12 months; part-time workers get a proportionate amount.</li>
+  </ul>
+
+  <h2>Official Source</h2>
+  <p>
+    <a href={LAW} target="_blank" rel="noopener">RA 7641 (Retirement Pay Law), amending Art. 287 — now Art. 302 — of the Labor Code</a>, LawPhil;
+    computation and coverage per the <a href={HANDBOOK} target="_blank" rel="noopener">DOLE Handbook on Workers' Statutory Monetary Benefits, 2024 edition, Chapter 15</a>.
+    Rules data: <a href={meta.official_source_url} target="_blank" rel="noopener">{meta.official_source_label}</a>. AyTool is independent; a disputed retirement pay claim goes to the DOLE regional office or the NLRC.
+  </p>
+</ToolPageLayout>

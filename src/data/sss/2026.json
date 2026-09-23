@@ -90,6 +90,29 @@
    "min_net_proceeds": 2000,
    "source_note": "SSS Circular No. 2025-004 (Guidelines of the SSS Salary Loan Program, effective 16 June 2025): 8% p.a. diminishing (10% for renewals with penalty condonation in the past 5 years); loan base = average of 12 latest posted Regular SS MSCs rounded up to the next MSC; pro-rated interest to the end of the month before the first amortization month deducted in advance; 24 equal amortizations starting the 2nd month after approval",
    "source_url": "https://www.sss.gov.ph/salary-loan/"
+  },
+  "sickness": {
+   "pct_of_adsc": 0.9,
+   "min_confinement_days": 4,
+   "max_days_per_year": 120,
+   "max_days_same_confinement": 240,
+   "min_contributions": 3,
+   "notify_within_days": 5,
+   "top_msc_count": 6,
+   "divisor": 180,
+   "source_note": "RA 11199, Sec. 14(a): 90% of the average daily salary credit for each day of confinement of more than three days; ≥3 contributions in the 12 months before the semester of sickness; max 120 days per calendar year, 240 days for the same confinement; notify the employer (or SSS) within 5 calendar days; paid after paid sick leave is exhausted and reimbursed to the employer by SSS",
+   "source_url": "https://lawphil.net/statutes/repacts/ra2019/ra_11199_2019.html"
+  },
+  "unemployment": {
+   "pct_of_amsc": 0.5,
+   "months": 2,
+   "min_contributions": 36,
+   "recent_contributions_required": 12,
+   "recent_window_months": 18,
+   "max_age": 60,
+   "once_every_years": 3,
+   "source_note": "RA 11199, Sec. 14-B: member not over 60 with ≥36 monthly contributions, 12 of them in the 18 months before involuntary separation; monthly cash payments of 50% of the AMSC for a maximum of two months; claimable once every three years",
+   "source_url": "https://lawphil.net/statutes/repacts/ra2019/ra_11199_2019.html"
   }
  },
  "table": {

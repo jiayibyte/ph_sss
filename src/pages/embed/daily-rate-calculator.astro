@@ -1,0 +1,9 @@
+---
+import EmbedLayout from '../../layouts/EmbedLayout.astro';
+import DailyRateCalculator from '../../islands/DailyRateCalculator';
+import { TOOL_PAGES } from '../../lib/pages';
+---
+
+<EmbedLayout page={TOOL_PAGES.dailyRate!}>
+  <DailyRateCalculator client:load />
+</EmbedLayout>

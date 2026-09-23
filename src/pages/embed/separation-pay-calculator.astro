@@ -1,0 +1,9 @@
+---
+import EmbedLayout from '../../layouts/EmbedLayout.astro';
+import SeparationPayCalculator from '../../islands/SeparationPayCalculator';
+import { TOOL_PAGES } from '../../lib/pages';
+---
+
+<EmbedLayout page={TOOL_PAGES.separationPay!}>
+  <SeparationPayCalculator client:load />
+</EmbedLayout>

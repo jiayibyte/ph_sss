@@ -1,0 +1,105 @@
+---
+import ToolPageLayout from '../layouts/ToolPageLayout.astro';
+import SssSicknessCalculator from '../islands/SssSicknessCalculator';
+import sssRules from '../data/sss/2026.json';
+import type { SssRules } from '../lib/rules/types';
+import { findSssRow } from '../lib/engine/sss';
+import { benefitMscCap, computeSickness } from '../lib/engine/sssBenefits';
+import { peso } from '../lib/format';
+
+const rules = sssRules as unknown as SssRules;
+const meta = rules.meta;
+const S = rules.benefits.sickness;
+const CAP = benefitMscCap(rules);
+const LAW = S.source_url;
+const forSalary = (salary: number, days: number) => computeSickness({ mscs: Array(S.top_msc_count).fill(findSssRow(salary, 'employee', rules).msc), days }, rules);
+const salaries = [10000, 15000, 20000, 25000];
+const ex = forSalary(20000, 10);
+const max = forSalary(CAP, S.max_days_per_year);
+
+const faqs = [
+  {
+    q: 'How is the SSS sickness benefit computed?',
+    a: `Add your ${S.top_msc_count} highest monthly salary credits in the 12 months before the semester of sickness, divide by ${S.divisor} for the average daily salary credit, take ${S.pct_of_adsc * 100}% of it, and multiply by the compensable days (RA 11199, Sec. 14(a)). Example: MSC ${peso(ex.topMscs[0]!)} → ${peso(ex.averageDailySalaryCredit)} a day → ${peso(ex.dailyBenefit)} daily allowance → ${peso(ex.benefit)} for ${ex.daysPayable} days. Each MSC counts only up to ${peso(CAP)}.`,
+  },
+  {
+    q: 'Who qualifies for the SSS sickness benefit?',
+    a: `A member with at least ${S.min_contributions} posted monthly contributions in the 12 months before the semester of sickness, confined at home or in a hospital for more than ${S.min_confinement_days - 1} days with SSS approval, who has used up all paid sick leave with the employer, and who notified the employer within ${S.notify_within_days} calendar days of the start of confinement (or SSS directly, if self-employed, voluntary or unemployed). Hospital confinement needs no notification.`,
+  },
+  {
+    q: 'How many days of sickness benefit can I get?',
+    a: `Up to ${S.max_days_per_year} days per calendar year, and no more than ${S.max_days_same_confinement} days for the same illness or injury; unused days do not carry over to the next year (Sec. 14(a)(1)–(2)). The maximum benefit for a full ${S.max_days_per_year} days at the ${peso(CAP)} cap is ${peso(max.benefit)}.`,
+  },
+  {
+    q: 'Who pays the sickness benefit, the employer or SSS?',
+    a: `For employed members the employer advances the allowance every regular payday and SSS reimburses 100% of it, provided the employer notified SSS within ${S.notify_within_days} days of the employee's notice (Sec. 14(b)–(c)). Self-employed, voluntary and separated members are paid directly by SSS to their enrolled disbursement account.`,
+  },
+  {
+    q: 'Is the sickness benefit the same as paid sick leave?',
+    a: 'No. Company or CBA sick leave with full pay must be exhausted first; the SSS benefit starts only after that (Sec. 14(b)). The Labor Code itself grants no paid sick leave — only the five days of service incentive leave — so many workers go straight to the SSS benefit.',
+  },
+  {
+    q: 'Magkano ang sickness benefit sa SSS kung ₱15,000 ang sahod?',
+    a: `Sa ₱15,000 na sahod, ${peso(findSssRow(15000, 'employee', rules).msc)} ang MSC: ${peso(forSalary(15000, 1).averageDailySalaryCredit)} kada araw ang ADSC, ${peso(forSalary(15000, 1).dailyBenefit)} kada araw ang benefit (${S.pct_of_adsc * 100}%). Kung ${forSalary(15000, 7).daysPayable} araw ang confinement, ${peso(forSalary(15000, 7).benefit)} ang matatanggap mo. Kailangang higit sa ${S.min_confinement_days - 1} araw ang confinement at may ${S.min_contributions} hulog sa loob ng 12 buwan bago ang semester ng pagkakasakit.`,
+  },
+];
+---
+
+<ToolPageLayout
+  title="SSS Sickness Benefit Calculator 2026 – 90% Daily Allowance"
+  description={`Compute your SSS sickness benefit: ${S.pct_of_adsc * 100}% of the average daily salary credit (six highest MSCs ÷ ${S.divisor}) × compensable days, up to ${S.max_days_per_year} days a year. Rules from RA 11199, Sec. 14.`}
+  path="/sss-sickness-benefit-calculator/"
+  h1="SSS Sickness Benefit Calculator"
+  faqs={faqs}
+  related={['sssMaternity', 'sssUnemployment', 'sssCalculator', 'sssTable']}
+>
+  <Fragment slot="answer">
+    <p>
+      The <strong>SSS sickness benefit</strong> is <strong>{S.pct_of_adsc * 100}% of your average daily salary credit</strong> for
+      every day of confinement beyond three days, up to {S.max_days_per_year} days a year (RA 11199, Sec. 14). The daily
+      credit is your {S.top_msc_count} highest monthly salary credits from the 12 months before the semester of sickness ÷
+      {S.divisor}, each MSC counted up to {peso(CAP)}. Example: a ₱20,000 salary gives {peso(ex.dailyBenefit)} a day, or
+      <strong>{peso(ex.benefit)}</strong> for {ex.daysPayable} days. Employees are paid by the employer every payday after
+      paid sick leave runs out; SSS reimburses the employer.
+    </p>
+  </Fragment>
+  <Fragment slot="calculator">
+    <SssSicknessCalculator client:idle />
+  </Fragment>
+
+  <h2>Daily Sickness Allowance by Salary</h2>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Monthly salary</th><th>MSC</th><th>Daily salary credit</th><th>Daily allowance ({S.pct_of_adsc * 100}%)</th><th>10 days</th><th>30 days</th></tr></thead>
+      <tbody>
+        {salaries.map((s) => { const r = forSalary(s, 10); const r30 = forSalary(s, 30); return (
+          <tr><td><strong>{peso(s)}</strong></td><td>{peso(r.topMscs[0]!)}</td><td>{peso(r.averageDailySalaryCredit)}</td><td><strong>{peso(r.dailyBenefit)}</strong></td><td>{peso(r.benefit)}</td><td>{peso(r30.benefit)}</td></tr>
+        ); })}
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Conditions in RA 11199, Section 14</h2>
+  <ul>
+    <li><strong>Contributions:</strong> at least {S.min_contributions} posted monthly contributions in the 12 months before the semester of sickness or injury.</li>
+    <li><strong>Confinement:</strong> more than {S.min_confinement_days - 1} days at home or in a hospital, approved by SSS; the benefit begins on the first day of sickness.</li>
+    <li><strong>Notice:</strong> tell your employer within {S.notify_within_days} calendar days of the start of confinement — or SSS directly if you are self-employed, voluntary or unemployed. Hospital confinement, or sickness at work, needs no notice. Late notice moves the start of the compensable period.</li>
+    <li><strong>Limits:</strong> {S.max_days_per_year} days per calendar year; {S.max_days_same_confinement} days for the same confinement; unused days are not carried forward.</li>
+    <li><strong>Sick leave first:</strong> the allowance starts only after paid sick leave with the employer is exhausted (Sec. 14(b)).</li>
+    <li><strong>Reimbursement:</strong> SSS repays the employer 100% if the employer notified SSS within {S.notify_within_days} days of the employee's notice; claims must be filed within one year of the confinement.</li>
+  </ul>
+
+  <h2>How to File</h2>
+  <ol>
+    <li>Notify your employer (or SSS through My.SSS) within {S.notify_within_days} days, with the medical certificate or hospital records.</li>
+    <li>Employed members: the employer files the Sickness Notification and the reimbursement claim through the employer's My.SSS account and pays you every payday.</li>
+    <li>Self-employed, voluntary and separated members: file the Sickness Benefit Application in My.SSS; payment goes to your enrolled disbursement account.</li>
+  </ol>
+
+  <h2>Official Source</h2>
+  <p>
+    <a href={LAW} target="_blank" rel="noopener">RA 11199, Sec. 14 (Sickness Benefit) and Sec. 8(n) (average daily salary credit)</a>, LawPhil.
+    Monthly salary credits: <a href={meta.official_source_url} target="_blank" rel="noopener">{meta.official_source_label}</a>.
+    File only through <a href="https://www.sss.gov.ph/" target="_blank" rel="noopener">My.SSS</a> — AyTool is independent and cannot see your contribution record.
+  </p>
+</ToolPageLayout>

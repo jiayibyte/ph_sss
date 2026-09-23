@@ -1,0 +1,9 @@
+---
+import EmbedLayout from '../../layouts/EmbedLayout.astro';
+import RetirementPayCalculator from '../../islands/RetirementPayCalculator';
+import { TOOL_PAGES } from '../../lib/pages';
+---
+
+<EmbedLayout page={TOOL_PAGES.retirementPay!}>
+  <RetirementPayCalculator client:load />
+</EmbedLayout>

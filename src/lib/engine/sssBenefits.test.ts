@@ -6,6 +6,8 @@ import {
   computeMaternity,
   computePension,
   computeSalaryLoan,
+  computeSickness,
+  computeUnemployment,
   maternityDays,
   roundUpToMsc,
 } from './sssBenefits';
@@ -146,5 +148,34 @@ describe('computeSalaryLoan (SSS Circular 2025-004)', () => {
     const max = computeSalaryLoan({ averageMsc: 50000, months: 2, requested: 100000 }, sss);
     expect(max.loanableAmount).toBe(40000);
     expect(max.loanAmount).toBe(40000);
+  });
+});
+
+describe('computeSickness (RA 11199 Sec. 14)', () => {
+  it('90% of ADSC per day: MSC ₱20,000 → ADSC 666.67 → ₱600 a day; 10 days = ₱6,000', () => {
+    const r = computeSickness({ mscs: Array(12).fill(20000), days: 10 }, sss);
+    expect(r.averageDailySalaryCredit).toBe(666.67);
+    expect(r.dailyBenefit).toBe(600);
+    expect(r.daysPayable).toBe(10);
+    expect(r.benefit).toBe(6000);
+    expect(r.notCompensable).toBe(false);
+  });
+  it('confinement of three days or less is not compensable; the 120-day annual cap applies', () => {
+    expect(computeSickness({ mscs: [20000, 20000, 20000], days: 3 }, sss).notCompensable).toBe(true);
+    const capped = computeSickness({ mscs: Array(6).fill(20000), days: 100, daysUsedThisYear: 50 }, sss);
+    expect(capped.daysPayable).toBe(70);
+    expect(capped.benefit).toBe(42000);
+  });
+});
+
+describe('computeUnemployment (RA 11199 Sec. 14-B)', () => {
+  it('50% of AMSC for two months, AMSC capped at ₱20,000 → max ₱20,000 total', () => {
+    const r = computeUnemployment(15000, sss);
+    expect(r.monthlyBenefit).toBe(7500);
+    expect(r.total).toBe(15000);
+    const max = computeUnemployment(35000, sss);
+    expect(max.amsc).toBe(20000);
+    expect(max.total).toBe(20000);
+    expect(max.amscCapped).toBe(true);
   });
 });

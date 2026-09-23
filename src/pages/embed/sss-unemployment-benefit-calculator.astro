@@ -1,0 +1,9 @@
+---
+import EmbedLayout from '../../layouts/EmbedLayout.astro';
+import SssUnemploymentCalculator from '../../islands/SssUnemploymentCalculator';
+import { TOOL_PAGES } from '../../lib/pages';
+---
+
+<EmbedLayout page={TOOL_PAGES.sssUnemployment!}>
+  <SssUnemploymentCalculator client:load />
+</EmbedLayout>

@@ -1,0 +1,81 @@
+---
+import ToolPageLayout from '../layouts/ToolPageLayout.astro';
+import SssUnemploymentCalculator from '../islands/SssUnemploymentCalculator';
+import sssRules from '../data/sss/2026.json';
+import type { SssRules } from '../lib/rules/types';
+import { findSssRow } from '../lib/engine/sss';
+import { benefitMscCap, computeUnemployment } from '../lib/engine/sssBenefits';
+import { peso } from '../lib/format';
+
+const rules = sssRules as unknown as SssRules;
+const meta = rules.meta;
+const U = rules.benefits.unemployment;
+const CAP = benefitMscCap(rules);
+const LAW = U.source_url;
+const forSalary = (s: number) => computeUnemployment(findSssRow(s, 'employee', rules).msc, rules);
+const salaries = [10000, 15000, 20000, 30000];
+const ex = forSalary(20000);
+const max = computeUnemployment(CAP, rules);
+
+const faqs = [
+  { q: 'How much is the SSS unemployment benefit?', a: `${U.pct_of_amsc * 100}% of your average monthly salary credit, paid for ${U.months} months as a one-time lump sum (RA 11199, Sec. 14-B). With the MSC counted up to ${peso(CAP)}, the maximum is ${peso(max.monthlyBenefit)} × ${U.months} = ${peso(max.total)}. A ₱20,000 salary gives ${peso(ex.monthlyBenefit)} a month, ${peso(ex.total)} in total.` },
+  { q: 'Who qualifies for the SSS unemployment benefit?', a: `A member not over ${U.max_age} years old with at least ${U.min_contributions} posted monthly contributions, ${U.recent_contributions_required} of them within the ${U.recent_window_months} months before the involuntary separation, who was separated for an authorized cause (installation of labor-saving devices, redundancy, retrenchment, closure, disease) or other involuntary reasons recognised by SSS and DOLE — not resignation, not termination for just cause. It can be claimed once every ${U.once_every_years} years.` },
+  { q: 'What documents do I need?', a: 'A DOLE Certification of Involuntary Separation from the DOLE Regional or Field Office where the employer is located (or the establishment report your employer filed), your Notice of Termination from the employer, and a valid ID. File through My.SSS within one year of the separation date; payment goes to your enrolled disbursement account.' },
+  { q: 'Is the unemployment benefit taxable, and does it affect my other SSS benefits?', a: `It is an SSS benefit, not income from employment, so it is not subject to withholding tax. It does not reduce your future retirement pension; but if two contingencies overlap (for example sickness and unemployment), only the higher benefit is paid (Sec. 14-B).` },
+  { q: 'Magkano ang unemployment benefit sa SSS kung ₱15,000 ang sahod?', a: `Sa ₱15,000 na sahod, ${peso(findSssRow(15000, 'employee', rules).msc)} ang MSC, kaya ${peso(forSalary(15000).monthlyBenefit)} kada buwan (${U.pct_of_amsc * 100}%) × ${U.months} buwan = ${peso(forSalary(15000).total)}, isang bagsakan. Kailangan hindi lalampas sa ${U.max_age} taong gulang, may ${U.min_contributions} hulog kung saan ${U.recent_contributions_required} ay sa huling ${U.recent_window_months} buwan, at involuntary ang pagkakatanggal — hindi resignation.` },
+];
+---
+
+<ToolPageLayout
+  title="SSS Unemployment Benefit Calculator – 50% of AMSC × 2 Months"
+  description={`Compute the SSS unemployment (involuntary separation) benefit: ${U.pct_of_amsc * 100}% of your average monthly salary credit for ${U.months} months, max ${peso(max.total)}. Eligibility and documents under RA 11199, Sec. 14-B.`}
+  path="/sss-unemployment-benefit-calculator/"
+  h1="SSS Unemployment Benefit Calculator"
+  faqs={faqs}
+  related={['finalPay', 'separationPay', 'sssSickness', 'sssCalculator']}
+>
+  <Fragment slot="answer">
+    <p>
+      The <strong>SSS unemployment benefit</strong> is <strong>{U.pct_of_amsc * 100}% of your average monthly salary credit for
+      {U.months} months</strong>, paid once as a lump sum (RA 11199, Sec. 14-B) — at most {peso(max.total)} because the MSC
+      counts only up to {peso(CAP)}. You must be not over {U.max_age}, have at least {U.min_contributions} contributions with
+      {U.recent_contributions_required} in the last {U.recent_window_months} months, and have been separated involuntarily; one claim
+      every {U.once_every_years} years. A ₱20,000 salary gives <strong>{peso(ex.total)}</strong>.
+    </p>
+  </Fragment>
+  <Fragment slot="calculator">
+    <SssUnemploymentCalculator client:idle />
+  </Fragment>
+
+  <h2>Unemployment Benefit by Salary</h2>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Monthly salary</th><th>MSC</th><th>Monthly benefit ({U.pct_of_amsc * 100}%)</th><th>Total for {U.months} months</th></tr></thead>
+      <tbody>
+        {salaries.map((s) => { const r = forSalary(s); return (<tr><td><strong>{peso(s)}</strong></td><td>{peso(r.amsc)}</td><td>{peso(r.monthlyBenefit)}</td><td><strong>{peso(r.total)}</strong></td></tr>); })}
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Eligibility Under Section 14-B</h2>
+  <ul>
+    <li>Not over <strong>{U.max_age} years old</strong> at the time of involuntary separation.</li>
+    <li>At least <strong>{U.min_contributions} monthly contributions</strong>, <strong>{U.recent_contributions_required} of them in the {U.recent_window_months}-month period</strong> immediately before the separation.</li>
+    <li><strong>Involuntary</strong> unemployment: authorized causes under the Labor Code (labor-saving devices, redundancy, retrenchment, closure, disease) and other involuntary separations certified by DOLE — not resignation or dismissal for just cause.</li>
+    <li>Claimable <strong>once every {U.once_every_years} years</strong>; if another compensable contingency overlaps, only the higher benefit is paid.</li>
+  </ul>
+
+  <h2>How to Claim</h2>
+  <ol>
+    <li>Get the <strong>DOLE Certification of Involuntary Separation</strong> from the DOLE Field or Regional Office covering your employer, bringing your Notice of Termination.</li>
+    <li>Log in to My.SSS, file the Unemployment Benefit application under E-Services and upload the certification and notice; make sure a disbursement account is enrolled.</li>
+    <li>File within one year of separation. If you were separated for an authorized cause you are also owed <a href="/separation-pay-calculator/">separation pay</a> and your <a href="/final-pay-calculator/">final pay</a> from the employer.</li>
+  </ol>
+
+  <h2>Official Source</h2>
+  <p>
+    <a href={LAW} target="_blank" rel="noopener">RA 11199, Sec. 14-B (Unemployment Insurance or Involuntary Separation Benefits)</a>, LawPhil.
+    Monthly salary credits: <a href={meta.official_source_url} target="_blank" rel="noopener">{meta.official_source_label}</a>.
+    File only through <a href="https://www.sss.gov.ph/" target="_blank" rel="noopener">My.SSS</a>; AyTool is independent.
+  </p>
+</ToolPageLayout>

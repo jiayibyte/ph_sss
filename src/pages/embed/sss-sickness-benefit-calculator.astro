@@ -1,0 +1,9 @@
+---
+import EmbedLayout from '../../layouts/EmbedLayout.astro';
+import SssSicknessCalculator from '../../islands/SssSicknessCalculator';
+import { TOOL_PAGES } from '../../lib/pages';
+---
+
+<EmbedLayout page={TOOL_PAGES.sssSickness!}>
+  <SssSicknessCalculator client:load />
+</EmbedLayout>

@@ -149,6 +149,29 @@ export interface SssRules {
       source_note: string;
       source_url: string;
     };
+    sickness: {
+      pct_of_adsc: number;
+      min_confinement_days: number;
+      max_days_per_year: number;
+      max_days_same_confinement: number;
+      min_contributions: number;
+      notify_within_days: number;
+      top_msc_count: number;
+      divisor: number;
+      source_note: string;
+      source_url: string;
+    };
+    unemployment: {
+      pct_of_amsc: number;
+      months: number;
+      min_contributions: number;
+      recent_contributions_required: number;
+      recent_window_months: number;
+      max_age: number;
+      once_every_years: number;
+      source_note: string;
+      source_url: string;
+    };
   };
 }
 
@@ -206,6 +229,25 @@ export interface LaborRules {
     tax_exempt_cap: number;
   };
   final_pay: { release_days: number; coe_days: number };
+  separation_pay: {
+    min_months: number;
+    half_month_causes: string[];
+    one_month_causes: string[];
+    fraction_months_counted_as_year: number;
+    source_note: string;
+    source_url: string;
+  };
+  retirement_pay: {
+    days_per_year: number;
+    components: { salary_days: number; sil_days: number; thirteenth_month_days: number };
+    optional_age: number;
+    compulsory_age: number;
+    min_service_years: number;
+    fraction_months_counted_as_year: number;
+    exempt_headcount: number;
+    source_note: string;
+    source_url: string;
+  };
 }
 
 /* -------------------------------- Holidays ------------------------------- */
@@ -266,6 +308,10 @@ export interface PrcExamEntry {
   results_target: string | null;
   /** Actual release date once PRC publishes the results — pages show it in place of the target. */
   results_released?: string | null;
+  /** From PRC's results press release (counts as printed; pass rate = passers ÷ examinees). */
+  passers?: number;
+  examinees?: number;
+  results_note?: string;
   note?: string;
 }
 

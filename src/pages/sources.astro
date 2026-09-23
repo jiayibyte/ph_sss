@@ -16,7 +16,7 @@ const agencies = [
       { label: 'SSS Maternity Benefit page (computation steps and ₱56,000 sample)', url: 'https://www.sss.gov.ph/maternity-benefit/' },
       { label: 'SSS Circular No. 2025-004 — Guidelines of the SSS Salary Loan Program (June 2025)', url: 'https://www.sss.gov.ph/wp-content/uploads/2025/06/CI-2025-004-External.pdf' },
     ],
-    usedBy: [t.sssTable, t.sssCalculator, t.sssPension, t.sssMaternity, t.sssLoan, t.takeHome],
+    usedBy: [t.sssTable, t.sssCalculator, t.sssPension, t.sssMaternity, t.sssLoan, t.sssSickness, t.sssUnemployment, t.takeHome],
   },
   {
     name: 'PhilHealth — Philippine Health Insurance Corporation',
@@ -49,8 +49,9 @@ const agencies = [
       { label: 'Handbook on Workers’ Statutory Monetary Benefits (2024 edition)', url: 'https://bwc.dole.gov.ph/wp-content/uploads/2024/10/Workers-Statutory-Monetary-Benefits-Handbook-2024-Edition.pdf' },
       { label: 'Labor Advisory No. 12-25 (2026 holiday pay rules)', url: 'https://bwc.dole.gov.ph/wp-content/uploads/2025/10/Labor-Advisory-No.-12-25-Payment-of-Wages-for-the-Regular-Holidays-Special-Non-Working-Days-and-Special-Working-Day-for-the-Year-2026-1.pdf' },
       { label: 'DOLE on final pay & COE (Labor Advisory No. 06-20)', url: 'https://dole.gov.ph/final-pay-coe-must-be-released-on-time-dole/' },
+      { label: 'RA 7641 — Retirement Pay Law (Labor Code Art. 302)', url: 'https://lawphil.net/statutes/repacts/ra1992/ra_7641_1992.html' },
     ],
-    usedBy: [t.thirteenth, t.holidayPay, t.nightDiff, t.overtime, t.finalPay],
+    usedBy: [t.thirteenth, t.holidayPay, t.nightDiff, t.overtime, t.finalPay, t.separationPay, t.retirementPay],
   },
   {
     name: 'NWPC — National Wages and Productivity Commission / Regional Tripartite Wages and Productivity Boards',
@@ -62,7 +63,7 @@ const agencies = [
       { label: 'Monthly minimum wage for kasambahay by region (September 2026)', url: 'https://nwpc.dole.gov.ph/wp-content/uploads/2026/09/Current-Monthly-MW-for-DW-as-of-September_2026.pdf' },
       { label: 'DOLE Handbook on Workers’ Statutory Monetary Benefits, 2024 edition (NWPC mirror; monthly-equivalent factors)', url: 'https://nwpc.dole.gov.ph/wp-content/uploads/2024/11/Workers-Statutory-Monetary-Benefits-Handbook-2024-Edition.pdf' },
     ],
-    usedBy: [t.minimumWage],
+    usedBy: [t.minimumWage, t.dailyRate, t.retirementPay],
   },
   {
     name: 'Malacañang / Presidential Communications Office',
@@ -88,7 +89,7 @@ const agencies = [
       { label: 'Schedule of Licensure Examinations for 2026 (Resolution No. 2113, s. 2025)', url: 'https://www.prc.gov.ph/article/schedule-licensure-examinations-year-2026' },
       { label: 'PRC main site / LERIS', url: 'https://www.prc.gov.ph/' },
     ],
-    usedBy: [t.prc, t.nursingSchedule, t.letSchedule, t.criminologySchedule, t.cpaSchedule, t.civilEngSchedule, t.physicianSchedule, t.pharmacySchedule, t.midwiferySchedule, t.psychometricianSchedule, t.radtechSchedule, t.medtechSchedule, t.electricalSchedule, t.mechanicalSchedule, t.architectureSchedule, t.electronicsSchedule, t.dentistrySchedule, t.socialWorkSchedule],
+    usedBy: [t.prc, t.prcResults, t.nursingSchedule, t.letSchedule, t.criminologySchedule, t.cpaSchedule, t.civilEngSchedule, t.physicianSchedule, t.pharmacySchedule, t.midwiferySchedule, t.psychometricianSchedule, t.radtechSchedule, t.medtechSchedule, t.electricalSchedule, t.mechanicalSchedule, t.architectureSchedule, t.electronicsSchedule, t.dentistrySchedule, t.socialWorkSchedule],
   },
   {
     name: 'Republic Acts cited on the board exam pages (via the Arellano Law Foundation’s LawPhil archive)',

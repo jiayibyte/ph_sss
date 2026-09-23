@@ -1,0 +1,70 @@
+---
+import ToolPageLayout from '../layouts/ToolPageLayout.astro';
+import DailyRateCalculator from '../islands/DailyRateCalculator';
+import wagesJson from '../data/wages/2026.json';
+import type { WageRules } from '../lib/rules/types';
+import { dailyEquivalent, hourlyFromDaily, monthlyEquivalent } from '../lib/engine/wages';
+import { peso } from '../lib/format';
+
+const wages = wagesJson as unknown as WageRules;
+const meta = wages.meta;
+const D = wages.divisors;
+const f = (id: string) => D.options.find((o) => o.id === id)!.factor;
+const monthlies = [15000, 20000, 25000, 30000, 40000, 50000];
+const ncr = wages.ncr.in_force.non_agriculture;
+
+const faqs = [
+  { q: 'How do I convert a monthly salary to a daily rate in the Philippines?', a: `Daily rate = monthly salary × 12 ÷ factor, where the factor is the number of days you are paid for in a year (DOLE Handbook on Workers' Statutory Monetary Benefits): ${f('365')} if you are monthly-paid (paid every day of the month), ${f('313')} for a six-day week with rest days unpaid, ${f('261')} for a five-day week, ${f('395')} if you work every day including rest days and holidays. ₱20,000 a month is ${peso(dailyEquivalent(20000, f('313')))} a day at ${f('313')}, ${peso(dailyEquivalent(20000, f('261')))} at ${f('261')}, ${peso(dailyEquivalent(20000, f('365')))} at ${f('365')}.` },
+  { q: 'How do I get my hourly rate?', a: `Divide the daily rate by the normal eight working hours. ${peso(dailyEquivalent(20000, f('313')))} a day is ${peso(hourlyFromDaily(dailyEquivalent(20000, f('313'))))} an hour; an ordinary-day overtime hour is 125% of that, a night-shift hour 110%. The NCR minimum of ${peso(ncr)} a day works out to ${peso(hourlyFromDaily(ncr))} an hour.` },
+  { q: 'Which factor should I use, 313 or 261?', a: `${f('313')} when you work six days a week and are not paid for rest days but are paid for the 12 regular holidays and 8 special days; ${f('261')} when you work five days a week. Use 305 or 253 instead if the eight special (non-working) days are unpaid. Monthly-paid employees, who are paid for every calendar day, use ${f('365')}. Your payslip or company policy states which you are.` },
+  { q: 'Why does the daily rate matter?', a: 'Overtime, holiday pay, night differential, leave conversions, retirement pay and final pay are all computed from the daily or hourly rate, and the minimum wage is set per day. Using the wrong factor changes every one of those amounts.' },
+  { q: 'Magkano ang daily rate kung ₱18,000 ang monthly?', a: `₱18,000 × 12 ÷ ${f('313')} = ${peso(dailyEquivalent(18000, f('313')))} kada araw (anim na araw kada linggo), o ${peso(dailyEquivalent(18000, f('261')))} kung limang araw (${f('261')}). Hatiin sa 8 oras para sa hourly: ${peso(hourlyFromDaily(dailyEquivalent(18000, f('313'))))} kada oras.` },
+];
+---
+
+<ToolPageLayout
+  title="Daily Rate Calculator Philippines – Monthly, Daily & Hourly"
+  description={`Convert monthly salary to daily and hourly rate with the DOLE factors (${f('365')}, ${f('395')}, ${f('313')}, ${f('261')}), or daily to monthly — plus your overtime and night-shift hourly rates.`}
+  path="/daily-rate-calculator/"
+  h1="Daily Rate & Hourly Rate Calculator Philippines"
+  faqs={faqs}
+  related={['minimumWage', 'overtime', 'nightDiff', 'takeHome']}
+>
+  <Fragment slot="answer">
+    <p>
+      <strong>Daily rate = monthly salary × 12 ÷ factor</strong>, where the factor is the number of paid days in a year under
+      the DOLE Handbook: <strong>{f('365')}</strong> for monthly-paid employees, <strong>{f('313')}</strong> for a six-day week,
+      <strong>{f('261')}</strong> for a five-day week, {f('395')} if you work every day including rest days and holidays.
+      <strong>Hourly rate = daily ÷ 8.</strong> ₱20,000 a month → {peso(dailyEquivalent(20000, f('313')))} a day →
+      {peso(hourlyFromDaily(dailyEquivalent(20000, f('313'))))} an hour at factor {f('313')}. The calculator converts in either
+      direction and shows your overtime and night-shift hourly rates.
+    </p>
+  </Fragment>
+  <Fragment slot="calculator">
+    <DailyRateCalculator client:idle />
+  </Fragment>
+
+  <h2>Monthly to Daily and Hourly (Factor {f('313')} vs {f('261')} vs {f('365')})</h2>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Monthly</th><th>Daily @{f('313')}</th><th>Hourly @{f('313')}</th><th>Daily @{f('261')}</th><th>Hourly @{f('261')}</th><th>Daily @{f('365')}</th></tr></thead>
+      <tbody>
+        {monthlies.map((m) => (<tr><td><strong>{peso(m)}</strong></td><td>{peso(dailyEquivalent(m, f('313')))}</td><td>{peso(hourlyFromDaily(dailyEquivalent(m, f('313'))))}</td><td>{peso(dailyEquivalent(m, f('261')))}</td><td>{peso(hourlyFromDaily(dailyEquivalent(m, f('261'))))}</td><td>{peso(dailyEquivalent(m, f('365')))}</td></tr>))}
+      </tbody>
+    </table>
+  </div>
+
+  <h2>The DOLE Factors Explained</h2>
+  <ul>
+    {D.options.map((o) => (<li><strong>{o.factor}</strong> — {o.label}: {o.breakdown}.</li>))}
+    <li>{D.alternates_note}</li>
+    <li>{D.nwpc_practice} Daily minimum wages by region are on the <a href="/minimum-wage-philippines/">Minimum Wage Philippines 2026</a> page; ₱{ncr} a day in NCR is {peso(monthlyEquivalent(ncr, f('313')))} a month at {f('313')}.</li>
+  </ul>
+
+  <h2>Official Source</h2>
+  <p>
+    <a href={D.source} target="_blank" rel="noopener">{D.source_label}</a> — "Estimated Equivalent Monthly Rate" formulas.
+    Minimum wage data: <a href={meta.official_source_url} target="_blank" rel="noopener">{meta.official_source_label}</a>. The
+    formulas are DOLE's suggested guides; company policy or a CBA may fix a different divisor.
+  </p>
+</ToolPageLayout>

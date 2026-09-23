@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import wagesJson from '../../data/wages/2026.json';
 import type { WageRules } from '../rules/types';
-import { dailyEquivalent, monthlyEquivalent, rateRange, shortfall } from './wages';
+import { dailyEquivalent, hourlyFromDaily, monthlyEquivalent, rateRange, shortfall } from './wages';
 
 const wages = wagesJson as unknown as WageRules;
 
@@ -46,5 +46,12 @@ describe('wage conversions (DOLE Handbook factors)', () => {
     expect(dailyEquivalent(monthlyEquivalent(600, 313), 313)).toBe(600);
     expect(shortfall(650, 695)).toBe(45);
     expect(shortfall(700, 695)).toBe(0);
+  });
+});
+
+describe('hourlyFromDaily', () => {
+  it('divides by the normal eight hours: ₱695 → ₱86.88', () => {
+    expect(hourlyFromDaily(695)).toBe(86.88);
+    expect(hourlyFromDaily(600, 6)).toBe(100);
   });
 });
