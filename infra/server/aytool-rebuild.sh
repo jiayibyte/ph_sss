@@ -74,7 +74,7 @@ cmd_build() {
     log "commit ${sha:0:12} is not in $REPO (never pushed there) — skipping"
     return 0
   fi
-  log "rebuilding live release $rel (commit ${sha:0:12}) for $(TZ=Asia/Manila date +%F) Manila time"
+  log "rebuilding live release $rel (commit ${sha:0:12}) for ${AYTOOL_TODAY:-$(TZ=Asia/Manila date +%F)} Manila time"
   git -C "$WORK" checkout --quiet --force --detach "$sha"
   git -C "$WORK" clean -fdxq -e node_modules
   cd "$WORK"

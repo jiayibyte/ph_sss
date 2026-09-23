@@ -1,9 +1,17 @@
-import { afterEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { todayInManila } from './today.mjs';
 
 describe('todayInManila', () => {
-  afterEach(() => {
+  // Independent of the ambient environment: a build run with AYTOOL_TODAY set
+  // (previews, the server's date simulation) must not change these results.
+  let saved: string | undefined;
+  beforeEach(() => {
+    saved = process.env.AYTOOL_TODAY;
     delete process.env.AYTOOL_TODAY;
+  });
+  afterEach(() => {
+    if (saved === undefined) delete process.env.AYTOOL_TODAY;
+    else process.env.AYTOOL_TODAY = saved;
   });
 
   it('uses the Philippine calendar day, not UTC', () => {
