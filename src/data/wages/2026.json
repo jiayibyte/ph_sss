@@ -3,7 +3,7 @@
   "rule_version": "NWPC Summary of Current Regional Daily Minimum Wage Rates (September 2, 2026) and Latest Wage Order Matrix (September 11, 2026)",
   "effective_from": "2026-09-22",
   "effective_to": null,
-  "last_verified": "2026-09-22",
+  "last_verified": "2026-09-23",
   "official_source_url": "https://nwpc.dole.gov.ph/stats/summary-of-current-regional-daily-minimum-wage-rates/",
   "official_source_label": "NWPC — Summary of Current Regional Daily Minimum Wage Rates (nwpc.dole.gov.ph)",
   "sources": {
@@ -20,14 +20,17 @@
    "non_agriculture": 695,
    "other_tier": 658,
    "other_tier_label": "Agriculture (plantation and non-plantation), service/retail establishments employing 15 workers or less, manufacturing regularly employing less than 10 workers",
-   "url": "https://nwpc.dole.gov.ph/wp-content/uploads/2025/06/01.-Wage-Order-No.-NCR-26.pdf"
+   "url": "https://nwpc.dole.gov.ph/wp-content/uploads/2025/06/01.-Wage-Order-No.-NCR-26.pdf",
+   "date_published": "2025-07-02"
   },
   "upcoming": {
    "wage_order": "NCR-28",
    "date_issued": "2026-09-07",
    "date_published": "2026-09-11",
-   "effectivity": null,
-   "effectivity_rule": "15 days after publication in a newspaper of general circulation (Sec. 7) — NWPC has not yet printed the date; expected September 26–27, 2026",
+   "effectivity": "2026-09-26",
+   "effectivity_rule": "Sec. 7: effective fifteen (15) days after publication in a newspaper of general circulation. Published September 11, 2026 (Daily Tribune); DOLE announced the new rates take effect September 26, 2026. The NWPC NCR page and wage order matrix had not printed the date as of September 23, 2026.",
+   "effectivity_source_url": "https://businessmirror.com.ph/2026/09/17/1-1m-ncr-workers-to-get-%E2%82%B160-wage-hike-sept-26/",
+   "effectivity_source_label": "BusinessMirror, September 17, 2026, reporting DOLE's announcement",
    "non_agriculture": 755,
    "other_tier": 718,
    "increase": 60,
@@ -41,7 +44,8 @@
    "other_tier": 718,
    "status": "Never took effect: Status Quo Ante Order of July 24, 2026, then a TRO and a Writ of Preliminary Injunction (August 13, 2026) from RTC Pasig Branch 152, with related litigation before RTC Navotas Branch 287. Its second tranche (₱780/₱743 on January 20, 2027) is likewise suspended.",
    "url": "https://nwpc.dole.gov.ph/wp-content/uploads/2026/07/Wage-Order-No.-NCR-27.pdf",
-   "nwpc_statement_url": "https://nwpc.dole.gov.ph/nwpcs-official-statement-on-the-injunction-order-issued-by-the-pasig-city-regional-trial-court/"
+   "nwpc_statement_url": "https://nwpc.dole.gov.ph/nwpcs-official-statement-on-the-injunction-order-issued-by-the-pasig-city-regional-trial-court/",
+   "date_published": "2026-07-09"
   },
   "cola_note": "All-basic wage: the last separate COLA in NCR (₱10 under WO NCR-21, 2017) was integrated in WO NCR-22 (2018); every order since is 100% basic wage.",
   "rtwpb_url": "https://nwpc.dole.gov.ph/ncr/"
@@ -52,6 +56,7 @@
    "name": "National Capital Region (Metro Manila)",
    "wage_order": "NCR-26",
    "date_issued": "2025-06-24",
+   "date_published": "2025-07-02",
    "effectivity": "2025-07-18",
    "tiers": [
     {
@@ -63,21 +68,23 @@
      "rate": 658
     }
    ],
-   "notes": "Legally in force on the verification date. WO NCR-27 (₱755/₱718) is under a court injunction and never took effect; WO NCR-28 (₱755/₱718) was published September 11, 2026 and takes effect 15 days after publication.",
+   "notes": "WO NCR-27 (₱755/₱718) is under a court injunction and never took effect. WO NCR-28 grants the same ₱60 on the NCR-26 baseline: published September 11, 2026, effective September 26, 2026 as announced by DOLE (15 days after publication, Sec. 7).",
    "upcoming": {
     "wage_order": "NCR-28",
+    "date_issued": "2026-09-07",
+    "date_published": "2026-09-11",
     "rates": [
      {
       "label": "Non-agriculture",
       "rate": 755
      },
      {
-      "label": "Agriculture; service/retail ≤15 workers; manufacturing <10 workers",
+      "label": "Agriculture; service/retail with 15 workers or less; manufacturing with less than 10 workers",
       "rate": 718
      }
     ],
-    "effectivity": null,
-    "expected": "late September 2026"
+    "effectivity": "2026-09-26",
+    "wage_order_url": "https://nwpc.dole.gov.ph/wp-content/uploads/2026/09/Wage-Order-No.-NCR-28.pdf"
    },
    "wage_order_url": "https://nwpc.dole.gov.ph/wp-content/uploads/2025/06/01.-Wage-Order-No.-NCR-26.pdf",
    "rtwpb_url": "https://nwpc.dole.gov.ph/ncr/"
@@ -87,6 +94,7 @@
    "name": "Cordillera Administrative Region",
    "wage_order": "CAR-24",
    "date_issued": "2025-12-02",
+   "date_published": "2025-12-14",
    "effectivity": "2025-12-30",
    "tiers": [
     {
@@ -102,6 +110,7 @@
    "name": "Region I – Ilocos",
    "wage_order": "RB 1-24",
    "date_issued": "2025-10-16",
+   "date_published": "2025-11-03",
    "effectivity": "2025-11-19",
    "tiers": [
     {
@@ -121,6 +130,7 @@
    "name": "Region II – Cagayan Valley",
    "wage_order": "RTWPB 2-24",
    "date_issued": "2025-10-08",
+   "date_published": "2025-10-20",
    "effectivity": "2025-11-05",
    "tiers": [
     {
@@ -140,6 +150,7 @@
    "name": "Region III – Central Luzon",
    "wage_order": "RBIII-26",
    "date_issued": "2025-09-16",
+   "date_published": "2025-10-14",
    "effectivity": "2025-10-30",
    "second_tranche_effectivity": "2026-04-16",
    "tiers": [
@@ -183,6 +194,7 @@
    "name": "Region IV-A – CALABARZON",
    "wage_order": "IVA-22",
    "date_issued": "2025-09-03",
+   "date_published": "2025-09-19",
    "effectivity": "2025-10-05",
    "second_tranche_effectivity": "2026-04-01",
    "tiers": [
@@ -226,6 +238,7 @@
    "name": "Region IV-B – MIMAROPA",
    "wage_order": "RB-MIMAROPA-13",
    "date_issued": "2025-12-04",
+   "date_published": "2025-12-16",
    "effectivity": "2026-01-01",
    "tiers": [
     {
@@ -241,6 +254,7 @@
    "name": "Region V – Bicol",
    "wage_order": "RBV-23",
    "date_issued": "2026-03-03",
+   "date_published": "2026-03-23",
    "effectivity": "2026-04-08",
    "tiers": [
     {
@@ -250,6 +264,7 @@
    ],
    "upcoming": {
     "wage_order": "RBV-23 second tranche",
+    "tranche": true,
     "rates": [
      {
       "label": "All sectors",
@@ -266,6 +281,7 @@
    "name": "Region VI – Western Visayas",
    "wage_order": "RBVI-29",
    "date_issued": "2025-10-23",
+   "date_published": "2025-11-03",
    "effectivity": "2025-11-19",
    "tiers": [
     {
@@ -302,6 +318,7 @@
    "name": "Region VII – Central Visayas",
    "wage_order": "ROVII-26",
    "date_issued": "2025-09-11",
+   "date_published": "2025-09-18",
    "effectivity": "2025-10-04",
    "tiers": [
     {
@@ -324,6 +341,7 @@
    "name": "Region VIII – Eastern Visayas",
    "wage_order": "RB VIII-25",
    "date_issued": "2025-11-10",
+   "date_published": "2025-11-22",
    "effectivity": "2025-12-08",
    "second_tranche_effectivity": "2026-06-01",
    "tiers": [
@@ -344,6 +362,7 @@
    "name": "Region IX – Zamboanga Peninsula",
    "wage_order": "RIX-24",
    "date_issued": "2025-11-24",
+   "date_published": "2025-12-16",
    "effectivity": "2026-01-01",
    "second_tranche_effectivity": "2026-06-01",
    "tiers": [
@@ -364,6 +383,7 @@
    "name": "Region X – Northern Mindanao",
    "wage_order": "RX-24",
    "date_issued": "2025-12-15",
+   "date_published": "2025-12-31",
    "effectivity": "2026-01-16",
    "second_tranche_effectivity": "2026-05-01",
    "tiers": [
@@ -387,6 +407,7 @@
    "name": "Region XI – Davao",
    "wage_order": "RB XI-24",
    "date_issued": "2026-02-19",
+   "date_published": "2026-02-25",
    "effectivity": "2026-03-13",
    "second_tranche_effectivity": "2026-09-01",
    "tiers": [
@@ -408,6 +429,7 @@
    "name": "Region XII – SOCCSKSARGEN",
    "wage_order": "RB XII-25",
    "date_issued": "2025-09-22",
+   "date_published": "2025-10-17",
    "effectivity": "2025-11-02",
    "second_tranche_effectivity": "2025-12-15",
    "tiers": [
@@ -429,6 +451,7 @@
    "name": "Region XIII – Caraga",
    "wage_order": "RXIII-20",
    "date_issued": "2025-12-09",
+   "date_published": "2025-12-18",
    "effectivity": "2026-01-03",
    "second_tranche_effectivity": "2026-05-01",
    "tiers": [
@@ -445,6 +468,7 @@
    "name": "BARMM – Bangsamoro",
    "wage_order": "BARMM-05",
    "date_issued": "2026-07-15",
+   "date_published": "2026-07-21",
    "effectivity": "2026-08-06",
    "second_tranche_effectivity": "2026-12-01",
    "tiers": [
@@ -471,26 +495,27 @@
    ],
    "upcoming": {
     "wage_order": "BARMM-05 second tranche",
+    "tranche": true,
     "rates": [
      {
       "label": "Non-agriculture",
       "rate": 461,
-      "group": "Cities"
+      "group": "Cotabato City, Lamitan City, Marawi City"
      },
      {
       "label": "Agriculture",
       "rate": 436,
-      "group": "Cities"
+      "group": "Cotabato City, Lamitan City, Marawi City"
      },
      {
       "label": "Non-agriculture",
       "rate": 436,
-      "group": "Other areas"
+      "group": "Maguindanao del Norte and del Sur, Lanao del Sur (excl. Marawi), Basilan (excl. Lamitan), Tawi-Tawi, Special Geographic Area"
      },
      {
       "label": "Agriculture",
       "rate": 426,
-      "group": "Other areas"
+      "group": "Maguindanao del Norte and del Sur, Lanao del Sur (excl. Marawi), Basilan (excl. Lamitan), Tawi-Tawi, Special Geographic Area"
      }
     ],
     "effectivity": "2026-12-01"

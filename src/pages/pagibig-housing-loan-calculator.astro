@@ -5,12 +5,16 @@ import pagibigJson from '../data/pagibig/2026.json';
 import type { PagibigRules } from '../lib/rules/types';
 import { monthlyAmortization } from '../lib/engine/pagibigSavings';
 import { peso } from '../lib/format';
+import { todayInManila } from '../lib/today.mjs';
 
 const rules = pagibigJson as unknown as PagibigRules;
 const H = rules.housing_loan;
 const A = H.affordable;
 const pct = (r: number) => `${+(r * 100).toFixed(3)}%`;
 const until = new Date(H.rates_valid_until + 'T00:00:00').toLocaleDateString('en-PH', { month: 'long', day: 'numeric', year: 'numeric' });
+// After rates_valid_until the figures stay as a record, with a notice to check Pag-IBIG for the new rates
+// (the nightly rebuild adds it on January 1 without anyone editing the page).
+const ratesExpired = todayInManila() > H.rates_valid_until;
 const loans = [1000000, 2000000, 3000000, 5000000, 10000000];
 const r5 = H.regular_rates[0]!;
 const r30 = H.regular_rates[H.regular_rates.length - 1]!;
@@ -38,6 +42,15 @@ const faqs = [
   related={['pagibigMp2', 'pagibig', 'takeHome', 'minimumWage']}
 >
   <Fragment slot="answer">
+    {
+      ratesExpired && (
+        <p class="mb-3 rounded-lg border border-amber-400 bg-amber-50 p-3 text-sm" role="note">
+          <strong>Rates may have changed:</strong> the rates below are the ones Pag-IBIG published for loans until {until}.
+          Check the <a href={H.source_url} target="_blank" rel="noopener">Pag-IBIG Fund housing loan page</a> for the rates in
+          force now; the amortization math is the same.
+        </p>
+      )
+    }
     <p>
       A <strong>Pag-IBIG housing loan</strong> goes up to <strong>{peso(H.max_loan)}</strong> for up to 30 years. Until {until}
       the rates are a <strong>{pct(promoLow.rate)} promo</strong> for loans up to ₱4.9M ({pct(promoHigh.rate)} above) for the

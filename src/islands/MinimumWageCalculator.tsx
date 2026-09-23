@@ -1,12 +1,17 @@
 import { useState } from 'preact/hooks';
 import wagesJson from '../data/wages/2026.json';
 import type { WageRules } from '../lib/rules/types';
-import { dailyEquivalent, monthlyEquivalent, shortfall } from '../lib/engine/wages';
+import { currentRateSince, dailyEquivalent, describeRates, monthlyEquivalent, shortfall, wagesAsOf } from '../lib/engine/wages';
+import { todayInManila } from '../lib/today.mjs';
 import { peso } from '../lib/format';
 import { CalculatorShell, CurrencyInput, ResultCard, SelectField, Tabs, useAmount } from './shared/ui';
 import { trackCalculatorUse } from './shared/track';
 
-const rules = wagesJson as unknown as WageRules;
+// Rates as of the Philippine calendar day, so a scheduled order or tranche shows up on its effectivity date
+// (at build time for the static HTML, and again in the visitor's browser).
+const TODAY = todayInManila();
+const rules = wagesAsOf(wagesJson as unknown as WageRules, TODAY);
+const longDate = (d: string) => new Date(d + 'T00:00:00').toLocaleDateString('en-PH', { month: 'long', day: 'numeric', year: 'numeric' });
 const REGIONS = rules.regions.filter((r) => r.tiers.length > 0);
 const REGION_OPTIONS = REGIONS.map((r) => ({ value: r.id, label: r.name }));
 const DIVISOR_OPTIONS = rules.divisors.options.map((d) => ({ value: d.id, label: `${d.factor} — ${d.label}` }));
@@ -47,6 +52,7 @@ export default function MinimumWageCalculator() {
       : []),
   ];
   const upcoming = region.upcoming;
+  const since = currentRateSince(region, TODAY);
 
   return (
     <CalculatorShell title="Minimum Wage Checker">
@@ -90,7 +96,7 @@ export default function MinimumWageCalculator() {
       <ResultCard
         headline={`Daily minimum wage — ${region.name}`}
         amount={peso(tier.rate)}
-        amountNote={`${region.wage_order}${region.effectivity ? `, in effect since ${new Date(region.effectivity + 'T00:00:00').toLocaleDateString('en-PH', { month: 'long', day: 'numeric', year: 'numeric' })}` : ''}. Estimated monthly equivalent at factor ${divisor.factor}: ${peso(monthly)}.`}
+        amountNote={`${region.wage_order}${since ? `, rate in effect since ${longDate(since)}` : ''}. Estimated monthly equivalent at factor ${divisor.factor}: ${peso(monthly)}.`}
         rows={rows}
         meta={rules.meta}
         copyText={rows.map((r) => `${r.label}: ${r.value}`).join('\n')}
@@ -103,10 +109,9 @@ export default function MinimumWageCalculator() {
       >
         {upcoming && (
           <p class="mt-2 text-xs text-ink-soft">
-            <strong>Coming up:</strong> {upcoming.wage_order} —{' '}
-            {upcoming.rates.map((r) => `${r.label}${r.group ? ` (${r.group})` : ''} ${peso(r.rate)}`).join('; ')}
+            <strong>Coming up:</strong> {upcoming.wage_order} — {describeRates(upcoming.rates)}
             {upcoming.effectivity
-              ? `, from ${new Date(upcoming.effectivity + 'T00:00:00').toLocaleDateString('en-PH', { month: 'long', day: 'numeric', year: 'numeric' })}.`
+              ? `, from ${longDate(upcoming.effectivity)}.`
               : `, expected ${upcoming.expected ?? 'soon'} (effectivity date not yet published by NWPC).`}
           </p>
         )}

@@ -3,6 +3,7 @@ import pagibigJson from '../data/pagibig/2026.json';
 import type { PagibigRules } from '../lib/rules/types';
 import { maxTermYears, scheduleSummary } from '../lib/engine/pagibigSavings';
 import { peso } from '../lib/format';
+import { todayInManila } from '../lib/today.mjs';
 import { CalculatorShell, CurrencyInput, ResultCard, SelectField, useAmount } from './shared/ui';
 import { trackCalculatorUse } from './shared/track';
 
@@ -17,6 +18,9 @@ const PLAN_OPTIONS = [
   { value: 'ahp', label: `Affordable Housing (socialized) — ${pct(A.rate)} for the first ${A.rate_years} years` },
 ];
 const TERMS = Array.from({ length: H.max_term_years }, (_, i) => H.max_term_years - i).map((y) => ({ value: String(y), label: `${y} years` }));
+const UNTIL = new Date(H.rates_valid_until + 'T00:00:00').toLocaleDateString('en-PH', { month: 'long', day: 'numeric', year: 'numeric' });
+/** Past the published validity date (Philippine calendar): keep computing, but say the rates may be out of date. */
+const RATES_EXPIRED = todayInManila() > H.rates_valid_until;
 const numInput = 'w-full rounded-lg border border-line px-3 py-2.5 text-base outline-none focus:border-accent focus:ring-1 focus:ring-accent';
 
 export default function PagibigHousingLoanCalculator() {
@@ -72,7 +76,7 @@ export default function PagibigHousingLoanCalculator() {
   return (
     <CalculatorShell title="Pag-IBIG Housing Loan Calculator">
       <CurrencyInput id="hl-loan" label="Loan amount" value={loanRaw} onChange={setLoanRaw} error={loanError ?? (overMax ? `The maximum Pag-IBIG housing loan is ${peso(H.max_loan)}.` : null)} hint={`Up to ${peso(H.max_loan)}; loans above ₱6M are limited to ${H.ltv_above_6m * 100}% of the appraised value (Circular No. 491).`} />
-      <SelectField id="hl-plan" label={`Interest rate (Pag-IBIG rates until ${new Date(H.rates_valid_until + 'T00:00:00').toLocaleDateString('en-PH', { month: 'long', day: 'numeric', year: 'numeric' })})`} options={PLAN_OPTIONS} value={plan} onChange={setPlan} />
+      <SelectField id="hl-plan" label={`Interest rate (Pag-IBIG rates until ${UNTIL})`} options={PLAN_OPTIONS} value={plan} onChange={setPlan} />
       <div class="sm:flex sm:gap-4">
         <div class="sm:flex-1">
           <SelectField id="hl-term" label="Loan term" options={TERMS.filter((t) => Number(t.value) <= cap)} value={String(term)} onChange={setTermRaw} />
@@ -91,7 +95,7 @@ export default function PagibigHousingLoanCalculator() {
         <ResultCard
           headline="Estimated monthly amortization"
           amount={peso(s.monthly)}
-          amountNote={`At ${pct(rate)} over ${term} years. The rate reprices after ${Math.min(periodYears, term)} years at Pag-IBIG's prevailing rate, so later payments can change. Excludes Mortgage Redemption and fire insurance premiums.`}
+          amountNote={`At ${pct(rate)} over ${term} years. The rate reprices after ${Math.min(periodYears, term)} years at Pag-IBIG's prevailing rate, so later payments can change. Excludes Mortgage Redemption and fire insurance premiums.${RATES_EXPIRED ? ` These are the rates Pag-IBIG published for loans until ${UNTIL}; check pagibigfund.gov.ph for the rates in force now.` : ''}`}
           rows={rows}
           meta={rules.meta}
           copyText={rows.map((r) => `${r.label}: ${r.value}`).join('\n')}

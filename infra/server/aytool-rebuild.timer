@@ -1,9 +1,11 @@
-# Every night at 00:05 Philippine time; catches up after downtime.
+# Every night at 00:05 Philippine time, again at 06:05 as a retry (a no-op when the
+# 00:05 run already published); catches up after downtime.
 [Unit]
-Description=AyTool nightly rebuild at 00:05 Asia/Manila
+Description=AyTool nightly rebuild at 00:05 Asia/Manila (retry 06:05)
 
 [Timer]
 OnCalendar=*-*-* 00:05:00 Asia/Manila
+OnCalendar=*-*-* 06:05:00 Asia/Manila
 Persistent=true
 AccuracySec=1min
 

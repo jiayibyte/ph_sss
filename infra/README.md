@@ -8,7 +8,7 @@
 |---|---|
 | `nginx-aytool.conf` | nginx 站点配置：HTTPS、www→裸域 301、指纹资产 immutable、HTML 短 TTL+ETag、gzip/brotli、安全响应头（HSTS/CSP/XCTO/Referrer-Policy）、自定义 404、AI bot 日志统计命令 |
 | `deploy.sh` | 原子部署：test → build → rsync 到 `releases/<ts>` → 把所部署的提交推给服务器 → 切软链（原子 rename）→ CDN 刷新 → IndexNow ping；`deploy.sh rollback` 回到更早的另一个提交；保留线上版 + 最近 6 个提交各自最新的一版（服务器装了夜间重建时由 `aytool-rebuild` 负责，否则退回旧的保留 5 个） |
-| `server/` | **夜间重建**：每天 00:05（马尼拉时间）在服务器上重建"当前线上那个提交"，让"下一场考试 / 报名是否开放 / 结果待出 / Event 结构化数据"保持当天正确；输出有变化才发布，不 ping IndexNow。安装/更新 `make server-setup`，查看 `make nightly-status` / `make nightly-log`，手动跑 `make nightly-run`。详见 [server/README.md](server/README.md) |
+| `server/` | **夜间重建**：每天 00:05（马尼拉时间，06:05 再跑一次兜底）在服务器上重建"当前线上那个提交"，让"下一场考试 / 报名是否开放 / 结果待出 / Event 结构化数据"、最低工资按生效日切换（NCR-28 9/26、Bicol/BARMM 12/1）、Pag-IBIG 利率过期提示保持当天正确；输出有变化才发布，只对 sitemap lastmod 变了的页 ping IndexNow。有未提交改动时 `make deploy` 会自动做一个快照提交一起推上去，夜间重建照样能复现。安装/更新 `make server-setup`，查看 `make nightly-status` / `make nightly-log`，手动跑 `make nightly-run`。详见 [server/README.md](server/README.md) |
 | `.indexnow-key` | IndexNow key（对应 `public/<key>.txt`，随构建部署到站点根） |
 
 `robots.txt` 与 `llms.txt` 在 `public/` 目录（需随构建产物部署到站点根，故不放本目录）。

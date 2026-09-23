@@ -6,8 +6,9 @@
 # EducationEvent markup, all computed at build time. The site is static, so between
 # deploys those go stale. Every night this rebuilds EXACTLY the commit that is live
 # (never a newer one — unreleased commits are never published) and publishes only
-# if the output actually changed. It never pings IndexNow: a date rolling over is
-# not new content.
+# if the output actually changed. It pings IndexNow only for pages whose sitemap
+# <lastmod> moved (a scheduled wage order taking effect, say) — a date merely
+# rolling over is not new content.
 #
 #   aytool-rebuild build                        user aytool, sandboxed: check out the live commit, npm ci (when
 #                                               package-lock changes), test, build, audit
@@ -23,7 +24,7 @@ umask 022
 BASE=${AYTOOL_BASE:-/opt/aytool}
 RELEASES=${AYTOOL_RELEASES:-/var/www/aytool-releases}
 LIVE=${AYTOOL_LINK:-/var/www/aytool}
-REPO=$BASE/repo.git          # bare repo; infra/deploy.sh pushes each deployed commit here
+REPO=$BASE/repo.git          # bare repo; infra/deploy.sh pushes each deployed commit here (live + deploy/<sha>)
 WORK=$BASE/work              # build checkout, owned by aytool
 CACHE=$BASE/cache            # npm cache, build logs, the "pending" marker (aytool-writable)
 PROV=$BASE/state/releases    # one root-owned file per release: "<sha> <uncommitted-files> <manual|nightly>"
@@ -69,7 +70,7 @@ cmd_build() {
     return 0
   fi
   [ -d "$WORK/.git" ] || die "$WORK is not a git checkout — run infra/server/setup.sh"
-  git -C "$WORK" fetch --quiet --force origin '+refs/heads/*:refs/remotes/origin/*'
+  git -C "$WORK" fetch --quiet --force --prune origin '+refs/heads/*:refs/remotes/origin/*'
   if ! git -C "$WORK" cat-file -e "$sha^{commit}" 2>/dev/null; then
     log "commit ${sha:0:12} is not in $REPO (never pushed there) — skipping"
     return 0
@@ -104,7 +105,7 @@ activate() {
 }
 
 prune() {
-  local live rel p key seen=' ' kept=0
+  local live rel p key seen=' ' kept=0 used
   live=$(live_release)
   for rel in $(releases_desc); do
     p=$(prov_of "$rel" || true)
@@ -122,10 +123,56 @@ prune() {
     rm -f -- "$PROV/$rel"
     log "pruned $rel"
   done
+  # refs/heads/deploy/<sha> (pushed by infra/deploy.sh) keeps each kept release's commit reachable —
+  # a snapshot of uncommitted work sits on no branch. Drop the refs no remaining release uses.
+  [ -d "$REPO" ] || return 0
+  used=' '
+  for rel in $(releases_desc); do p=$(prov_of "$rel" || true); used="$used${p%% *} "; done
+  git --git-dir="$REPO" for-each-ref --format='%(refname)' refs/heads/deploy/ | while read -r ref; do
+    case $used in
+      *" ${ref##*/} "*) ;;
+      *) git --git-dir="$REPO" update-ref -d "$ref" && log "dropped $ref" ;;
+    esac
+  done || true
+}
+
+# URLs whose sitemap <lastmod> differs between two sitemap files (new URLs included), one per line.
+changed_urls() {
+  python3 - "$1" "$2" <<'PY'
+import re, sys
+def lastmods(path):
+    try:
+        text = open(path, encoding='utf-8').read()
+    except OSError:
+        return {}
+    return dict(re.findall(r'<url><loc>([^<]+)</loc><lastmod>([^<]+)</lastmod>', text))
+old, new = lastmods(sys.argv[1]), lastmods(sys.argv[2])
+print('\n'.join(u for u, m in new.items() if old.get(u) != m))
+PY
+}
+
+# Tell IndexNow (Bing and the engines that share it) which pages changed. Never fails a publish.
+indexnow_ping() {
+  local dist=$1; shift
+  [ $# -gt 0 ] || { log "no page's lastmod moved — no IndexNow ping"; return 0; }
+  if [ -n "${AYTOOL_INDEXNOW_DRYRUN:-}" ]; then log "IndexNow (dry run): $*"; return 0; fi
+  python3 - "$dist" "$@" <<'PY' || log "IndexNow ping failed (ignored)"
+import json, os, re, sys, urllib.request
+dist, urls = sys.argv[1], sys.argv[2:]
+keys = sorted(f[:-4] for f in os.listdir(dist) if re.fullmatch(r'[0-9a-f]{32}\.txt', f))
+if not keys:
+    print('[aytool-rebuild] no IndexNow key file in the release — ping skipped')
+    sys.exit(0)
+host = urls[0].split('/')[2]
+body = json.dumps({'host': host, 'key': keys[0], 'keyLocation': f'https://{host}/{keys[0]}.txt', 'urlList': urls}).encode()
+req = urllib.request.Request('https://api.indexnow.org/indexnow', data=body, headers={'Content-Type': 'application/json; charset=utf-8'})
+with urllib.request.urlopen(req, timeout=20) as r:
+    print(f'[aytool-rebuild] IndexNow ping HTTP {r.status} for {len(urls)} URL(s): ' + ' '.join(urls))
+PY
 }
 
 cmd_publish() {
-  local sha built_for rel changes n ts
+  local sha built_for rel changes n ts urls
   take_lock
   if [ ! -f "$CACHE/pending" ]; then log "no fresh build — nothing to publish"; return 0; fi
   read -r sha built_for <"$CACHE/pending"
@@ -140,11 +187,14 @@ cmd_publish() {
   n=$(printf '%s\n' "$changes" | wc -l | tr -d ' ')
   log "$n file(s) differ from $rel:"
   printf '%s\n' "$changes" | head -n 20 | sed "s#$RELEASES/$rel/##; s#$WORK/dist/##; s/^/    /"
+  urls=$(changed_urls "$RELEASES/$rel/sitemap-0.xml" "$WORK/dist/sitemap-0.xml" || true)  # before prune can remove $rel
   ts=$(date +%Y%m%d%H%M%S)
   while [ -e "$RELEASES/$ts" ]; do sleep 1; ts=$(date +%Y%m%d%H%M%S); done
   mkdir "$RELEASES/$ts"
   rsync -a --no-links --no-owner --no-group --delete "$WORK/dist/" "$RELEASES/$ts/"
   activate "$ts" "$sha" 0 nightly
+  # shellcheck disable=SC2086  # one URL per word
+  indexnow_ping "$RELEASES/$ts" $urls
 }
 
 cmd_activate() {

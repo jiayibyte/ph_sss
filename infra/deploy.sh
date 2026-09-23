@@ -41,12 +41,21 @@ if [[ "${1:-}" == "rollback" ]]; then
   exit 0
 fi
 
-# What is being deployed: the nightly rebuild can only reproduce a clean commit.
+# What is being deployed. The nightly rebuild reproduces a release from git, so uncommitted
+# work goes out as a snapshot commit on top of HEAD, made with a throwaway index: HEAD, the
+# branch and anything you staged stay exactly as they are.
 SHA=$(git rev-parse HEAD)
 DIRTY=$(git status --porcelain | wc -l | tr -d ' ')
 if [[ "$DIRTY" != "0" ]]; then
-  echo "!! $DIRTY uncommitted file(s): this release goes live as built, but the server's nightly"
-  echo "!! rebuild will skip it (it only rebuilds commits) until you deploy a clean commit."
+  SNAP_INDEX=$(mktemp)
+  trap 'rm -f "$SNAP_INDEX"' EXIT
+  cp "$(git rev-parse --git-path index)" "$SNAP_INDEX"
+  GIT_INDEX_FILE="$SNAP_INDEX" git add -A
+  SHA=$(git commit-tree "$(GIT_INDEX_FILE="$SNAP_INDEX" git write-tree)" -p HEAD \
+    -m "deploy snapshot: $DIRTY uncommitted file(s) on top of $(git rev-parse --short HEAD)")
+  echo "!! $DIRTY uncommitted file(s): deploying them as snapshot commit ${SHA:0:12} (on no branch),"
+  echo "!! so the server's nightly rebuild can reproduce this release. Commit your work as usual."
+  DIRTY=0
 fi
 
 echo "==> Test"
@@ -68,7 +77,7 @@ rsync -az --delete dist/ "$DEPLOY_HOST:$RELEASES_DIR/$TS/"
 
 if have_server_rebuild; then
   echo "==> Hand commit ${SHA:0:12} to the server's nightly rebuild"
-  git push --quiet --force "$DEPLOY_HOST:$SERVER_REPO" "$SHA:refs/heads/live" \
+  git push --quiet --force "$DEPLOY_HOST:$SERVER_REPO" "$SHA:refs/heads/live" "$SHA:refs/heads/deploy/$SHA" \
     || echo "!! could not push to $DEPLOY_HOST:$SERVER_REPO — nightly rebuilds will skip this release"
   echo "==> Switch symlink (atomic publish) + prune"
   ssh "$DEPLOY_HOST" "$SERVER_BIN activate $TS $SHA $DIRTY manual"

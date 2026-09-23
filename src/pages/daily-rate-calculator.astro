@@ -3,7 +3,8 @@ import ToolPageLayout from '../layouts/ToolPageLayout.astro';
 import DailyRateCalculator from '../islands/DailyRateCalculator';
 import wagesJson from '../data/wages/2026.json';
 import type { WageRules } from '../lib/rules/types';
-import { dailyEquivalent, hourlyFromDaily, monthlyEquivalent } from '../lib/engine/wages';
+import { dailyEquivalent, hourlyFromDaily, monthlyEquivalent, ncrInForce } from '../lib/engine/wages';
+import { todayInManila } from '../lib/today.mjs';
 import { peso } from '../lib/format';
 
 const wages = wagesJson as unknown as WageRules;
@@ -11,7 +12,8 @@ const meta = wages.meta;
 const D = wages.divisors;
 const f = (id: string) => D.options.find((o) => o.id === id)!.factor;
 const monthlies = [15000, 20000, 25000, 30000, 40000, 50000];
-const ncr = wages.ncr.in_force.non_agriculture;
+// NCR non-agriculture minimum in force today (NCR-26 ₱695 until NCR-28's ₱755 takes effect).
+const ncr = ncrInForce(wages, todayInManila()).non_agriculture;
 
 const faqs = [
   { q: 'How do I convert a monthly salary to a daily rate in the Philippines?', a: `Daily rate = monthly salary × 12 ÷ factor, where the factor is the number of days you are paid for in a year (DOLE Handbook on Workers' Statutory Monetary Benefits): ${f('365')} if you are monthly-paid (paid every day of the month), ${f('313')} for a six-day week with rest days unpaid, ${f('261')} for a five-day week, ${f('395')} if you work every day including rest days and holidays. ₱20,000 a month is ${peso(dailyEquivalent(20000, f('313')))} a day at ${f('313')}, ${peso(dailyEquivalent(20000, f('261')))} at ${f('261')}, ${peso(dailyEquivalent(20000, f('365')))} at ${f('365')}.` },

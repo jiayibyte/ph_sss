@@ -22,12 +22,27 @@ export interface WageRegion {
   name: string;
   wage_order: string;
   date_issued: string | null;
+  /** Newspaper publication; orders take effect 15 days after it (the effectivity date itself is recorded as announced). */
+  date_published?: string;
   effectivity: string | null;
   second_tranche_effectivity?: string;
   tiers: WageTier[];
   notes?: string;
   coverage?: string;
-  upcoming?: { wage_order: string; rates: WageTier[]; effectivity: string | null; expected?: string };
+  /**
+   * Next change already decided. `tranche: true` = a later tranche of the order above (same order, new rates);
+   * otherwise a new wage order, which brings its own dates and PDF. wagesAsOf() applies it on `effectivity`.
+   */
+  upcoming?: {
+    wage_order: string;
+    rates: WageTier[];
+    effectivity: string | null;
+    expected?: string;
+    tranche?: boolean;
+    date_issued?: string;
+    date_published?: string;
+    wage_order_url?: string;
+  };
   wage_order_url: string;
   rtwpb_url: string;
 }
@@ -42,19 +57,21 @@ export interface WageDivisor {
 export interface WageRules {
   meta: RuleMeta & { sources: Record<string, string> };
   ncr: {
-    in_force: { wage_order: string; effectivity: string; non_agriculture: number; other_tier: number; other_tier_label: string; url: string };
+    in_force: { wage_order: string; effectivity: string; date_published?: string; non_agriculture: number; other_tier: number; other_tier_label: string; url: string };
     upcoming: {
       wage_order: string;
       date_issued: string;
       date_published: string;
       effectivity: string | null;
       effectivity_rule: string;
+      effectivity_source_url?: string;
+      effectivity_source_label?: string;
       non_agriculture: number;
       other_tier: number;
       increase: number;
       url: string;
     };
-    enjoined: { wage_order: string; date_issued: string; nominal_effectivity: string; non_agriculture: number; other_tier: number; status: string; url: string; nwpc_statement_url: string };
+    enjoined: { wage_order: string; date_issued: string; date_published?: string; nominal_effectivity: string; non_agriculture: number; other_tier: number; status: string; url: string; nwpc_statement_url: string };
     cola_note: string;
     rtwpb_url: string;
   };

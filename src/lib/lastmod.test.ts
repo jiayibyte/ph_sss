@@ -1,6 +1,6 @@
 import { existsSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
-import { DATASETS, PAGE_DATA, PAGE_SOURCE, datasetLastVerified, pageDates, pageSourceFiles } from './lastmod.mjs';
+import { DATASETS, PAGE_DATA, PAGE_SOURCE, SCHEDULED, datasetLastVerified, pageDates, pageSourceFiles, scheduledChangesReached } from './lastmod.mjs';
 import { ALL_TOOLS } from './pages';
 
 const ISO = /^\d{4}-\d{2}-\d{2}$/;
@@ -44,5 +44,16 @@ describe('lastmod', () => {
       expect(modified).toMatch(ISO);
       expect(published <= modified).toBe(true);
     }
+  });
+
+  it('scheduled wage changes move lastmod on their effectivity date, not before', () => {
+    for (const p of Object.keys(SCHEDULED)) expect(Object.keys(PAGE_DATA)).toContain(p);
+    expect(scheduledChangesReached('/minimum-wage-philippines/', '2026-09-25')).toEqual([]);
+    expect(scheduledChangesReached('/minimum-wage-philippines/', '2026-09-26')).toEqual(['2026-09-26']);
+    expect(scheduledChangesReached('/minimum-wage-philippines/', '2026-12-01')).toEqual(['2026-09-26', '2026-12-01']);
+    expect(scheduledChangesReached('/daily-rate-calculator/', '2026-12-01')).toEqual(['2026-09-26']);
+    expect(scheduledChangesReached('/sss-contribution-table/', '2026-12-01')).toEqual([]);
+    expect(scheduledChangesReached('/pagibig-housing-loan-calculator/', '2026-12-31')).toEqual([]);
+    expect(scheduledChangesReached('/pagibig-housing-loan-calculator/', '2027-01-01')).toEqual(['2027-01-01']);
   });
 });

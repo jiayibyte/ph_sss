@@ -1,26 +1,70 @@
 ---
+/**
+ * Minimum wage by region. Every figure comes from src/data/wages/<year>.json.
+ * The page is built "as of" the Philippine calendar day (todayInManila): an
+ * order or tranche whose effectivity date has arrived is shown as in force, so
+ * the nightly server rebuild flips NCR-28 on Sept 26 and the Bicol/BARMM
+ * tranches on Dec 1 without anyone editing this file. `today` is only compared,
+ * never printed, so the page changes on those days and no others.
+ */
 import ToolPageLayout from '../layouts/ToolPageLayout.astro';
 import MinimumWageCalculator from '../islands/MinimumWageCalculator';
 import wagesJson from '../data/wages/2026.json';
-import type { WageRules } from '../lib/rules/types';
-import { monthlyEquivalent, rateRange } from '../lib/engine/wages';
+import type { WageRegion, WageRules } from '../lib/rules/types';
+import { describeRates, monthlyEquivalent, ncrInForce, ncrUpcomingInForce, rateRange, wagesAsOf } from '../lib/engine/wages';
+import { todayInManila } from '../lib/today.mjs';
 import { peso } from '../lib/format';
 import { SITE } from '../../site.config';
 
 const rules = wagesJson as unknown as WageRules;
 const meta = rules.meta;
-const ncr = rules.ncr;
-const range = rateRange(rules);
+const today = todayInManila();
+const view = wagesAsOf(rules, today);
+const n26 = rules.ncr.in_force;
+const n27 = rules.ncr.enjoined;
+const n28 = rules.ncr.upcoming;
+const live28 = ncrUpcomingInForce(rules, today);
+const cur = ncrInForce(rules, today);
+const range = rateRange(view);
 const fmt = (d: string | null | undefined): string =>
   d ? new Date(d + 'T00:00:00').toLocaleDateString('en-PH', { month: 'long', day: 'numeric', year: 'numeric' }) : 'to be announced';
 const f313 = rules.divisors.options.find((d) => d.id === '313')!.factor;
 const f365 = rules.divisors.options.find((d) => d.id === '365')!.factor;
 const f261 = rules.divisors.options.find((d) => d.id === '261')!.factor;
-const byId = (id: string) => rules.regions.find((r) => r.id === id)!;
+const byId = (id: string) => view.regions.find((r) => r.id === id)!;
 const top = (id: string) => byId(id).tiers[0]!.rate;
-const examples = [ncr.in_force.non_agriculture, ncr.upcoming.non_agriculture, top('r3'), top('r7'), top('r11'), top('r6'), 500, 455];
-const withOrder = rules.regions.filter((r) => r.tiers.length > 0);
-const upcomingRegions = rules.regions.filter((r) => r.upcoming);
+const shortName = (name: string) => name.split(' – ')[1] ?? name;
+const examples = [n26.non_agriculture, n28.non_agriculture, top('r3'), top('r7'), top('r11'), top('r6'), 500, top('r4b')];
+const withOrder = view.regions.filter((r) => r.tiers.length > 0);
+/** A later tranche already in effect (shown next to the order's date); comparisons stay out of the template. */
+const trancheInEffect = (r: WageRegion): string | null => {
+  const t = r.second_tranche_effectivity;
+  return t && t <= today && t !== r.effectivity ? t : null;
+};
+const upcomingRegions = view.regions.filter((r) => r.upcoming);
+const otherTier = 'agriculture, service and retail establishments with 15 or fewer workers, and manufacturing with fewer than 10 workers';
+
+// "Lowest" FAQ: BARMM holds the floor; among one-rate regions, name every region tied at the lowest rate.
+const barmm = byId('barmm');
+const bicol = byId('r5');
+const singleRate = view.regions.filter((r) => r.tiers.length === 1);
+const singleLow = Math.min(...singleRate.map((r) => r.tiers[0]!.rate));
+const singleLowNames = singleRate.filter((r) => r.tiers[0]!.rate === singleLow).map((r) => shortName(r.name));
+const lowestAnswer = [
+  `BARMM, at ${peso(range.low)} a day for agriculture outside the cities under Wage Order ${barmm.wage_order} (${peso(barmm.tiers[0]!.rate)} non-agriculture in Cotabato, Lamitan and Marawi)` +
+    (barmm.upcoming
+      ? `; its second tranche raises these to ${peso(barmm.upcoming.rates.at(-1)!.rate)} and ${peso(barmm.upcoming.rates[0]!.rate)} on ${fmt(barmm.upcoming.effectivity)}.`
+      : barmm.second_tranche_effectivity && barmm.second_tranche_effectivity <= today
+        ? `, since the ${fmt(barmm.second_tranche_effectivity)} tranche.`
+        : '.'),
+  `The lowest single-rate ${singleLowNames.length > 1 ? `regions are ${singleLowNames.join(' and ')}` : `region is ${singleLowNames[0]}`} at ${peso(singleLow)}` +
+    (bicol.upcoming
+      ? `; Bicol rises to ${peso(bicol.upcoming.rates[0]!.rate)} on ${fmt(bicol.upcoming.effectivity)}.`
+      : bicol.second_tranche_effectivity && bicol.second_tranche_effectivity <= today
+        ? `; Bicol has been ${peso(top('r5'))} since ${fmt(bicol.second_tranche_effectivity)}.`
+        : '.'),
+  `The highest in force is NCR at ${peso(range.high)}.`,
+].join(' ');
 
 const datasetSchema = {
   '@context': 'https://schema.org',
@@ -39,28 +83,27 @@ const datasetSchema = {
 const faqs = [
   {
     q: 'What is the minimum wage in Metro Manila (NCR) in 2026?',
-    a: `As of ${fmt(meta.last_verified)} the legally enforceable NCR minimum is ${peso(ncr.in_force.non_agriculture)} a day for non-agriculture and ${peso(ncr.in_force.other_tier)} for agriculture, service and retail establishments with 15 or fewer workers, and manufacturing with fewer than 10 workers (Wage Order NCR-26, in effect since ${fmt(ncr.in_force.effectivity)}). Wage Order NCR-28 raises these to ${peso(ncr.upcoming.non_agriculture)} and ${peso(ncr.upcoming.other_tier)}; it was published on ${fmt(ncr.upcoming.date_published)} and takes effect 15 days later — NWPC has not yet printed the exact date.`,
+    a: live28
+      ? `Since ${fmt(n28.effectivity)} the NCR minimum is ${peso(n28.non_agriculture)} a day for non-agriculture and ${peso(n28.other_tier)} for ${otherTier} (Wage Order NCR-28, a ₱${n28.increase} increase). Before that it was ${peso(n26.non_agriculture)} / ${peso(n26.other_tier)} under Wage Order NCR-26.`
+      : `The legally enforceable NCR minimum is ${peso(n26.non_agriculture)} a day for non-agriculture and ${peso(n26.other_tier)} for ${otherTier} (Wage Order NCR-26, in effect since ${fmt(n26.effectivity)}). Wage Order NCR-28 raises these to ${peso(n28.non_agriculture)} and ${peso(n28.other_tier)} on ${fmt(n28.effectivity)}, 15 days after its ${fmt(n28.date_published)} publication.`,
   },
   {
-    q: 'When does the ₱755 NCR minimum wage take effect?',
-    a: `Wage Order NCR-28 (₱${ncr.upcoming.increase} increase to ${peso(ncr.upcoming.non_agriculture)} / ${peso(ncr.upcoming.other_tier)}) was approved on ${fmt(ncr.upcoming.date_issued)} and published on ${fmt(ncr.upcoming.date_published)}. Under its Section 7 it takes effect 15 days after publication, which points to late September 2026; NWPC's wage order matrix still shows the effectivity cell blank, so check the RTWPB-NCR page for the confirmed date. Employers with 10 or fewer retail or service workers may apply for exemption within 75 days of publication.`,
+    q: live28 ? 'When did the ₱755 NCR minimum wage take effect?' : 'When does the ₱755 NCR minimum wage take effect?',
+    a: `On ${fmt(n28.effectivity)}. Wage Order NCR-28 (₱${n28.increase} increase to ${peso(n28.non_agriculture)} / ${peso(n28.other_tier)}) was approved on ${fmt(n28.date_issued)} and published on ${fmt(n28.date_published)}; its Section 7 makes it effective 15 days after publication, and DOLE announced ${fmt(n28.effectivity)} as the start date. Employers with 10 or fewer retail or service workers may apply for exemption within 75 days of publication.`,
   },
   {
     q: 'What happened to Wage Order NCR-27?',
-    a: ncr.enjoined.status + ` NCR-27 (${fmt(ncr.enjoined.date_issued)}) would have set ${peso(ncr.enjoined.non_agriculture)} / ${peso(ncr.enjoined.other_tier)} from ${fmt(ncr.enjoined.nominal_effectivity)}; NCR-28 re-grants the same ₱60 increase on the NCR-26 baseline through a fresh order.`,
+    a: n27.status + ` NCR-27 (${fmt(n27.date_issued)}) would have set ${peso(n27.non_agriculture)} / ${peso(n27.other_tier)} from ${fmt(n27.nominal_effectivity)}; NCR-28 re-grants the same ₱${n28.increase} increase on the NCR-26 baseline through a fresh order, effective ${fmt(n28.effectivity)}.`,
   },
   {
     q: 'What is the monthly equivalent of the NCR minimum wage?',
-    a: `It depends on how you are paid (DOLE Handbook on Workers' Statutory Monetary Benefits, 2024 edition). A daily-paid worker on a six-day week with paid holidays uses factor ${f313}: ${peso(ncr.in_force.non_agriculture)} × ${f313} ÷ 12 = ${peso(monthlyEquivalent(ncr.in_force.non_agriculture, f313))} a month (${peso(monthlyEquivalent(ncr.upcoming.non_agriculture, f313))} once ${peso(ncr.upcoming.non_agriculture)} takes effect). A monthly-paid employee, paid for every day of the month, uses factor ${f365}: ${peso(monthlyEquivalent(ncr.in_force.non_agriculture, f365))}. A five-day week uses ${f261}: ${peso(monthlyEquivalent(ncr.in_force.non_agriculture, f261))}. NWPC itself uses ${f313} in its press releases.`,
+    a: `It depends on how you are paid (DOLE Handbook on Workers' Statutory Monetary Benefits, 2024 edition). A daily-paid worker on a six-day week with paid holidays uses factor ${f313}: ${peso(cur.non_agriculture)} × ${f313} ÷ 12 = ${peso(monthlyEquivalent(cur.non_agriculture, f313))} a month${live28 ? '' : ` (${peso(monthlyEquivalent(n28.non_agriculture, f313))} once ${peso(n28.non_agriculture)} takes effect on ${fmt(n28.effectivity)})`}. A monthly-paid employee, paid for every day of the month, uses factor ${f365}: ${peso(monthlyEquivalent(cur.non_agriculture, f365))}. A five-day week uses ${f261}: ${peso(monthlyEquivalent(cur.non_agriculture, f261))}. NWPC itself uses ${f313} in its press releases.`,
   },
   {
     q: 'What is the minimum wage in Cebu, Davao and CALABARZON?',
     a: `Cebu (Region VII, Wage Order ${byId('r7').wage_order}): ${peso(byId('r7').tiers[0]!.rate)} a day in Class A — Metro Cebu cities plus Compostela, Consolacion, Cordova, Liloan, Minglanilla and San Fernando — and ${peso(byId('r7').tiers[1]!.rate)} elsewhere in the region. Davao (Region XI, ${byId('r11').wage_order}): ${peso(byId('r11').tiers[0]!.rate)} non-agriculture and ${peso(byId('r11').tiers[1]!.rate)} agriculture since the September 1, 2026 tranche. CALABARZON (Region IV-A, ${byId('r4a').wage_order}): ${peso(byId('r4a').tiers[0]!.rate)} in the extended metropolitan area and component cities, ${peso(byId('r4a').tiers[1]!.rate)} in first-class municipalities, ${peso(byId('r4a').tiers[2]!.rate)} in second- to fifth-class municipalities, and ${peso(byId('r4a').tiers[5]!.rate)} for retail and service establishments with 10 or fewer workers.`,
   },
-  {
-    q: 'Which region has the lowest minimum wage?',
-    a: `BARMM, at ${peso(range.low)} a day for agriculture outside the cities under Wage Order BARMM-05 (${peso(byId('barmm').tiers[0]!.rate)} non-agriculture in Cotabato, Lamitan and Marawi). The lowest single-rate regions are MIMAROPA and Bicol at ${peso(top('r4b'))}; Bicol rises to ${peso(byId('r5').upcoming!.rates[0]!.rate)} on ${fmt(byId('r5').upcoming!.effectivity)}. The highest in force is NCR at ${peso(range.high)}.`,
-  },
+  { q: 'Which region has the lowest minimum wage?', a: lowestAnswer },
   {
     q: 'Who is exempt from the minimum wage?',
     a: `${rules.coverage.exempt_bmbe} ${rules.coverage.retail_service_le10} ${rules.coverage.kasambahay}`,
@@ -75,14 +118,20 @@ const faqs = [
   },
   {
     q: 'Magkano ang minimum wage sa Metro Manila ngayong 2026?',
-    a: `${peso(ncr.in_force.non_agriculture)} kada araw para sa non-agriculture at ${peso(ncr.in_force.other_tier)} para sa agriculture, service/retail na may 15 o mas kaunting worker, at manufacturing na wala pang 10 worker (Wage Order NCR-26). Tataas ito sa ${peso(ncr.upcoming.non_agriculture)} at ${peso(ncr.upcoming.other_tier)} sa ilalim ng NCR-28, na inilathala noong ${fmt(ncr.upcoming.date_published)} at magiging epektibo 15 araw pagkatapos — hintayin ang opisyal na petsa mula sa NWPC. Katumbas ito ng humigit-kumulang ${peso(monthlyEquivalent(ncr.in_force.non_agriculture, f313))} kada buwan (factor ${f313}).`,
+    a: live28
+      ? `${peso(n28.non_agriculture)} kada araw para sa non-agriculture at ${peso(n28.other_tier)} para sa agriculture, service/retail na may 15 o mas kaunting worker, at manufacturing na wala pang 10 worker (Wage Order NCR-28, epektibo simula ${fmt(n28.effectivity)}). Katumbas ito ng humigit-kumulang ${peso(monthlyEquivalent(n28.non_agriculture, f313))} kada buwan (factor ${f313}).`
+      : `${peso(n26.non_agriculture)} kada araw para sa non-agriculture at ${peso(n26.other_tier)} para sa agriculture, service/retail na may 15 o mas kaunting worker, at manufacturing na wala pang 10 worker (Wage Order NCR-26). Tataas ito sa ${peso(n28.non_agriculture)} at ${peso(n28.other_tier)} simula ${fmt(n28.effectivity)} sa ilalim ng NCR-28. Katumbas ng ${peso(n26.non_agriculture)} ang humigit-kumulang ${peso(monthlyEquivalent(n26.non_agriculture, f313))} kada buwan (factor ${f313}).`,
   },
 ];
+
+const description = live28
+  ? `Daily minimum wage in every Philippine region under the latest wage orders — NCR ${peso(n28.non_agriculture)} since ${fmt(n28.effectivity)} — with monthly equivalents and who is exempt.`
+  : `Daily minimum wage in every Philippine region under the latest wage orders — NCR ${peso(n26.non_agriculture)}, rising to ${peso(n28.non_agriculture)} on ${fmt(n28.effectivity)} — plus monthly equivalents.`;
 ---
 
 <ToolPageLayout
   title="Minimum Wage Philippines 2026 – Rates by Region & NCR Update"
-  description={`Current daily minimum wage in every Philippine region as of ${fmt(meta.last_verified)}, with the NCR ${peso(ncr.in_force.non_agriculture)} → ${peso(ncr.upcoming.non_agriculture)} update, monthly equivalents and who is exempt.`}
+  description={description}
   path="/minimum-wage-philippines/"
   h1="Minimum Wage Philippines 2026 (by Region)"
   faqs={faqs}
@@ -90,15 +139,28 @@ const faqs = [
   extraSchema={[datasetSchema]}
 >
   <Fragment slot="answer">
-    <p>
-      The <strong>NCR minimum wage in force</strong> is <strong>{peso(ncr.in_force.non_agriculture)}</strong> a day for
-      non-agriculture and {peso(ncr.in_force.other_tier)} for agriculture, small retail/service and small manufacturing
-      (Wage Order NCR-26). <strong>Wage Order NCR-28</strong> raises them to <strong>{peso(ncr.upcoming.non_agriculture)}</strong>
-      and {peso(ncr.upcoming.other_tier)}: published {fmt(ncr.upcoming.date_published)}, effective 15 days after publication
-      (late September 2026, exact date pending from NWPC). Across the regions the daily minimum runs from
-      {peso(range.low)} (BARMM agriculture) to {peso(range.high)} (NCR); every rate below comes from the NWPC summary and
-      the wage order itself. Pick your region to see the sector rate and its monthly equivalent.
-    </p>
+    {
+      live28 ? (
+        <p>
+          The <strong>NCR minimum wage</strong> is <strong>{peso(n28.non_agriculture)}</strong> a day for non-agriculture and
+          {' '}{peso(n28.other_tier)} for agriculture, small retail/service and small manufacturing, under <strong>Wage Order
+          NCR-28</strong> since <strong>{fmt(n28.effectivity)}</strong> (up ₱{n28.increase} from {peso(n26.non_agriculture)} /
+          {' '}{peso(n26.other_tier)}). Across the regions the daily minimum runs from {peso(range.low)} (BARMM agriculture) to
+          {' '}{peso(range.high)} (NCR); every rate below comes from the NWPC summary and the wage order itself. Pick your region
+          to see the sector rate and its monthly equivalent.
+        </p>
+      ) : (
+        <p>
+          The <strong>NCR minimum wage in force</strong> is <strong>{peso(n26.non_agriculture)}</strong> a day for
+          non-agriculture and {peso(n26.other_tier)} for agriculture, small retail/service and small manufacturing (Wage Order
+          NCR-26). <strong>Wage Order NCR-28</strong> raises them to <strong>{peso(n28.non_agriculture)}</strong> and
+          {' '}{peso(n28.other_tier)} on <strong>{fmt(n28.effectivity)}</strong>, 15 days after its {fmt(n28.date_published)}
+          publication. Across the regions the daily minimum runs from {peso(range.low)} (BARMM agriculture) to
+          {' '}{peso(range.high)} (NCR); every rate below comes from the NWPC summary and the wage order itself. Pick your region
+          to see the sector rate and its monthly equivalent.
+        </p>
+      )
+    }
   </Fragment>
 
   <Fragment slot="calculator">
@@ -112,16 +174,32 @@ const faqs = [
         <tr><th>Wage order</th><th>Status</th><th>Non-agriculture</th><th>Agri / retail ≤15 / mfg &lt;10</th></tr>
       </thead>
       <tbody>
-        <tr><td><strong>{ncr.in_force.wage_order}</strong></td><td>In force since {fmt(ncr.in_force.effectivity)}</td><td><strong>{peso(ncr.in_force.non_agriculture)}</strong></td><td><strong>{peso(ncr.in_force.other_tier)}</strong></td></tr>
-        <tr><td>{ncr.enjoined.wage_order}</td><td>Enjoined by the courts — never took effect</td><td>{peso(ncr.enjoined.non_agriculture)}</td><td>{peso(ncr.enjoined.other_tier)}</td></tr>
-        <tr><td>{ncr.upcoming.wage_order}</td><td>Published {fmt(ncr.upcoming.date_published)}; effective 15 days later (date pending)</td><td>{peso(ncr.upcoming.non_agriculture)}</td><td>{peso(ncr.upcoming.other_tier)}</td></tr>
+        {
+          live28 ? (
+            <tr><td>{n26.wage_order}</td><td>In force {fmt(n26.effectivity)}; superseded by {n28.wage_order} on {fmt(n28.effectivity)}</td><td>{peso(n26.non_agriculture)}</td><td>{peso(n26.other_tier)}</td></tr>
+          ) : (
+            <tr><td><strong>{n26.wage_order}</strong></td><td>In force since {fmt(n26.effectivity)}</td><td><strong>{peso(n26.non_agriculture)}</strong></td><td><strong>{peso(n26.other_tier)}</strong></td></tr>
+          )
+        }
+        <tr><td>{n27.wage_order}</td><td>Enjoined by the courts — never took effect</td><td>{peso(n27.non_agriculture)}</td><td>{peso(n27.other_tier)}</td></tr>
+        {
+          live28 ? (
+            <tr><td><strong>{n28.wage_order}</strong></td><td>In force since {fmt(n28.effectivity)}</td><td><strong>{peso(n28.non_agriculture)}</strong></td><td><strong>{peso(n28.other_tier)}</strong></td></tr>
+          ) : (
+            <tr><td>{n28.wage_order}</td><td>Published {fmt(n28.date_published)}; takes effect {fmt(n28.effectivity)}</td><td>{peso(n28.non_agriculture)}</td><td>{peso(n28.other_tier)}</td></tr>
+          )
+        }
       </tbody>
     </table>
   </div>
   <p>
-    {ncr.enjoined.status} NCR-28 re-grants the same ₱{ncr.upcoming.increase} increase on the NCR-26 baseline through a
-    fresh order approved on {fmt(ncr.upcoming.date_issued)}; NWPC's statement on the injunction is
-    <a href={ncr.enjoined.nwpc_statement_url} target="_blank" rel="noopener">here</a>. {ncr.cola_note}
+    {n27.status} NCR-28 re-grants the same ₱{n28.increase} increase on the NCR-26 baseline through a fresh order approved on
+    {' '}{fmt(n28.date_issued)}. Its Section 7 makes it effective 15 days after publication, and DOLE announced
+    {' '}{fmt(n28.effectivity)} as the start date
+    {n28.effectivity_source_url && <Fragment> (<a href={n28.effectivity_source_url} target="_blank" rel="noopener">{n28.effectivity_source_label}</a>)</Fragment>}.
+    NWPC's statement on the NCR-27 injunction is <a href={n27.nwpc_statement_url} target="_blank" rel="noopener">here</a>; any
+    court action on NCR-28 would be posted on the <a href={rules.ncr.rtwpb_url} target="_blank" rel="noopener">RTWPB-NCR page</a>.
+    {' '}{rules.ncr.cola_note}
   </p>
 
   <h2>Daily Minimum Wage by Region (Current Wage Orders)</h2>
@@ -131,8 +209,9 @@ const faqs = [
         <tr><th>Region</th><th>Wage order</th><th>In effect since</th><th>Sector / area</th><th>Daily rate</th></tr>
       </thead>
       <tbody>
-        {rules.regions.map((r) =>
-          r.tiers.length === 0 ? (
+        {view.regions.map((r) => {
+          const tranche = trancheInEffect(r);
+          return r.tiers.length === 0 ? (
             <tr>
               <td><strong>{r.name}</strong></td>
               <td colspan="4" class="text-ink-soft">{r.notes}</td>
@@ -142,27 +221,27 @@ const faqs = [
               <tr>
                 {i === 0 && <td rowspan={r.tiers.length}><strong>{r.name}</strong></td>}
                 {i === 0 && <td rowspan={r.tiers.length}><a href={r.wage_order_url} target="_blank" rel="noopener">{r.wage_order}</a></td>}
-                {i === 0 && <td rowspan={r.tiers.length}>{fmt(r.effectivity)}{r.second_tranche_effectivity ? <span class="text-ink-soft"> (tranche {fmt(r.second_tranche_effectivity)})</span> : null}</td>}
+                {i === 0 && <td rowspan={r.tiers.length}>{fmt(r.effectivity)}{tranche && <span class="text-ink-soft"> (tranche {fmt(tranche)})</span>}</td>}
                 <td>{t.label}{t.group && <span class="text-ink-soft"> — {t.group}</span>}</td>
                 <td><strong>{peso(t.rate)}</strong></td>
               </tr>
             ))
-          ),
-        )}
+          );
+        })}
       </tbody>
     </table>
   </div>
   <p class="text-sm text-ink-soft">
-    Rates as printed in the NWPC summary of {fmt(meta.last_verified)} and each region's wage order; where a region is in a
-    multi-tranche order the current tranche is shown. Regional notes: {withOrder.filter((r) => r.notes).map((r) => `${r.name}: ${r.notes}`).join(' ')}
+    Rates as printed in the NWPC summary and each region's wage order; where a region is in a multi-tranche order the tranche
+    in force is shown, and a scheduled order or tranche replaces the old rate on its effectivity date. Regional notes:
+    {' '}{withOrder.filter((r) => r.notes).map((r) => `${r.name}: ${r.notes}`).join(' ')}
   </p>
 
   <h2>Increases Already Scheduled and Reviews Under Way</h2>
   <ul>
     {upcomingRegions.map((r) => (
       <li>
-        <strong>{r.name} — {r.upcoming!.wage_order}:</strong>{' '}
-        {r.upcoming!.rates.map((t) => `${t.label}${t.group ? ` (${t.group})` : ''} ${peso(t.rate)}`).join('; ')}
+        <strong>{r.name} — {r.upcoming!.wage_order}:</strong> {describeRates(r.upcoming!.rates)}
         {r.upcoming!.effectivity ? ` from ${fmt(r.upcoming!.effectivity)}.` : ` — expected ${r.upcoming!.expected}, date not yet published.`}
       </li>
     ))}
@@ -176,7 +255,7 @@ const faqs = [
     (paid every day of the month), <strong>395</strong> for daily-paid workers who work every day including rest days and
     holidays, <strong>{f313}</strong> for a six-day week with rest days unpaid but holidays paid, and <strong>{f261}</strong> for a
     five-day week. Use 305 or 253 instead of {f313} or {f261} if the eight special non-working days are unpaid. NWPC uses
-    {f313} in its own press releases.
+    {' '}{f313} in its own press releases.
   </p>
   <div class="table-scroll">
     <table>
@@ -235,7 +314,7 @@ const faqs = [
     <a href={meta.official_source_url} target="_blank" rel="noopener">{meta.official_source_label}</a> — {meta.rule_version};
     each row links to the wage order PDF on nwpc.dole.gov.ph. Conversion factors:
     <a href={rules.divisors.source} target="_blank" rel="noopener">{rules.divisors.source_label}</a>. Last verified
-    {fmt(meta.last_verified)}. AyTool is independent and not affiliated with DOLE or NWPC; confirm any figure with the
+    {' '}{fmt(meta.last_verified)}. AyTool is independent and not affiliated with DOLE or NWPC; confirm any figure with the
     regional board before relying on it for payroll.
   </p>
 </ToolPageLayout>

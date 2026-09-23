@@ -6,7 +6,9 @@
  * can import it at build time.
  *
  *   dateModified  = max( git commit date of the page source,
- *                        meta.last_verified of every rule dataset the page renders )
+ *                        meta.last_verified of every rule dataset the page renders,
+ *                        scheduled changes already reached — a wage order or
+ *                        tranche whose effectivity date has come (SCHEDULED) )
  *                   — uncommitted edits to the page source count as "today".
  *   datePublished = date of the commit that added the page source.
  *
@@ -87,11 +89,11 @@ function git(args) {
   }
 }
 
-const verifiedCache = new Map();
+const datasetCache = new Map();
 
-/** meta.last_verified of the newest <year>.json in src/data/<key>/. */
-export function datasetLastVerified(key) {
-  if (verifiedCache.has(key)) return verifiedCache.get(key);
+/** Parsed newest <year>.json in src/data/<key>/, with its file name. */
+function readDataset(key) {
+  if (datasetCache.has(key)) return datasetCache.get(key);
   const dir = path.join(DATA_DIR, key);
   const files = existsSync(dir)
     ? readdirSync(dir)
@@ -100,12 +102,42 @@ export function datasetLastVerified(key) {
     : [];
   const newest = files.at(-1);
   if (!newest) throw new Error(`lastmod: no <year>.json found in src/data/${key}/`);
-  const meta = JSON.parse(readFileSync(path.join(dir, newest), 'utf8')).meta ?? {};
-  if (!ISO_DATE.test(meta.last_verified ?? '')) {
-    throw new Error(`lastmod: src/data/${key}/${newest} has no ISO meta.last_verified`);
+  const result = { file: newest, data: JSON.parse(readFileSync(path.join(dir, newest), 'utf8')) };
+  datasetCache.set(key, result);
+  return result;
+}
+
+/** meta.last_verified of the newest <year>.json in src/data/<key>/. */
+export function datasetLastVerified(key) {
+  const { file, data } = readDataset(key);
+  const verified = data.meta?.last_verified ?? '';
+  if (!ISO_DATE.test(verified)) {
+    throw new Error(`lastmod: src/data/${key}/${file} has no ISO meta.last_verified`);
   }
-  verifiedCache.set(key, meta.last_verified);
-  return meta.last_verified;
+  return verified;
+}
+
+/**
+ * Changes the data already schedules. These pages are built "as of" the
+ * Philippine date, so their content changes the day a wage order or tranche
+ * takes effect — and lastmod should say so. path → [dataset, dates picker].
+ */
+const wageChangeDates = (w) => [w.ncr?.upcoming?.effectivity, ...(w.regions ?? []).map((r) => r.upcoming?.effectivity)];
+const dayAfter = (iso) => (ISO_DATE.test(iso ?? '') ? new Date(Date.parse(iso + 'T00:00:00Z') + 86_400_000).toISOString().slice(0, 10) : null);
+export const SCHEDULED = {
+  '/minimum-wage-philippines/': ['wages', wageChangeDates],
+  '/daily-rate-calculator/': ['wages', (w) => [w.ncr?.upcoming?.effectivity]],
+  // The "rates may have changed" notice appears the day after the published rates lapse.
+  '/pagibig-housing-loan-calculator/': ['pagibig', (p) => [dayAfter(p.housing_loan?.rates_valid_until)]],
+};
+
+/** Distinct scheduled change dates for a page that have been reached by `asOf` (ISO, ascending). */
+export function scheduledChangesReached(pagePath, asOf = today()) {
+  const entry = SCHEDULED[pagePath];
+  if (!entry) return [];
+  const [key, pick] = entry;
+  const dates = pick(readDataset(key).data).filter((d) => typeof d === 'string' && ISO_DATE.test(d) && d <= asOf);
+  return [...new Set(dates)].sort();
 }
 
 /**
@@ -163,7 +195,7 @@ export function pageDates(pagePath) {
 
   const sourceDate = dirty || !ISO_DATE.test(lastCommit) ? today() : lastCommit;
   const dataDates = (PAGE_DATA[pagePath] ?? []).map(datasetLastVerified);
-  const modified = [sourceDate, ...dataDates].sort().at(-1);
+  const modified = [sourceDate, ...dataDates, ...scheduledChangesReached(pagePath)].sort().at(-1);
   const published = ISO_DATE.test(addedCommit) && addedCommit <= modified ? addedCommit : modified;
 
   const result = { published, modified };
