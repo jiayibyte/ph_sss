@@ -1,0 +1,34 @@
+# Nightly rebuild of the LIVE commit so date-dependent content stays current.
+# Installed by infra/server/setup.sh; started by aytool-rebuild.timer.
+[Unit]
+Description=AyTool nightly rebuild of the live commit (date-dependent pages)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=aytool
+Group=aytool
+Environment=HOME=/opt/aytool
+# HOME is read-only inside the sandbox: keep tool caches in cache/, no Astro telemetry from the server
+Environment=ASTRO_TELEMETRY_DISABLED=1 XDG_CONFIG_HOME=/opt/aytool/cache/xdg-config XDG_CACHE_HOME=/opt/aytool/cache/xdg-cache
+WorkingDirectory=/opt/aytool
+# 1) build as the unprivileged aytool user, inside the sandbox below
+ExecStart=/opt/aytool/bin/aytool-rebuild build
+# 2) publish as root ("+" = full privileges, sandbox not applied) — only if 1) succeeded
+ExecStart=+/opt/aytool/bin/aytool-rebuild publish
+TimeoutStartSec=30min
+Nice=10
+MemoryMax=2G
+# Sandbox for the build step (npm packages run here).
+NoNewPrivileges=yes
+ProtectSystem=strict
+ReadWritePaths=/opt/aytool/work /opt/aytool/cache
+ProtectHome=yes
+PrivateTmp=yes
+PrivateDevices=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectControlGroups=yes
+RestrictSUIDSGID=yes
+LockPersonality=yes

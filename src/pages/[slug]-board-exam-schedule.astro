@@ -14,6 +14,7 @@ import { educationEvents, icsPath } from '../lib/prcCalendar';
 import type { PrcExamEntry, PrcRules } from '../lib/rules/types';
 import { SITE } from '../../site.config';
 import { TOOL_PAGES } from '../lib/pages';
+import { todayInManila } from '../lib/today.mjs';
 
 export function getStaticPaths() {
   return PROFESSION_PAGES.map((page) => ({ params: { slug: page.slug }, props: { page } }));
@@ -45,9 +46,10 @@ const fmt = (d: string | null | undefined): string =>
     ? new Date(d + 'T00:00:00').toLocaleDateString('en-PH', { month: 'long', day: 'numeric', year: 'numeric' })
     : 'to be announced';
 
-/* Build-date status: the site is rebuilt on every deploy, so "next round" is
-   current to the last deploy, never to a hand-typed date. */
-const today = new Date().toISOString().slice(0, 10);
+/* Build-date status (Philippine calendar day). The server rebuilds the live
+   commit every night at 00:05 Manila time (infra/server/), so "next round" and
+   "filing is open" are at most a day old, never a hand-typed date. */
+const today = todayInManila();
 const upcoming = rounds.filter((r) => r.first_date >= today);
 const next = upcoming[0];
 const released = rounds.filter((r) => r.results_released);

@@ -7,14 +7,15 @@ import { PRC_PROFESSIONS, resolveGroup, scheduleSentence } from '../lib/prcProfe
 import type { PrcExamEntry, PrcRules } from '../lib/rules/types';
 import { SITE } from '../../site.config';
 import { educationEvents } from '../lib/prcCalendar';
+import { todayInManila } from '../lib/today.mjs';
 
 const meta = prcRules.meta;
-/* Event markup for exams in the next 90 days (build date; the site is rebuilt on every deploy). */
+/* Event markup for exams in the next 60 days (build date, Manila; rebuilt nightly on the server). */
 const eventSchema = educationEvents(
   prcRules as PrcRules,
   prcRules.exams as PrcExamEntry[],
   `${SITE.url}/prc-board-exam-schedule/`,
-  new Date().toISOString().slice(0, 10),
+  todayInManila(),
 );
 
 /* FAQ dates are generated from the rule data, so next year's PRC resolution

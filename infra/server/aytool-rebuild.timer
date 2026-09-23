@@ -1,0 +1,11 @@
+# Every night at 00:05 Philippine time; catches up after downtime.
+[Unit]
+Description=AyTool nightly rebuild at 00:05 Asia/Manila
+
+[Timer]
+OnCalendar=*-*-* 00:05:00 Asia/Manila
+Persistent=true
+AccuracySec=1min
+
+[Install]
+WantedBy=timers.target

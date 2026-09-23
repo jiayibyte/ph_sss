@@ -16,19 +16,37 @@ KEEP_RELEASES=5
 SITE_URL="https://aytool.com"
 INDEXNOW_KEY_FILE="$(dirname "$0")/.indexnow-key"
 CDN_PURGE_CMD="${AYTOOL_CDN_PURGE:-}"                    # e.g. a curl to your CDN's purge API
+# Nightly rebuilds on the server (infra/server/, `make server-setup`): the server keeps
+# a bare repo of every deployed commit and rebuilds the live one at 00:05 Manila time.
+SERVER_BIN=/opt/aytool/bin/aytool-rebuild
+SERVER_REPO=/opt/aytool/repo.git
 
 cd "$(dirname "$0")/.."
 
+have_server_rebuild() { ssh "$DEPLOY_HOST" "test -x $SERVER_BIN"; }
+
 if [[ "${1:-}" == "rollback" ]]; then
-  ssh "$DEPLOY_HOST" "
-    set -e
-    prev=\$(ls -1t $RELEASES_DIR | sed -n 2p)
-    [[ -n \"\$prev\" ]] || { echo 'No previous release to roll back to'; exit 1; }
-    ln -sfn $RELEASES_DIR/\$prev $LIVE_LINK
-    echo \"Rolled back to \$prev\"
-  "
+  if have_server_rebuild; then
+    ssh "$DEPLOY_HOST" "$SERVER_BIN rollback"   # newest OLDER release of a different commit
+  else
+    ssh "$DEPLOY_HOST" "
+      set -e
+      prev=\$(ls -1t $RELEASES_DIR | sed -n 2p)
+      [[ -n \"\$prev\" ]] || { echo 'No previous release to roll back to'; exit 1; }
+      ln -sfn $RELEASES_DIR/\$prev $LIVE_LINK
+      echo \"Rolled back to \$prev\"
+    "
+  fi
   [[ -n "$CDN_PURGE_CMD" ]] && eval "$CDN_PURGE_CMD"
   exit 0
+fi
+
+# What is being deployed: the nightly rebuild can only reproduce a clean commit.
+SHA=$(git rev-parse HEAD)
+DIRTY=$(git status --porcelain | wc -l | tr -d ' ')
+if [[ "$DIRTY" != "0" ]]; then
+  echo "!! $DIRTY uncommitted file(s): this release goes live as built, but the server's nightly"
+  echo "!! rebuild will skip it (it only rebuilds commits) until you deploy a clean commit."
 fi
 
 echo "==> Test"
@@ -48,12 +66,20 @@ echo "==> Upload to $RELEASES_DIR/$TS"
 ssh "$DEPLOY_HOST" "mkdir -p $RELEASES_DIR/$TS"
 rsync -az --delete dist/ "$DEPLOY_HOST:$RELEASES_DIR/$TS/"
 
-echo "==> Switch symlink (atomic publish)"
-ssh "$DEPLOY_HOST" "
-  set -e
-  ln -sfn $RELEASES_DIR/$TS $LIVE_LINK
-  cd $RELEASES_DIR && ls -1t | tail -n +$((KEEP_RELEASES + 1)) | xargs -r rm -rf
-"
+if have_server_rebuild; then
+  echo "==> Hand commit ${SHA:0:12} to the server's nightly rebuild"
+  git push --quiet --force "$DEPLOY_HOST:$SERVER_REPO" "$SHA:refs/heads/live" \
+    || echo "!! could not push to $DEPLOY_HOST:$SERVER_REPO — nightly rebuilds will skip this release"
+  echo "==> Switch symlink (atomic publish) + prune"
+  ssh "$DEPLOY_HOST" "$SERVER_BIN activate $TS $SHA $DIRTY manual"
+else
+  echo "==> Switch symlink (atomic publish)"
+  ssh "$DEPLOY_HOST" "
+    set -e
+    ln -sfn $RELEASES_DIR/$TS $LIVE_LINK
+    cd $RELEASES_DIR && ls -1t | tail -n +$((KEEP_RELEASES + 1)) | xargs -r rm -rf
+  "
+fi
 
 if [[ -n "$CDN_PURGE_CMD" ]]; then
   echo "==> Purge CDN"

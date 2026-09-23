@@ -5,6 +5,7 @@ import { PRC_PROFESSIONS, resolveGroup, scheduleSentence } from '../lib/prcProfe
 import type { PrcExamEntry, PrcRules } from '../lib/rules/types';
 import { SITE } from '../../site.config';
 import { educationEvents } from '../lib/prcCalendar';
+import { todayInManila } from '../lib/today.mjs';
 import pnleHistory from '../data/prc/pnle-history.json';
 
 const meta = prcRules.meta;
@@ -56,7 +57,7 @@ const eventSchema = educationEvents(
   prcRules as PrcRules,
   rounds,
   `${SITE.url}/nursing-board-exam-schedule/`,
-  new Date().toISOString().slice(0, 10),
+  todayInManila(),
 );
 const description = `Both ${prcRules.year} PNLE rounds are done (results released ${released}). Next PNLE: ${nextYear} — PRC has not released the dates yet, expected November ${prcRules.year}.`;
 

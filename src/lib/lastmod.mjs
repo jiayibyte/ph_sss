@@ -17,6 +17,7 @@ import { execFileSync } from 'node:child_process';
 import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { todayInManila } from './today.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const DATA_DIR = path.join(ROOT, 'src/data');
@@ -72,7 +73,7 @@ export const PAGE_DATA = {
 };
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
-const today = () => new Date().toISOString().slice(0, 10);
+const today = () => todayInManila();
 
 function git(args) {
   try {

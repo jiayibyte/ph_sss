@@ -3,6 +3,7 @@ import prcJson from '../data/prc/2026.json';
 import type { PrcRules } from '../lib/rules/types';
 import { matchesExamQuery } from '../lib/prcProfessions';
 import { icsPath } from '../lib/prcCalendar';
+import { todayInManila } from '../lib/today.mjs';
 import { trackCalculatorUse } from './shared/track';
 
 const prc = prcJson as unknown as PrcRules;
@@ -21,15 +22,10 @@ function fmtDate(d: string | null | undefined): string {
   });
 }
 
-/* Local calendar date (the exam dates are Philippine dates, so compare in the
-   visitor's local day, not UTC). Evaluated once per render pass: at build time
-   for the static HTML, again on the client when the island hydrates. */
-function todayIso(): string {
-  const d = new Date();
-  const mm = String(d.getMonth() + 1).padStart(2, '0');
-  const dd = String(d.getDate()).padStart(2, '0');
-  return `${d.getFullYear()}-${mm}-${dd}`;
-}
+/* Philippine calendar date — exam dates are Philippine dates, so a visitor in
+   Dubai or Toronto sees the same "next up" as one in Manila. Evaluated at build
+   time for the static HTML and again on the client when the island hydrates. */
+const todayIso = (): string => todayInManila();
 
 export default function PrcScheduleTable() {
   const [query, setQuery] = useState('');
