@@ -17,7 +17,7 @@
 | **Product Hunt** | 以免费工具身份发布一次 | ✅ 2026 年发布仍免费，日均 50+ launch，工具站冷启动经典渠道 |
 | **AlternativeTo** | 提交 AyTool 为独立工具 | ⚠️ 核验发现 Sweldong Pinoy **并未被收录**——"竞品替代"角度不成立；直接独立提交，或先提交 Sweldong Pinoy 再挂 alternative |
 | Indie Hackers | 产品页 + 一篇 build log | ✅ 产品目录 2026 仍活跃；PH 流量低，纯占坑 |
-| **TechShake**（techshake.asia） | 提交到菲律宾创业生态目录 | ✅ 活跃，菲律宾本地唯一值得做的目录站 |
+| ~~TechShake~~（www.techshake.asia） | — | ❌ 2026-09-23 复核：不是开放目录，只有 accelerator/活动业务和"Get in Touch"联系表单，无提交入口；裸域 techshake.asia 已超时，只有 www 能打开。剔除 |
 
 ## 第二层：菲律宾本地社区（持续，最有效）
 

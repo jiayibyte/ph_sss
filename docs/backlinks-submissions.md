@@ -53,3 +53,20 @@
 - 个人简介 credential：*Builds free Philippine payroll calculators at aytool.com*
 - 目标问题类型（登录后搜）：「How is SSS contribution computed 2026」「How to compute 13th month pay Philippines」「How long before I get my final pay Philippines」
 - 答法：先给完整算式与官方依据，最后一行"If you want to plug in your own numbers: <对应计算器链接>"。每个问题只答一次，不在同一天连答同类题。
+
+## 提交记录
+
+| 日期 | 平台 | 状态 | 链接 / 备注 |
+|---|---|---|---|
+| 2026-09-23 | Product Hunt | 已排期：2026-09-24 00:01 PT（菲律宾时间 15:01）上线 | https://www.producthunt.com/products/aytool ；账号 @jj_l4，solo maker、Free、Bootstrapped；标签 Fintech / Personal Finance / Productivity；图：icon-512 缩 240、og/home + 4 张实填计算器截图（1270×760，CDP 驱动 headless Chrome 截取） |
+| 2026-09-23 | Quora | 已发 | 账号 Jahgs，credential "Maker of Free Philippine Payroll Calculators at AyTool (2026–present)"（默认）。① 13th month 算法 → /13th-month-pay-calculator/ https://www.quora.com/How-do-I-compute-13th-month-pay-in-the-Philippines-quickly-and-correctly/answer/Jahgs-2 ② SSS 缴费表 → /sss-contribution-table/ https://www.quora.com/What-is-the-SSS-contribution-table/answer/Jahgs-2 |
+| 2026-09-23 | AlternativeTo | 待邮箱验证 | 已登录；未验证邮箱时 /manage-item/ 返回 404 |
+| — | Indie Hackers | 未注册 | |
+| — | Reddit | 需手动发 | Claude in Chrome 对 reddit.com 有安全限制，自动化打不开 |
+
+Quora 备选题（未答，按"同一天不连答同类题"分批）：
+- How is withholding tax calculated for employees in the Philippines? → 所得税页上线后链 /income-tax-calculator/，否则 /take-home-pay-calculator/
+- I am a freelancer ... Should I pay withholding or any form of tax if I provide services online for a US based company?（2 答 4 关注）→ 8% 页上线后链 /freelancer-tax-calculator/
+- How is the 13th month pay computed by absences in the Philippines?（与①同类，隔几天再答）
+
+Quora 编辑器坑：行首输入 "1)" 会自动转编号列表且一直延续，列表结束要连按两次回车跳出；网址后紧跟句号有被吞进链接的风险，用括号隔开。
