@@ -7,7 +7,8 @@
 | 文件 | 用途 |
 |---|---|
 | `nginx-aytool.conf` | nginx 站点配置：HTTPS、www→裸域 301、指纹资产 immutable、HTML 短 TTL+ETag、gzip/brotli、安全响应头（HSTS/CSP/XCTO/Referrer-Policy）、自定义 404、AI bot 日志统计命令 |
-| `deploy.sh` | 原子部署：test → build → rsync 到 `releases/<ts>` → 切软链 → CDN 刷新 → IndexNow ping；`deploy.sh rollback` 回滚上一版；保留最近 5 个 release |
+| `deploy.sh` | 原子部署：test → build → rsync 到 `releases/<ts>` → 把所部署的提交推给服务器 → 切软链（原子 rename）→ CDN 刷新 → IndexNow ping；`deploy.sh rollback` 回到更早的另一个提交；保留线上版 + 最近 6 个提交各自最新的一版（服务器装了夜间重建时由 `aytool-rebuild` 负责，否则退回旧的保留 5 个） |
+| `server/` | **夜间重建**：每天 00:05（马尼拉时间）在服务器上重建"当前线上那个提交"，让"下一场考试 / 报名是否开放 / 结果待出 / Event 结构化数据"保持当天正确；输出有变化才发布，不 ping IndexNow。安装/更新 `make server-setup`，查看 `make nightly-status` / `make nightly-log`，手动跑 `make nightly-run`。详见 [server/README.md](server/README.md) |
 | `.indexnow-key` | IndexNow key（对应 `public/<key>.txt`，随构建部署到站点根） |
 
 `robots.txt` 与 `llms.txt` 在 `public/` 目录（需随构建产物部署到站点根，故不放本目录）。
