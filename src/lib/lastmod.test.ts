@@ -25,8 +25,15 @@ describe('lastmod', () => {
   });
 
   it('every calculator/schedule page that renders rule data is registered', () => {
-    // The OEC guide is prose-only; everything else in TOOL_PAGES renders a dataset.
-    const expected = ALL_TOOLS.map((t) => t.href).filter((h) => h !== '/oec-exemption/');
+    // Prose-only guides (OEC, the four "how to get a number" pages) render no dataset.
+    const proseOnly = new Set([
+      '/oec-exemption/',
+      '/how-to-get-sss-number/',
+      '/how-to-get-tin-number/',
+      '/how-to-get-pagibig-mid-number/',
+      '/how-to-get-philhealth-number/',
+    ]);
+    const expected = ALL_TOOLS.map((t) => t.href).filter((h) => !proseOnly.has(h));
     for (const href of expected) expect(Object.keys(PAGE_DATA)).toContain(href);
   });
 

@@ -1,0 +1,81 @@
+---
+import ToolPageLayout from '../layouts/ToolPageLayout.astro';
+
+const VP = 'https://www.pagibigfundservices.com/virtualpagibig/';
+const REG = 'https://www.pagibigfundservices.com/OnlineMembershipRegistration/';
+const MID = 'https://www.pagibigfundservices.com/virtualpagibig/midinquiry.aspx';
+const MEMBERSHIP = 'https://www.pagibigfund.gov.ph/member_membership.html';
+const LCP = 'https://www.pagibigfund.gov.ph/loyaltycardplus/';
+
+const faqs = [
+  { q: 'How do I get a Pag-IBIG MID number online?', a: 'Open Virtual Pag-IBIG → Be a Member → Register, enter your name and birth date exactly as on your birth certificate, and choose a route: register with your National ID (name + birth date, then a liveness check), scan your PhilID/ePhilID/eGovPH Digital National ID QR code, or "Click here if you don\'t have a National ID" and register with your personal information plus a valid ID, proof of income and a selfie. Submit and save your Registration Tracking Number (RTN). Two to three working days later, use Be a Member → Verify MID Number with the RTN, your last name and birth date to get your permanent MID.' },
+  { q: 'What is the RTN and when do I get my MID?', a: 'The Registration Tracking Number is what the online form gives you immediately; the permanent 12-digit Membership ID (MID) is assigned afterwards. Pag-IBIG: "Once submitted, make sure to save your Registration Tracking Number (RTN) to verify your permanent Membership ID (MID Number) after two (2) to three (3) working days." You can already file a housing loan application online with an RTN.' },
+  { q: 'Is Pag-IBIG registration free?', a: 'The registration pages state no fee. The optional Pag-IBIG Loyalty Card Plus costs ₱125, paid at the branch to the Asia United Bank or UnionBank personnel who issue it.' },
+  { q: 'What documents do I need?', a: 'With a National ID: just the PhilID, ePhilID or the eGovPH digital National ID, plus the liveness check. Without one: "Please prepare a valid ID, proof of income, and a selfie photo." Your name and birth date must match your birth certificate. Accepted IDs include the passport, driver\'s license, PRC ID, NBI or police clearance, postal ID, voter\'s ID, TIN ID, UMID/SSS card, GSIS e-Card, senior citizen and PWD IDs, OWWA e-Card, seaman\'s book and company IDs of BSP/SEC/IC-regulated firms.' },
+  { q: 'I forgot my Pag-IBIG MID number. How do I recover it?', a: 'Three official routes: send a private message to Pag-IBIG\'s official Facebook page with your verification details; email contactus@pagibigfund.gov.ph to request retrieval; or visit any Pag-IBIG branch with one valid ID. If you have two records, file a Request for Consolidation/Merging of Member\'s Records at a branch with one valid ID and a photocopy of your SSS employment history.' },
+  { q: 'How do I create a Virtual Pag-IBIG account?', a: 'Fastest with a Loyalty Card Plus (MID, issuing bank, last four card digits, OTP, email, three security questions). Otherwise use "Create and Activate your account online": MID, full name, birth date, mobile number and OTP, email, security questions, mother\'s maiden name, place of birth, and an upload of your passport or two primary IDs plus a selfie holding them; activation is confirmed by SMS over the following days. OFWs use the separate OFW account creation with their country of assignment.' },
+  { q: 'What is the Loyalty Card Plus?', a: 'A membership card that doubles as an ATM/cash card, issued instantly at any branch: submit the application form, pay the ₱125 card fee, and have your photo, fingerprints and signature taken. It gives discounts at Pag-IBIG\'s partner merchants and is the quickest way to open a Virtual Pag-IBIG account.' },
+  { q: 'Paano kumuha ng Pag-IBIG MID number online?', a: 'Sa Virtual Pag-IBIG → Be a Member → Register. Ilagay ang pangalan at birthday na tugma sa birth certificate, pumili kung National ID (may liveness check), QR code ng PhilID/ePhilID/eGovPH, o personal information kung walang National ID (valid ID, proof of income, selfie). I-save ang RTN; pagkalipas ng 2–3 working days, sa Verify MID Number makukuha ang permanent MID. Walang bayad ang registration; ₱125 lang kung gusto mo ng Loyalty Card Plus.' },
+];
+---
+
+<ToolPageLayout
+  title="How to Get a Pag-IBIG MID Number Online (2026): RTN to MID"
+  description="Register on Virtual Pag-IBIG with your National ID or a valid ID, save the Registration Tracking Number, and verify your permanent MID after 2–3 working days. Documents, fees, Loyalty Card Plus and how to recover a lost MID."
+  path="/how-to-get-pagibig-mid-number/"
+  h1="How to Get Your Pag-IBIG MID Number Online"
+  faqs={faqs}
+  related={['pagibig', 'sssNumber', 'philhealthPin', 'tinNumber']}
+  isApp={false}
+>
+  <Fragment slot="answer">
+    <p>
+      Register on <strong>Virtual Pag-IBIG → Be a Member → Register</strong>: enter your name and birth date exactly as on your
+      birth certificate, then register with your <strong>National ID</strong> (liveness check or QR code) or, if you have none, with
+      your personal information plus a valid ID, proof of income and a selfie. Submit and <strong>save the Registration Tracking
+      Number (RTN)</strong>. After <strong>two to three working days</strong>, go to <strong>Be a Member → Verify MID Number</strong>,
+      enter the RTN, your last name and birth date, and you have your permanent <strong>Pag-IBIG MID</strong>. Registration is
+      free; the optional Loyalty Card Plus costs ₱125 at a branch.
+    </p>
+  </Fragment>
+
+  <h2>Step by Step (Virtual Pag-IBIG Online Membership Registration)</h2>
+  <ol>
+    <li>Go to <a href={VP} target="_blank" rel="noopener">Virtual Pag-IBIG</a>, click <strong>Be a Member</strong>, then <strong>Register</strong> — it opens the <a href={REG} target="_blank" rel="noopener">Online Membership Registration</a>.</li>
+    <li>Enter your first name, middle name, last name and birth date. Pag-IBIG: "Please ensure that the personal details you enter match exactly with the information on your Birth Certificate."</li>
+    <li>Pick a route: <strong>Register using your National ID</strong> (then "Start National ID Liveness Check"); <strong>register using your National ID QR code</strong> (PhilID, ePhilID, or the digital National ID in the eGovPH app; upload up to 3 MB as JPG, PNG, BMP or PDF); or <strong>"Click here if you don't have a National ID"</strong> to register with your personal information — "Please prepare a valid ID, proof of income, and a selfie photo."</li>
+    <li>Complete the remaining details and click <strong>Submit</strong>.</li>
+    <li>Save your <strong>Registration Tracking Number (RTN)</strong>.</li>
+    <li>After two to three working days, open Virtual Pag-IBIG → Be a Member → <a href={MID} target="_blank" rel="noopener">Verify MID Number</a>, enter the RTN, your last name and date of birth, and submit. "You now have your permanent Pag-IBIG MID Number!"</li>
+  </ol>
+
+  <h2>Requirements and Accepted IDs</h2>
+  <ul>
+    <li><strong>National ID route:</strong> PhilID, ePhilID or the eGovPH Digital National ID, plus the liveness check.</li>
+    <li><strong>No National ID:</strong> one valid ID, proof of income and a selfie.</li>
+    <li><strong>Accepted IDs (official list):</strong> National ID; passport; driver's license; PRC ID; NBI or police clearance; postal ID; voter's ID; TIN ID; barangay certification or ID with photo; GSIS e-Card; SSS card/UMID; senior citizen card; OWWA e-Card; seaman's book; ACR/ICR; government or GOCC IDs; PWD ID; DSWD certification; IBP ID; company IDs of BSP-, SEC- or IC-regulated companies; PhilHealth card. Digital IDs are accepted only when presented by the member; barangay and private company IDs are not accepted for housing transactions.</li>
+    <li>New members' first savings are billed on the schedule shown in the <a href="/pagibig-contribution/">Pag-IBIG Contribution Calculator</a> (2% of monthly compensation, ₱200 maximum employee share at the ₱10,000 fund salary ceiling).</li>
+  </ul>
+
+  <h2>Fees and Timing</h2>
+  <ul>
+    <li><strong>Registration:</strong> no fee is stated on the registration or membership pages.</li>
+    <li><strong>MID issuance:</strong> two to three working days after the RTN.</li>
+    <li><strong>Loyalty Card Plus:</strong> ₱125 card fee at any branch, paid to the AUB or UnionBank personnel; photo, fingerprints and signature taken on the spot; card issued instantly.</li>
+  </ul>
+
+  <h2>Forgot Your MID, or Have Two Records?</h2>
+  <ul>
+    <li>Message Pag-IBIG's <strong>official Facebook page</strong> privately with your verification details.</li>
+    <li>Email <strong>contactus@pagibigfund.gov.ph</strong> to request retrieval.</li>
+    <li>Visit <strong>any Pag-IBIG branch</strong> with one valid ID.</li>
+    <li>Duplicate records are merged with a <strong>Request for Consolidation/Merging of Member's Records</strong> (one valid ID plus a photocopy of your SSS employment history) at any branch.</li>
+  </ul>
+
+  <h2>Official Source</h2>
+  <p>
+    <a href={MEMBERSHIP} target="_blank" rel="noopener">Pag-IBIG Fund — Membership</a>, <a href={REG} target="_blank" rel="noopener">Virtual Pag-IBIG Online Membership Registration</a>,
+    <a href={MID} target="_blank" rel="noopener">Verify MID Number</a> and the <a href={LCP} target="_blank" rel="noopener">Loyalty Card Plus page</a>. Verified September 23, 2026.
+    Register only on pagibigfund.gov.ph or pagibigfundservices.com — AyTool is independent and cannot register you or look up an MID.
+  </p>
+</ToolPageLayout>

@@ -1,0 +1,99 @@
+---
+import ToolPageLayout from '../layouts/ToolPageLayout.astro';
+
+const ORUS = 'https://orus.bir.gov.ph/';
+const BIR = 'https://www.bir.gov.ph/primary-registration';
+const CHARTER = "https://bir-cdn.bir.gov.ph/BIR/pdf/BIR%20Citizen's%20Charter%20(2026%20Edition)%20final.pdf";
+const CDR = 'https://bir-cdn.bir.gov.ph/BIR/pdf/CDR%20-%202025%20(1).pdf';
+const RMC120 = 'https://bir-cdn.bir.gov.ph/local/pdf/RMC%20No.%20120-2023.pdf';
+const RMC34 = 'https://bir-cdn.bir.gov.ph/BIR/pdf/RMC%20NO.%2034-2026%20Digest.pdf';
+const RMC13 = 'https://bir-cdn.bir.gov.ph/local/pdf/RMC%20No.%2013-2021.pdf';
+const NIRC = 'https://lawphil.net/statutes/repacts/ra1997/ra_8424_1997.html';
+
+const faqs = [
+  { q: 'How do I get a TIN as a new employee?', a: 'Through your employer, online. BIR\'s 2026 Citizen\'s Charter routes employee TINs "Online through the Employer using the Online Registration and Update System (ORUS)": the employer enrols in the Employer Service Link at orus.bir.gov.ph and registers you; you receive an ORUS link, create an account, enter your details, upload a scan of one government ID (plus a selfie holding it), and submit. Approval is automatic unless the system finds a possible duplicate; total processing time is three days, and you view the TIN by logging in to ORUS. The walk-in fallback is BIR Form 1902 at the RDO covering your residence (about six hours).' },
+  { q: 'How do I get a TIN if I am self-employed or a freelancer?', a: 'Register the business or profession yourself in ORUS on or before you start: create an account, fill in the online registration form (the equivalent of BIR Form 1901), upload your government ID (or PRC ID for regulated professions) and either a sample of your own invoice or a purchase of BIR-printed invoices, then pay ₱30 loose documentary stamp tax to generate and print your electronic Certificate of Registration. The RDO evaluates the application in about three days. No annual registration fee appears in the 2025 registration requirements or the 2026 charter.' },
+  { q: 'What is BIR Form 1904 and who uses it?', a: 'The one-time taxpayer / E.O. 98 registration — for people who need a TIN to deal with a government agency, open a bank account, buy or sell property, receive an inheritance, or as a first-time job seeker (with a barangay certification). File at the RDO covering your residence (non-residents through RDO 39, South Quezon City) with the form and one government ID; ORUS also accepts these applications with a selfie holding your ID. No fee.' },
+  { q: 'Is a TIN or a TIN ID free?', a: 'Yes. The 2026 Citizen\'s Charter lists "None" as the fee for TIN issuance to employees, self-employed applicants and E.O. 98 registrants. The first paper TIN card is free (₱100 to replace a lost or damaged one, personal appearance mandatory), and BIR says "The Digital TIN ID is FREE and not for sale." BIR warns that online sellers of "TIN ID assistance" risk giving you an invalid or fake TIN; fake TIN cards are confiscated.' },
+  { q: 'How do I get the Digital TIN ID?', a: 'Enrol an account in ORUS (your email must match the one on file with your RDO — update it with Form S1905 if not), then apply for the Digital TIN ID with a recent 1×1 photo on a white background, front-facing, ears visible, no sunglasses or mask. Anyone with an existing TIN can get it, with or without a physical card, and it is accepted as a valid government ID (RMC 120-2023). Since April 24, 2026 it is also available in the DICT eGovPH app\'s Mobile ID Wallet (RMC 34-2026); both versions are recognised.' },
+  { q: 'Can I have two TINs?', a: 'No. Section 236(J) of the Tax Code: "Any person who shall secure more than one Taxpayer Identification Number shall be criminally liable under the provision of Section 275" — a fine of up to ₱1,000 and/or imprisonment of up to six months. If you think you already have a TIN, verify it before applying; BIR will not issue a second one.' },
+  { q: 'How do I verify or recover my TIN?', a: 'Use the BIR Mobile TIN Verifier App (iOS and Android; RMC 13-2021) for real-time TIN inquiry and validation, visit any RDO with a valid ID, or — if you have a Digital TIN ID — let the other party scan its QR code in ORUS. BIR\'s Revie chatbot also has a TIN-validation form, though it was unavailable when we checked.' },
+  { q: 'Paano kumuha ng TIN number?', a: 'Kung empleyado ka, sa employer mo ito dadaan: i-eenroll ka niya sa ORUS Employer Service Link, makakatanggap ka ng link para gumawa ng account at mag-upload ng ID at selfie, at makikita mo ang TIN sa ORUS pagka-approve (tatlong araw). Kung self-employed o freelancer, ikaw mismo ang magrerehistro sa orus.bir.gov.ph bago magsimula, at ₱30 lang ang loose DST para sa Certificate of Registration. Libre ang TIN at ang Digital TIN ID; isa lang ang TIN na pwede mong hawakan.' },
+];
+---
+
+<ToolPageLayout
+  title="How to Get a TIN (2026): ORUS Steps, Forms & Digital TIN ID"
+  description="Get a BIR TIN in 2026: employees register through the employer in ORUS (Form 1902), self-employed register themselves (Form 1901, ₱30 DST), one-time taxpayers use Form 1904. Fees, processing times, Digital TIN ID and the one-TIN rule."
+  path="/how-to-get-tin-number/"
+  h1="How to Get a TIN Number (BIR) in 2026"
+  faqs={faqs}
+  related={['takeHome', 'sssNumber', 'philhealthPin', 'pagibigMid']}
+  isApp={false}
+>
+  <Fragment slot="answer">
+    <p>
+      Since 2025 the BIR issues TINs through <strong>ORUS</strong>, its Online Registration and Update System. <strong>Employees</strong>
+      are registered <em>by their employer</em> through the ORUS Employer Service Link: you get a link, create an account, upload one
+      government ID and a selfie, and the TIN is approved in about three days (BIR Form 1902; walk-in at your RDO is the fallback).
+      <strong>Self-employed</strong> people and professionals register themselves in ORUS before starting business (Form 1901) and
+      pay ₱30 documentary stamp tax for the electronic Certificate of Registration. <strong>One-time taxpayers</strong> and people
+      who need a TIN for a government transaction use Form 1904. The TIN, the first paper TIN card and the <strong>Digital TIN
+      ID</strong> are free — and you may have only one TIN.
+    </p>
+  </Fragment>
+
+  <h2>Which Form Applies to You</h2>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>You are</th><th>Form</th><th>Where / how</th><th>Time</th><th>Fee</th></tr></thead>
+      <tbody>
+        <tr><td>Newly hired employee without a TIN</td><td>1902</td><td>Employer registers you in ORUS (Employer Service Link); walk-in at the RDO of your residence as fallback</td><td>3 days online; ~6 hours walk-in</td><td>None</td></tr>
+        <tr><td>Self-employed, freelancer, professional, mixed income</td><td>1901</td><td>Register yourself in ORUS on or before starting business; RDO evaluates</td><td>~3 days</td><td>₱30 loose DST for the e-COR</td></tr>
+        <tr><td>One-time taxpayer, E.O. 98 (government transaction, bank, first-time job seeker, estate/donation/property sale)</td><td>1904</td><td>RDO of your residence (non-residents: RDO 39), or ORUS with a selfie holding your ID</td><td>~6 hours walk-in</td><td>None</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>Employees: Step by Step Through ORUS</h2>
+  <ol>
+    <li>Your employer creates an ORUS account at <a href={ORUS} target="_blank" rel="noopener">orus.bir.gov.ph</a> and enrols in the <strong>Employer Service Link</strong>. BIR's registration requirements (rev. July 2025): "Application for TIN of employees (already hired) is thru his/her employer via Online Registration and Update System (ORUS)."</li>
+    <li>The employer registers you; <strong>you receive a link from ORUS</strong>, create your account and enter your personal information.</li>
+    <li>Upload a scan of <strong>one government-issued ID</strong> showing your name, address and birth date (PhilID, driver's license, UMID, passport, voter's ID, postal ID, PRC ID, OWWA ID; add proof of residence if the ID has no address), a <strong>selfie holding the ID</strong>, and your marriage contract if you are a married woman. Foreign nationals add the passport bio page with entry stamps.</li>
+    <li>Submit. "The system checks for existing records. If potential duplicates are detected, the application is forwarded to the Revenue District Office (RDO) for evaluation … Otherwise, their application is automatically approved by the system."</li>
+    <li>You get an email on the status and <strong>see your TIN by logging in to ORUS</strong>. Total processing time in the 2026 Citizen's Charter: 3 days.</li>
+    <li>Register within <strong>10 days from your date of employment</strong>. If ORUS is down, the employer may file Form 1902 for you at the RDO with a letter of authority, IDs and the printed ORUS error message.</li>
+  </ol>
+
+  <h2>Self-Employed and Professionals: Form 1901 in ORUS</h2>
+  <ul>
+    <li>Create an ORUS account and complete the online registration form; upload your government ID (PRC ID plus proof of address for regulated professions), and either a final sample of your own invoice or proof of buying BIR-printed invoices.</li>
+    <li>Add what applies: DTI business-name certificate, work visa, service contract with a government office, franchise papers, BMBE certificate, BOI/PEZA registration.</li>
+    <li>After the RDO's evaluation, <strong>pay ₱30 loose documentary stamp tax online</strong> and print your electronic Certificate of Registration; comply with invoicing rules (BIR-printed invoices or an Authority to Print).</li>
+  </ul>
+
+  <h2>Fees, TIN Card and Digital TIN ID</h2>
+  <ul>
+    <li><strong>TIN issuance:</strong> free for employees, self-employed and E.O. 98 registrants (2026 Citizen's Charter).</li>
+    <li><strong>Paper TIN card:</strong> first card free; ₱100 replacement for a lost or damaged card (Form 1905, 1×1 photo, ID, personal appearance mandatory).</li>
+    <li><strong>Digital TIN ID:</strong> free in ORUS for anyone with a TIN — photo rules: recent, white background, front-facing, both ears visible, no sunglasses or mask; misrepresentation is penalised under Sec. 255 of the Tax Code. Verified by scanning its QR code in ORUS; since April 24, 2026 also issued through the <strong>eGovPH app</strong> (RMC 34-2026), and both are valid government IDs.</li>
+    <li>BIR warns against paying "TIN ID assistance" sellers online — "FAKE TIN Card shall be confiscated".</li>
+  </ul>
+
+  <h2>One TIN Only, and How to Verify Yours</h2>
+  <ul>
+    <li><strong>Sec. 236(J), Tax Code:</strong> "Any person who shall secure more than one Taxpayer Identification Number shall be criminally liable under the provision of Section 275" — a fine of not more than ₱1,000 or imprisonment of not more than six months, or both.</li>
+    <li><strong>Verify:</strong> the <strong>BIR Mobile TIN Verifier App</strong> (App Store / Google Play, RMC 13-2021) gives a real-time answer from your RDO; any RDO can verify over the counter with a valid ID; a Digital TIN ID's QR code can be scanned in ORUS.</li>
+    <li>Your TIN is permanent. Changing employer, address or civil status is an <em>update</em> (Form 1905 / ORUS), never a new TIN.</li>
+  </ul>
+
+  <h2>Official Source</h2>
+  <p>
+    <a href={BIR} target="_blank" rel="noopener">BIR — Primary Registration</a>; <a href={ORUS} target="_blank" rel="noopener">ORUS</a>;
+    <a href={CHARTER} target="_blank" rel="noopener">BIR Citizen's Charter 2026 Edition</a> and the
+    <a href={CDR} target="_blank" rel="noopener">Checklist of Documentary Requirements (rev. July 2025)</a>;
+    <a href={RMC120} target="_blank" rel="noopener">RMC No. 120-2023</a> (Digital TIN ID), <a href={RMC34} target="_blank" rel="noopener">RMC No. 34-2026</a> (eGovPH),
+    <a href={RMC13} target="_blank" rel="noopener">RMC No. 13-2021</a> (TIN Verifier app); <a href={NIRC} target="_blank" rel="noopener">NIRC Secs. 236(J) and 275</a>.
+    Verified September 23, 2026. Register only on bir.gov.ph or orus.bir.gov.ph — AyTool is independent and never handles your TIN.
+  </p>
+</ToolPageLayout>

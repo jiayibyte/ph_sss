@@ -1,0 +1,94 @@
+---
+import ToolPageLayout from '../layouts/ToolPageLayout.astro';
+
+const PORTAL = 'https://memberinquiry.philhealth.gov.ph/member/';
+const PINAPP = 'https://memberinquiry.philhealth.gov.ph/member/pinApplication.xhtml';
+const FORMAL = 'https://www.philhealth.gov.ph/members/formal/registration.php';
+const INFORMAL = 'https://www.philhealth.gov.ph/members/informal/registration.php';
+const EMPLOYER = 'https://www.philhealth.gov.ph/partners/employers/registration.php';
+const PMRF = 'https://www.philhealth.gov.ph/downloads/membership/pmrf_012020.pdf';
+const CIRC = 'https://www.philhealth.gov.ph/circulars/2020/circ2020-0001.pdf';
+
+const faqs = [
+  { q: 'How do I get a PhilHealth number (PIN) online?', a: 'Open the PhilHealth Member Portal and click "PhilHealth Member Registration". Enter a valid email address (each address can be used for one application only), fill in the form, and upload your completed PhilHealth Member Registration Form (PMRF) plus a supporting document — a birth certificate or a valid ID; applications without them "will be disregarded". PhilHealth processes complete applications "within three (3) to five (5) working days" and emails you the PIN. You then create a Member Portal account with the PIN.' },
+  { q: 'How do I get a PhilHealth number as a new employee?', a: 'Fill out two copies of the PMRF and submit them to your employer\'s HR; the employer registers you and hands you your Member Data Record (MDR). If you already have a PIN from a previous job or as a dependent, just report it — "Report your PIN to your employer for them to indicate the same in their ER2." Under the Universal Health Care law every Filipino is automatically a member and gets one permanent PIN, so never apply for a second number.' },
+  { q: 'Can I register at a PhilHealth office instead?', a: 'Yes. Self-earning and informal-economy members fill out two copies of the PMRF at any Local Health Insurance Office or PhilHealth Express outlet, submit them, receive the Member Data Record and PhilHealth ID card, then pay premiums monthly, quarterly, semi-annually or annually using the PIN.' },
+  { q: 'What documents are required?', a: 'A properly filled PMRF (the January 2020 UHC version, in capital letters, mobile number required) and "at least one (1) valid proof of identity for first time registrants" (PhilHealth Circular 2020-0001). Proof of income is required for direct contributors other than formally employed workers, seafarers and lifetime members; kasambahay, family drivers and self-earning members may simply declare their income on the PMRF. A representative needs your signed authorization letter and both of your government IDs.' },
+  { q: 'Is there a fee for a PhilHealth number?', a: 'No registration fee is mentioned on any official registration page, and the PMRF itself is marked "not for sale". Premium contributions start after registration — 5% of monthly basic salary between the ₱10,000 floor and ₱100,000 ceiling, split with the employer for employees; see the PhilHealth Contribution Calculator.' },
+  { q: 'What can I do in the Member Portal?', a: 'Once you have a PIN, create an account (PIN, name, birth date, sex, email, mobile number, password) and confirm the activation email. The portal shows your profile, dependents, employer and contribution history, lets you download the MDR, pay premiums online and choose a YAKAP primary-care clinic.' },
+  { q: 'I forgot my PhilHealth number. How do I find it?', a: 'PhilHealth publishes no online PIN-recovery tool — the Member Portal needs the PIN to create an account. Check your old MDR, payslip or company records, or ask your HR; otherwise visit a Local Health Insurance Office or PhilHealth Express with a valid ID, or contact the PhilHealth Action Center. Do not register again: the PIN is permanent and one person may have only one.' },
+  { q: 'Paano kumuha ng PhilHealth number online?', a: 'Sa PhilHealth Member Portal → PhilHealth Member Registration: maglagay ng email (isang application lang kada email), punan ang form, at i-upload ang PMRF at birth certificate o valid ID. Sa loob ng 3–5 working days ipapadala ang PIN sa email mo. Kung empleyado ka, dalawang kopya ng PMRF ang isusumite mo sa HR at sila ang magrerehistro; kung may PIN ka na dati, iyon ang ibigay mo — isa lang ang PIN habambuhay.' },
+];
+---
+
+<ToolPageLayout
+  title="How to Get a PhilHealth Number (PIN) Online in 2026: Steps"
+  description="Get your PhilHealth Identification Number through the Member Portal (PMRF + ID, PIN emailed in 3–5 working days), through your employer, or at a Local Health Insurance Office. Requirements, fees and what to do if you forgot your PIN."
+  path="/how-to-get-philhealth-number/"
+  h1="How to Get a PhilHealth Number (PIN)"
+  faqs={faqs}
+  related={['philhealth', 'sssNumber', 'pagibigMid', 'tinNumber']}
+  isApp={false}
+>
+  <Fragment slot="answer">
+    <p>
+      Every Filipino has one permanent <strong>PhilHealth Identification Number (PIN)</strong>. To get yours online, open the
+      <strong>PhilHealth Member Portal → PhilHealth Member Registration</strong>, enter a valid email address, fill in the form and
+      upload your completed <strong>PMRF</strong> plus a birth certificate or valid ID — PhilHealth emails the PIN within
+      <strong>three to five working days</strong>. Employees can instead submit two copies of the PMRF to HR and let the employer
+      register them; self-earning members can also register at any Local Health Insurance Office. There is no registration fee;
+      premiums start afterwards.
+    </p>
+  </Fragment>
+
+  <h2>Online: PhilHealth Member Portal</h2>
+  <ol>
+    <li>Download and fill out the <a href={PMRF} target="_blank" rel="noopener">PhilHealth Member Registration Form (PMRF)</a> in capital letters — all fields are mandatory unless marked optional, and a mobile number is required.</li>
+    <li>Open the <a href={PORTAL} target="_blank" rel="noopener">Member Portal</a> and click <strong>PhilHealth Member Registration</strong> (<a href={PINAPP} target="_blank" rel="noopener">Online NHIP Registration – Individual</a>).</li>
+    <li>Enter a <strong>valid email address</strong> and the captcha. PhilHealth: "a valid email address is required and it can only be used once … a registrant cannot submit more than one (1) application."</li>
+    <li>Complete the form and <strong>upload the accomplished PMRF and supporting document(s)</strong> — "e.g. birth certificate, valid, acceptable, or duly issued ID" — "otherwise, it will be disregarded."</li>
+    <li>Wait for processing: "All electronically submitted registration forms with complete supporting document/s shall be processed within three (3) to five (5) working days. The PIN will be sent to the provided email address of the registrant upon successful processing of the registration."</li>
+    <li>With the PIN, use <strong>Member Portal Account Creation</strong> (PIN, name, birth date, sex, email, mobile number, password of 8–32 characters with upper- and lower-case letters, a digit and a special character) and confirm the activation email.</li>
+  </ol>
+
+  <h2>Through Your Employer (Formal Economy)</h2>
+  <ul>
+    <li>Newly hired without a PIN: "Fill out two (2) copies of the PhilHealth Member Registration Form (PMRF)", "Submit PMRF to the HR Department of employer", "Await Member Data Record and PhilHealth ID card from employer".</li>
+    <li>Newly hired with a PIN: "Report your PIN to your employer for them to indicate the same in their ER2."</li>
+    <li>The employer files the <strong>ER1</strong> (employer data record) and a PMRF per employee, receives its PhilHealth Employer Number and the employees' PINs and MDRs, and remits the monthly premium — the <a href="/philhealth-contribution/">PhilHealth Contribution Calculator</a> shows the 5% split.</li>
+  </ul>
+
+  <h2>At a Local Health Insurance Office (Self-Earning, Informal Economy)</h2>
+  <ol>
+    <li>Visit any Local Health Insurance Office or PhilHealth Express outlet.</li>
+    <li>Fill out two copies of the PMRF and submit them.</li>
+    <li>Receive your Member Data Record (MDR) and PhilHealth ID card.</li>
+    <li>Pay premiums with your PIN — monthly, quarterly, semi-annually or annually.</li>
+  </ol>
+
+  <h2>Requirements, Fees and Proof of Income</h2>
+  <ul>
+    <li><strong>PMRF</strong> (UHC version, January 2020) — two copies for walk-in, one upload online.</li>
+    <li><strong>One valid proof of identity</strong> for first-time registrants (<a href={CIRC} target="_blank" rel="noopener">PhilHealth Circular 2020-0001</a>, Sec. V.B); the online page lists "birth certificate, valid, acceptable, or duly issued ID" as examples.</li>
+    <li><strong>Proof of income</strong> for direct contributors other than formally employed workers, sea-based workers and lifetime members; kasambahay, family drivers and self-earning members need only declare income on the PMRF.</li>
+    <li><strong>Representative:</strong> your signed authorization letter and both of your government IDs with photo.</li>
+    <li><strong>Fee:</strong> none stated; the PMRF is "not for sale".</li>
+  </ul>
+
+  <h2>Forgot Your PIN?</h2>
+  <p>
+    PhilHealth publishes no online PIN-recovery tool and the portal needs the PIN to open an account. Look for it on an old
+    Member Data Record, PhilHealth ID card or payslip, ask your HR (it is on the employer's ER2 and remittance reports), or visit a
+    Local Health Insurance Office with a valid ID. Never register again — "Your PhilHealth Identification Number (PIN) is your
+    unique and permanent number."
+  </p>
+
+  <h2>Official Source</h2>
+  <p>
+    <a href={PINAPP} target="_blank" rel="noopener">PhilHealth Member Portal — Online NHIP Registration</a>,
+    <a href={FORMAL} target="_blank" rel="noopener">Formal economy registration</a>, <a href={INFORMAL} target="_blank" rel="noopener">Informal economy registration</a>,
+    <a href={EMPLOYER} target="_blank" rel="noopener">Employer registration</a>, the <a href={PMRF} target="_blank" rel="noopener">PMRF</a> and
+    <a href={CIRC} target="_blank" rel="noopener">Circular 2020-0001</a>. Verified September 23, 2026. Register only on philhealth.gov.ph — AyTool is
+    independent and cannot look up or issue a PIN.
+  </p>
+</ToolPageLayout>

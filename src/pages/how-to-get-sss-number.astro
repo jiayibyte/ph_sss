@@ -1,0 +1,90 @@
+---
+import ToolPageLayout from '../layouts/ToolPageLayout.astro';
+
+const SSS = 'https://www.sss.gov.ph/become-an-sss-member/';
+const IDS = 'https://www.sss.gov.ph/required-id-cards-and-documents-for-the-issuance-of-ss-number/';
+const CHARTER = 'https://www.sss.gov.ph/wp-content/uploads/2026/07/2026-SSS-Citizens-Charter-1st-Edition-External-Services.pdf';
+
+const faqs = [
+  { q: 'How do I get an SSS number online?', a: 'Go to sss.gov.ph → Become an SSS Member → "Apply for an SS Number online", fill in the Registrant Record Verification, click the link SSS emails you (valid five calendar days), complete your personal record and beneficiaries, choose a My.SSS user ID, then click "Generate SS Number". The number, your E-1 form and your transaction slip are shown on screen and emailed. Since July 15, 2020 online application is the mandatory route for new employees, self-employed, OFWs and non-working spouses.' },
+  { q: 'What documents do I need for an SSS number?', a: 'Officially, none to get the number: SSS states "You may proceed without submitting any documentary requirement." To have the number tagged Permanent, upload one supporting document (JPEG or PDF, up to 3 MB) — a PSA birth certificate, or if you have none, a baptismal certificate or any government ID (driver\'s license, passport, PhilID, PRC card, UMID, seaman\'s book), or any two secondary documents with your name and at least one with your birth date.' },
+  { q: 'What is the difference between a Temporary and a Permanent SS number?', a: 'SSS: "An SS Number tagged as Temporary means that it can be used for contribution purposes only. To become eligible for benefits or loans, the member must have an SS Number tagged as Permanent." A number becomes Permanent once a valid supporting document is approved — upload it during the online application (evaluated in two working days per the 2026 Citizen\'s Charter) or bring it to any branch.' },
+  { q: 'Is there a fee for an SSS number?', a: 'No. The 2026 SSS Citizen\'s Charter lists "Total Standard Fee: None" for online SS number issuance with or without documents, and for the employer\'s employment report (R1A). Processing time: about 20 minutes without documents; two working days when documents are evaluated.' },
+  { q: 'Does having an SSS number make me a member?', a: 'Not yet. SSS: "Securing an SS number does not automatically mean a person is already covered as a member." An employee becomes covered on the first day of employment once the employer files the R1A employment report and pays at least one contribution. Paying as a voluntary member before ever having a posted employee, self-employed or OFW contribution is not allowed — SSS says such payments "will render them void and subject to refund".' },
+  { q: 'How does my employer report me to SSS?', a: 'Through the Employer Portal on sss.gov.ph: Services → Submit Employment Report (R1A), entering your SS number, full name, birth date, date of employment, monthly earnings and position. The system emails the employer a transaction number. Coverage takes effect on your first day of employment.' },
+  { q: 'I forgot my SSS number. How do I recover it?', a: 'SSS\'s official answer is to have it verified at the nearest SSS branch: "Verification of a previously issued SS Number can be requested at the nearest SSS Office. The member should never secure another SS Number." If you apply online and SSS finds an existing record, it emails you to visit a branch instead of issuing a new number. Duplicate numbers are cancelled at a branch with the Request/Verification Form (no fee); the number with a UMID or the most contributions is kept.' },
+  { q: 'Paano kumuha ng SSS number online?', a: 'Pumunta sa sss.gov.ph → Become an SSS Member → Apply for an SS Number online. Punan ang form, i-click ang link na ipapadala sa email mo (limang araw lang ang bisa), kumpletuhin ang personal record at beneficiaries, tapos i-click ang Generate SS Number. Libre ito. Mag-upload ng birth certificate o valid ID para maging Permanent ang number — kung Temporary, pwede lang itong gamitin sa hulog, hindi sa loan o benefits.' },
+];
+---
+
+<ToolPageLayout
+  title="How to Get an SSS Number Online (2026): Steps & Requirements"
+  description="Get your SS number in about 20 minutes on sss.gov.ph: the exact online steps, which documents make it Permanent instead of Temporary, fees (none), how employers report you, and how to recover a forgotten number."
+  path="/how-to-get-sss-number/"
+  h1="How to Get an SSS Number Online"
+  faqs={faqs}
+  related={['sssCalculator', 'sssTable', 'philhealthPin', 'pagibigMid']}
+  isApp={false}
+>
+  <Fragment slot="answer">
+    <p>
+      Apply on <strong>sss.gov.ph → Become an SSS Member → Apply for an SS Number online</strong>: fill in the Registrant
+      Record Verification, click the link SSS emails you within five days, complete your personal record and beneficiaries,
+      choose a My.SSS user ID and click <strong>Generate SS Number</strong>. It is <strong>free</strong> and takes about 20
+      minutes. Upload one supporting document — a PSA birth certificate or a government ID — so the number is tagged
+      <strong>Permanent</strong>; a number without documents is <strong>Temporary</strong> and works for contributions only,
+      not loans or benefits. Your employer then reports you through the R1A employment report.
+    </p>
+  </Fragment>
+
+  <h2>Step by Step (SSS Online Application)</h2>
+  <ol>
+    <li>Open <a href={SSS} target="_blank" rel="noopener">Become an SSS Member</a> on sss.gov.ph and click <strong>Apply for an SS Number online</strong>, then <strong>Start</strong>.</li>
+    <li>Fill in the <strong>Registrant Record Verification</strong>, tick the captcha and the certification, and submit.</li>
+    <li>Open the email from SSS and click the link. SSS: "The link is valid for five (5) calendar days only and once it expires, you need to submit a new application online." If SSS already has a record for you, the email tells you to visit a branch instead.</li>
+    <li>Enter your basic and contact information, home address and purpose of registration; then social status and place of birth; then beneficiaries (father, mother, spouse, children).</li>
+    <li>Choose your <strong>My.SSS user ID</strong>, enter height and weight for the Personal Record, and answer the MySSS Pension Booster prompt (Yes or Maybe later).</li>
+    <li>Review and click <strong>Generate SS Number</strong>. Corrections after this point need a branch visit.</li>
+    <li>Optionally upload one supporting document (colored, readable JPEG or PDF, max 3 MB). SSS evaluates it within two working days and tags the number Permanent if approved.</li>
+    <li>Print or download your <strong>SS Number Slip</strong>, <strong>Transaction Number Slip</strong> and <strong>Personal Record (E-1)</strong>; the same are emailed to you.</li>
+    <li>Click the <strong>My.SSS activation link</strong> in the email to set your password — it is valid for 30 calendar days. Afterwards you can still register in My.SSS using the transaction number on your E-1.</li>
+  </ol>
+  <p>No internet at home? The same application can be done at the <strong>E-Center</strong> of any SSS branch.</p>
+
+  <h2>Requirements: What Makes the Number Permanent</h2>
+  <ul>
+    <li><strong>Standard:</strong> PSA <strong>birth certificate</strong> — one original or certified true copy plus a photocopy at a branch, or one scan online.</li>
+    <li><strong>No birth certificate?</strong> Any one of: baptismal certificate, driver's license, passport, PhilID/ePhilID, PRC card, SSS digitized ID, seaman's book, UMID.</li>
+    <li><strong>None of those?</strong> Any two documents "both with the correct name and at least one with date of birth" — for example a company ID, school ID, PhilHealth MDR, Pag-IBIG data form, NBI or police clearance, postal ID, TIN card, voter's certificate, bank passbook, marriage contract, or a transcript of records (full list on the <a href={IDS} target="_blank" rel="noopener">SSS documents page</a>).</li>
+    <li>You can generate the number <strong>without any document</strong> — it will simply stay Temporary until one is approved.</li>
+  </ul>
+
+  <h2>Fees, Processing Time and What You Receive</h2>
+  <ul>
+    <li><strong>Fee:</strong> none — the <a href={CHARTER} target="_blank" rel="noopener">2026 SSS Citizen's Charter</a> lists "Total Standard Fee: None" for online SS number issuance and for the employer's R1A report.</li>
+    <li><strong>Time:</strong> about 20 minutes to generate the number; two working days for SSS to evaluate an uploaded document.</li>
+    <li><strong>You receive:</strong> the SS number, the SS Number Slip, the transaction slip, your E-1/E-6 form and a My.SSS activation link, all by email.</li>
+  </ul>
+
+  <h2>After the Number: Coverage, Employer Report, Contributions</h2>
+  <ul>
+    <li><strong>You are not yet a member.</strong> SSS: "Securing an SS number does not automatically mean a person is already covered as a member."</li>
+    <li><strong>Employees</strong> are covered from the first day of employment once the employer submits the <strong>R1A employment report</strong> (Employer Portal → Services → Submit Employment Report) and pays at least one contribution. Check the amount with the <a href="/sss-contribution-calculator/">SSS Contribution Calculator</a>.</li>
+    <li><strong>Voluntary payments before any employee, self-employed or OFW contribution are not allowed</strong> and will be refunded, per SSS's FAQ.</li>
+    <li>Self-employed members register the coverage in My.SSS and start paying on the <a href="/sss-contribution-table/">2026 schedule</a>.</li>
+  </ul>
+
+  <h2>Forgot Your SSS Number, or Have Two?</h2>
+  <ul>
+    <li>SSS verifies a forgotten number <strong>only at a branch</strong> ("The member should never secure another SS Number"); bring one valid ID. There is no online "forgot SS number" tool. Hotline 1455 and usssaptayo@sss.gov.ph are the listed contacts.</li>
+    <li>Two numbers? File a <strong>Request for Cancellation of Multiple SS Numbers</strong> at any branch (Request/Verification Form, valid ID, no fee). SSS keeps the number with a UMID card, or otherwise the one with the most or most recent contributions.</li>
+  </ul>
+
+  <h2>Official Source</h2>
+  <p>
+    <a href={SSS} target="_blank" rel="noopener">SSS — Become an SSS Member (online SS number application)</a>,
+    <a href={IDS} target="_blank" rel="noopener">SSS — Required IDs and documents for SS number issuance</a>, and the
+    <a href={CHARTER} target="_blank" rel="noopener">SSS Citizen's Charter 2026, 1st Edition</a> (services 9, 10 and 13). Verified
+    September 23, 2026. Apply only on sss.gov.ph — AyTool is independent, never asks for your details and cannot apply on your behalf.
+  </p>
+</ToolPageLayout>
