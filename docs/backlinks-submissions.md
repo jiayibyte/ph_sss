@@ -60,13 +60,18 @@
 |---|---|---|---|
 | 2026-09-23 | Product Hunt | 已排期：2026-09-24 00:01 PT（菲律宾时间 15:01）上线 | https://www.producthunt.com/products/aytool ；账号 @jj_l4，solo maker、Free、Bootstrapped；标签 Fintech / Personal Finance / Productivity；图：icon-512 缩 240、og/home + 4 张实填计算器截图（1270×760，CDP 驱动 headless Chrome 截取） |
 | 2026-09-23 | Quora | 已发 | 账号 Jahgs，credential "Maker of Free Philippine Payroll Calculators at AyTool (2026–present)"（默认）。① 13th month 算法 → /13th-month-pay-calculator/ https://www.quora.com/How-do-I-compute-13th-month-pay-in-the-Philippines-quickly-and-correctly/answer/Jahgs-2 ② SSS 缴费表 → /sss-contribution-table/ https://www.quora.com/What-is-the-SSS-contribution-table/answer/Jahgs-2 |
-| 2026-09-23 | AlternativeTo | 待邮箱验证 | 已登录；未验证邮箱时 /manage-item/ 返回 404 |
+| 2026-09-23 | Quora | 已发（第二批，新页上线后） | ③ 员工代扣税 → /income-tax-calculator/ https://www.quora.com/How-is-withholding-tax-calculated-for-employees-in-the-Philippines/answer/Jahgs-2 ④ 自由职业者给海外客户干活的税（8% vs 累进）→ /freelancer-tax-calculator/ https://www.quora.com/I-am-a-freelancer-from-and-living-in-the-Philippines-Should-I-pay-withholding-or-any-form-of-tax-if-I-provide-services-online-for-a-US-based-company/answer/Jahgs-2 |
+| 2026-09-23 | AlternativeTo | 已提交，排队审核 | 应用 id cd653292-b528-4926-9eeb-dee03ff52a45；Free、Source available（仓库 public 无 LICENSE）→ github.com/jiayibyte/ph_sss；标签 salary-calculator / payroll-calculator / tax-calculator / personal-finance；功能勾 No registration required、Ad-free（有 GA，未勾 Privacy focused；无暗色模式）；icon-512 + 4 张截图。**未付 $5 插队**。站内没有真正的同类工具，alternatives 一步跳过 |
+| 2026-09-23 | Expat Forum › Philippines | 已回复，**待审核**（新号前几帖要人工审） | 账号由用户注册。在版主 M.C.A. 的《Live in maids/helpers》帖（/threads/live-in-maids-helpers.1554580/，第 3 页）回复：从他说的"₱12,000"切入，两名保姆按地区最低工资合计约 ₱13k–14k；再按 RA 10361 列雇佣要求（地区月最低工资、SSS/PhilHealth/Pag-IBIG 按 ₱5,000 分界、以 ₱6,500 月薪算的缴费金额、书面合同、barangay 登记、休息、13th month、SIL、不许收押金）。**不带链接**：新号试用期限制发链接，用户名也不能用品牌名。等发够正常帖、过了试用期，再私信 M.C.A. 请他把计算器加进《Useful Links For Expats》 |
+| 2026-09-23 | PHCorner（phcorner.org） | 已注册，**暂不发** | 版规：只能用英语或他加禄语；不许为打广告发博客或网站链接，作为引用来源可以；YouTube、社交群组、其他论坛都算广告。Career & Finance（/forums/524/）很活跃，但工资社保类求助很少；SSS 病假帖 7 月已标注 resolved，别挖坟。**11–12 月 13th month 旺季再来**；站内搜索偶尔会冒出可疑的验证框，别去点 |
 | — | Indie Hackers | 未注册 | |
 | — | Reddit | 需手动发 | Claude in Chrome 对 reddit.com 有安全限制，自动化打不开 |
 
-Quora 备选题（未答，按"同一天不连答同类题"分批）：
-- How is withholding tax calculated for employees in the Philippines? → 所得税页上线后链 /income-tax-calculator/，否则 /take-home-pay-calculator/
-- I am a freelancer ... Should I pay withholding or any form of tax if I provide services online for a US based company?（2 答 4 关注）→ 8% 页上线后链 /freelancer-tax-calculator/
-- How is the 13th month pay computed by absences in the Philippines?（与①同类，隔几天再答）
+Quora 待答队列（新号一天 ≤4 条、同类题隔天；每条先完整作答再附链接并注明"我做的"）：
+- Is a "Service Incentive Leave" (SIL) the same as a "Vacation Leave"?（0 答 2 关注）→ /service-incentive-leave-calculator/
+- How is Pag-IBIG salary loan calculated?（1 答）→ /pagibig-salary-loan-calculator/
+- How is the 13th month pay computed by absences in the Philippines?（与①同类，隔几天再答）→ /13th-month-pay-calculator/
+- Company never paid 13th month, SIL and holiday pay for years, employee being retrenched — can they demand it?（法律向，答时只讲 Labor Code 权利与 DOLE 投诉途径，不下结论）→ /separation-pay-calculator/、/final-pay-calculator/
+- Do we still get a Senior Citizen discount on the doctor's fee after having an HMO discount?（需先核实 RA 9994 与 HMO 的叠加规则再答）→ /senior-citizen-discount-calculator/
 
 Quora 编辑器坑：行首输入 "1)" 会自动转编号列表且一直延续，列表结束要连按两次回车跳出；网址后紧跟句号有被吞进链接的风险，用括号隔开。

@@ -32,6 +32,18 @@ Reddit 社区（成员数为 2026 年中核验值）：
 | r/AskPH | ~50 万 | 泛问答，薪资问题常出现 |
 | **r/buhaydigital** | ~43 万 | 自由职业者问 voluntary SSS/税，契合 OFW/SE 计算器 |
 | r/Philippines | ~350 万 | 太泛，转化低，看到对口帖再答 |
+| **r/AntiworkPH** | — | ⭐ 09-23 RSS 核验：最近 100 帖（约 24 天）里 16 帖问 final pay、欠薪、加班折补休、节假日——对口 final pay / overtime / holiday pay 计算器 |
+| **r/BPOinPH** | — | 09-23 RSS 核验：约 17 小时刷满 100 帖，全站最活跃之一；BPO 夜班多，对口夜班津贴 / 节假日 / 加班 |
+| r/phmoneysaving | — | 09-23 RSS 核验：100 帖跨 14 个月，太慢，不投入 |
+
+r/taxPH 09-23 RSS 核验：100 帖约 12 天、近一半是税务提问，仍是最对口的一个。Reddit 在 Claude in Chrome 和内置浏览器里都被拦，只能 RSS 读帖 + 出稿，由用户手发。
+
+**本地论坛（09-23 核验）**：
+- **PHCorner**（已从 phcorner.net 迁到 **phcorner.org**）：仍是最大的综合性菲律宾论坛，帖子编号已过 230 万；Help 区有 SSS、13th month、Pag-IBIG 提问，搜索结果里能看到过时或算错的回答（如"13th month = 月薪 ÷ 12"、SSS 缴费还是旧费率）。有 Cloudflare 人机验证，自动化进不去，注册和发帖要用户本人来。
+- **Expat Forum › Philippines**（expatforum.com）：6.9 万帖，当天仍有回帖。《Live in maids/helpers》（2026-08，110 条回复）对口保姆最低工资和 SSS；版主 M.C.A. 维护一个锁定的《Useful Links For Expats》帖，可以私信请他加计算器链接。
+- 已剔除：lawyerphilippines.org 论坛（404）、Living in Cebu Forums（522 连不上）；Symbianize、netizion 有反爬拦截，无法核验；Tsikot（汽车）、SkyscraperCity（城建）、PhilMUG（苹果）话题不对口。
+
+竞品格局（09-23 搜索）：SweldoPH、CalculatorsPH、Pinoy Calculator、iKwenta、PesoHub、MoneyHub PH、MySweldoPH、Suweldo Calculator、Sprout 都在做同类计算器，目录站收录拉不开差距，差异化只能靠在社区里回答具体问题。
 
 打法红线：先当正常用户（账号要有活动历史），看到 "how much SSS deduction" / "back pay 多久拿到" 这类真实提问时**文字完整回答 + 附计算器链接作工具**；不开新帖打广告，被删就换社区不硬刚。
 
