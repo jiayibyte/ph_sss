@@ -8,8 +8,15 @@ import type { PrcExamEntry, PrcRules } from '../lib/rules/types';
 import { SITE } from '../../site.config';
 import { educationEvents } from '../lib/prcCalendar';
 import { todayInManila } from '../lib/today.mjs';
+import { PROFESSION_PAGES } from '../lib/prcProfessionPages';
+import { TOOL_PAGES } from '../lib/pages';
 
 const meta = prcRules.meta;
+const nextYear = prcRules.year + 1;
+/* Exam guides, linked above the table: GSC 2026-09-20..26 showed profession
+   queries ("when is radtech board exam 2026", "midwifery exam schedule 2026",
+   "psychometrician board exam 2027 schedule") landing on this hub. */
+const guides = [TOOL_PAGES.nursingSchedule, ...PROFESSION_PAGES.map((p) => TOOL_PAGES[p.toolKey])];
 /* Event markup for exams in the next 60 days (build date, Manila; rebuilt nightly on the server). */
 const eventSchema = educationEvents(
   prcRules as PrcRules,
@@ -100,8 +107,8 @@ const faqs = [
 ---
 
 <ToolPageLayout
-  title="PRC Board Exam Schedule 2026 – Complete Dates & Deadlines"
-  description="Complete 2026 PRC board exam schedule: dates, application deadlines and target results for all 88 licensure exams. Searchable and filterable."
+  title={`PRC Board Exam Schedule ${prcRules.year} & ${nextYear} Release Date – All Exams`}
+  description={`All ${prcRules.exams.length} PRC board exams for ${prcRules.year}: dates, filing deadlines and results. The ${nextYear} schedule is not out yet — PRC posts it in mid-November.`}
   path="/prc-board-exam-schedule/"
   h1="PRC Board Exam Schedule 2026"
   faqs={faqs}
@@ -111,13 +118,22 @@ const faqs = [
 >
   <Fragment slot="answer">
     <p>
-      The official 2026 PRC schedule of examination is set by <strong>PRC Resolution No. 2113, s.
-      2025</strong>, covering {prcRules.exams.length} scheduled licensure examinations — from the
-      Nursing exam on February 26–27 and the LET on March 15 &amp; September 20, to the CPA exams
-      in May and October. Search or filter the complete schedule below, including application
-      windows and target result dates, or jump to the
-      <a href="#by-profession">schedule for your own profession</a>.
+      The official {prcRules.year} PRC schedule of examination is <strong>PRC Resolution No. 2113, s.
+      2025</strong>: {prcRules.exams.length} licensure examinations with their filing windows and target
+      results dates — search or filter them below. <strong>{nextYear} schedule: not released yet.</strong>
+      PRC posts the whole next-year calendar in mid-November (the {prcRules.year} one went up on November
+      17, 2025); this page switches to the {nextYear} dates the day it is out
+      (<a href="#schedule-2027">what to expect</a>).
     </p>
+    <nav class="prc-jump compact mt-3" aria-label="Exam guides">
+      <ul>
+        {guides.map((g) => (
+          <li>
+            <a href={g.href}>{g.short}</a>
+          </li>
+        ))}
+      </ul>
+    </nav>
   </Fragment>
 
   <Fragment slot="calculator">
@@ -136,7 +152,7 @@ const faqs = [
     <li><strong>Marine officers:</strong> Marine Deck/Engine licensure moved from PRC to MARINA in 2014 and is not part of the PRC calendar.</li>
   </ul>
 
-  <h2>PRC Schedule of Exam 2026: Release Date and the 2027 Calendar</h2>
+  <h2 id="schedule-2027">PRC Schedule of Exam 2026: Release Date and the 2027 Calendar</h2>
   <p>
     PRC releases its schedule of examination once a year, in a single resolution covering every
     licensure exam. The 2026 schedule of exam was signed as Resolution No. 2113 on October 23, 2025
@@ -145,7 +161,9 @@ const faqs = [
     switch to the 2027 dates as soon as it is out. Until then, the 2026 dates above are the working
     reference: each profession usually keeps the same month of the year from one calendar to the
     next. PRC can still move individual exams mid-year through separate resolutions, so the table
-    reflects the schedule in force as of the verification date below.
+    reflects the schedule in force as of the verification date below. To have the {nextYear} dates
+    arrive on their own, open your profession's guide above and subscribe to its calendar: the
+    filing deadlines and exam days are added to it as soon as PRC publishes them.
   </p>
 
   <h2>Official Source</h2>

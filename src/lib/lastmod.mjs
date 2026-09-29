@@ -56,7 +56,7 @@ export const PAGE_DATA = {
   '/holiday-pay-calculator/': ['holidays', 'labor'],
   '/philippine-holidays/': ['holidays', 'labor'],
   '/night-differential-calculator/': ['labor'],
-  '/overtime-pay-calculator/': ['labor'],
+  '/overtime-pay-calculator/': ['labor', 'wages'], // OT-per-daily-rate table includes the NCR minimum
   '/final-pay-calculator/': ['labor'],
   '/prc-board-exam-schedule/': ['prc'],
   '/board-exam-results-2026/': ['prc'],
@@ -133,6 +133,7 @@ const dayAfter = (iso) => (ISO_DATE.test(iso ?? '') ? new Date(Date.parse(iso + 
 export const SCHEDULED = {
   '/minimum-wage-philippines/': ['wages', wageChangeDates],
   '/daily-rate-calculator/': ['wages', (w) => [w.ncr?.upcoming?.effectivity]],
+  '/overtime-pay-calculator/': ['wages', (w) => [w.ncr?.upcoming?.effectivity]],
   // The "rates may have changed" notice appears the day after the published rates lapse.
   '/pagibig-housing-loan-calculator/': ['pagibig', (p) => [dayAfter(p.housing_loan?.rates_valid_until)]],
   // The salary grade table moves to the next EO 64 tranche on its January 1 effectivity.

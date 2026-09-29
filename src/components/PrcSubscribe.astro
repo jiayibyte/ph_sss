@@ -1,0 +1,33 @@
+---
+/**
+ * "Subscribe to this exam's calendar" line for the exam pages. The feed
+ * (/data/prc/feed/<slug>.ics) updates itself, so subscribers get next year's
+ * dates the day PRC publishes them — the useful answer to "when is the <next
+ * year> exam?" while PRC has not released the calendar yet.
+ */
+import { feedLinks, findFeed } from '../lib/prcFeeds';
+
+interface Props {
+  /** PRC_FEEDS slug (the exam page's slug, or "nursing"). */
+  slug: string;
+  /** How the exam is called mid-sentence, e.g. "PNLE", "psychometrician board exam". */
+  name: string;
+  nextYear: number;
+  /** True while a round of this year is still ahead: lead with the filing deadline instead. */
+  upcoming?: boolean;
+}
+
+const { slug, name, nextYear, upcoming = false } = Astro.props;
+findFeed(slug);
+const links = feedLinks(slug);
+---
+
+<p class="prc-subscribe">
+  <strong>
+    {upcoming ? `Never miss a ${name} filing deadline:` : `Get the ${nextYear} ${name} dates the day PRC posts them:`}
+  </strong> subscribe to this exam's
+  calendar in <a href={links.google} target="_blank" rel="noopener" data-track="subscribe">Google
+  Calendar</a> or <a href={links.webcal} data-track="subscribe">iPhone / Outlook</a>. Filing
+  deadlines, exam days and results dates appear in your calendar and update on their own — no
+  sign-up, no email.
+</p>

@@ -7,6 +7,7 @@ import { SITE } from '../../site.config';
 import { TOOL_PAGES, type PageRef } from '../lib/pages';
 import { pageDates } from '../lib/lastmod.mjs';
 import { embedSnippet as buildEmbedSnippet } from '../lib/embed';
+import { withHeadingIds } from '../lib/toc';
 
 export interface Faq {
   q: string;
@@ -91,6 +92,16 @@ if (faqs.length > 0) {
 }
 
 const relatedPages: PageRef[] = related.map((k) => TOOL_PAGES[k]);
+
+/* Body with an id on every <h2>, plus an "On this page" list for long pages
+   (src/lib/toc.ts). Ids used by the layout itself are reserved. */
+const { html: bodyHtml, toc: bodyToc } = withHeadingIds(await Astro.slots.render('default'), [
+  'main',
+  'faq',
+  'all-calculators',
+]);
+const toc = faqs.length > 0 ? [...bodyToc, { id: 'faq', text: 'Frequently Asked Questions' }] : bodyToc;
+const showToc = toc.length >= 5;
 ---
 
 <BaseLayout
@@ -141,7 +152,21 @@ const relatedPages: PageRef[] = related.map((k) => TOOL_PAGES[k]);
     }
 
     <div class="content-prose mt-4">
-      <slot />
+      {
+        showToc && (
+          <details class="page-toc">
+            <summary>On this page ({toc.length} sections)</summary>
+            <ol>
+              {toc.map((t) => (
+                <li>
+                  <a href={`#${t.id}`}>{t.text}</a>
+                </li>
+              ))}
+            </ol>
+          </details>
+        )
+      }
+      <Fragment set:html={bodyHtml} />
     </div>
 
     {

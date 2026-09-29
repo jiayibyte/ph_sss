@@ -6,6 +6,7 @@ import type { HolidayRules } from '../lib/rules/types';
 import { longWeekends } from '../lib/longWeekends';
 import { byType } from '../lib/holidays';
 import { SITE } from '../../site.config';
+import { todayInManila } from '../lib/today.mjs';
 
 const holidays = holidaysJson.holidays;
 const weekends = longWeekends(holidays);
@@ -28,6 +29,31 @@ const regularList = holidays
   .map((h) => `${h.name.replace(/ \(.*\)$/, '')} (${fmtShort(h.date)})`)
   .join(', ');
 const meta = holidaysJson.meta;
+
+/* Search snippet leads with the next paid holiday and what it pays — the question behind
+   "double pay holiday philippines 2026" / "feb 25 2026 holiday double pay" (Bing 2026-09,
+   positions 2–3). Build date in Manila; the nightly rebuild moves it on after each holiday.
+   Falls through to next year's list after December 31. */
+const today = todayInManila();
+const nextHoliday = [...holidays, ...(next?.holidays ?? [])]
+  .filter((h) => h.date >= today && h.type !== 'special-working')
+  .sort((a, b) => a.date.localeCompare(b.date))[0];
+const monDay = (d: string) =>
+  new Date(d + 'T00:00:00').toLocaleDateString('en-PH', { weekday: 'short', month: 'short', day: 'numeric' });
+const description = (() => {
+  const fallback = `Compute holiday pay for regular holidays (200%), special days (130%) and rest-day combinations, with the complete official ${holidaysJson.year} Philippine holiday calendar.`;
+  if (!nextHoliday) return fallback;
+  const name = nextHoliday.name.replace(/ \(.*\)$/, '');
+  const pay = nextHoliday.type === 'regular' ? 'regular holiday, double pay (200%) if you work' : 'special day, 130% if you work';
+  const lead = `Next: ${name} (${monDay(nextHoliday.date)}), ${pay}.`;
+  for (const d of [
+    `${lead} Compute regular, special and rest-day holiday pay with the official ${holidaysJson.year} list.`,
+    `${lead} Holiday pay calculator with the official ${holidaysJson.year} list.`,
+  ]) {
+    if (d.length <= 158) return d;
+  }
+  return fallback;
+})();
 const fmtLong = (d: string) =>
   new Date(d + 'T00:00:00').toLocaleDateString('en-PH', { month: 'long', day: 'numeric', year: 'numeric' });
 const typeLabel: Record<string, string> = {
@@ -116,7 +142,7 @@ const datasetSchema = {
 
 <ToolPageLayout
   title="Holiday Pay Calculator Philippines 2026 – Double Pay & Dates"
-  description="Compute holiday pay for regular holidays (200%), special days (130%) and rest-day combinations, with the complete official 2026 Philippine holiday calendar."
+  description={description}
   path="/holiday-pay-calculator/"
   h1="Holiday Pay Calculator Philippines"
   faqs={faqs}
@@ -235,6 +261,10 @@ const datasetSchema = {
     <p><strong>Example 3 — Regular holiday falling on your rest day, worked 8h, ₱100/hour:</strong>
     pay = ₱100 × 8 × 260% = <strong>₱2,080</strong>.</p>
   </div>
+  <p>
+    Paid the minimum wage? Use your region's daily rate from the
+    <a href="/minimum-wage-philippines/">2026 minimum wage by region</a> table as the daily wage above.
+  </p>
 
   <h2>Who This Applies To</h2>
   <p>

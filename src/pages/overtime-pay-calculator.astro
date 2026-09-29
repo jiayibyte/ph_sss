@@ -2,8 +2,29 @@
 import ToolPageLayout from '../layouts/ToolPageLayout.astro';
 import OvertimeCalculator from '../islands/OvertimeCalculator';
 import laborRules from '../data/labor/2026.json';
+import wagesJson from '../data/wages/2026.json';
+import { computeOvertime } from '../lib/engine/labor';
+import { ncrInForce } from '../lib/engine/wages';
+import { todayInManila } from '../lib/today.mjs';
+import { peso } from '../lib/format';
+import type { LaborRules, WageRules } from '../lib/rules/types';
 
 const meta = laborRules.meta;
+const labor = laborRules as unknown as LaborRules;
+
+/* Quick-lookup table: people search the peso amount ("ot hours for 950 pesos per day",
+   "1 hour overtime of 957 peso salary", "ot pay for 600 peso rate") — Bing 2026-09 shows
+   these long-tail queries clicked at positions 1–4. Rows are common daily rates plus the
+   NCR minimum in force today; every amount comes from the calculator's own engine. */
+const ncrDaily = ncrInForce(wagesJson as unknown as WageRules, todayInManila()).non_agriculture;
+const dailyRates = [...new Set([500, 600, 700, ncrDaily, 800, 900, 950, 1000, 1200, 1500])].sort((a, b) => a - b);
+const otRow = (daily: number) => {
+  const hourly = daily / 8;
+  const ot = (dayType: 'ordinary' | 'rest-day' | 'regular-holiday') => computeOvertime(hourly, 1, dayType, 0, labor).otHourly;
+  return { daily, hourly, ordinary: ot('ordinary'), rest: ot('rest-day'), holiday: ot('regular-holiday') };
+};
+const otRows = dailyRates.map(otRow);
+const ncrRow = otRow(ncrDaily);
 const faqs = [
   {
     q: 'How is overtime pay computed in the Philippines?',
@@ -61,8 +82,10 @@ const faqs = [
       Overtime pay in the Philippines is your hourly rate <strong>plus at least 25% for work
       beyond 8 hours on an ordinary day (125%)</strong>, and the day's premium rate
       <strong>plus 30%</strong> on rest days, special days and holidays — e.g., 169% on a rest
-      day and 260% on a regular holiday. Enter your rate, day type and OT hours below for the
-      exact breakdown.
+      day and 260% on a regular holiday. On the NCR minimum wage of {peso(ncrDaily)} a day, one
+      ordinary-day OT hour is <strong>{peso(ncrRow.ordinary)}</strong>. Enter your rate, day type
+      and OT hours below for the exact breakdown, or find your daily rate in the
+      <a href="#ot-per-daily-rate">overtime-per-hour table</a>.
     </p>
   </Fragment>
 
@@ -90,6 +113,40 @@ const faqs = [
     Percentages are of the ordinary hourly rate. Holiday scenarios are an input dimension here; for
     the full day's pay including the first 8 hours, use the
     <a href="/holiday-pay-calculator/">Holiday Pay Calculator</a>.
+  </p>
+
+  <h2 id="ot-per-daily-rate">Overtime Pay per Hour for Common Daily Rates (2026)</h2>
+  <p>
+    Hourly rate = daily rate ÷ 8. Each column is the pay for <strong>one</strong> overtime hour; multiply
+    by your OT hours. {peso(ncrDaily)} is the NCR minimum wage for non-agriculture workers in force
+    now (see <a href="/minimum-wage-philippines/">minimum wage by region</a>).
+  </p>
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>Daily rate</th>
+          <th>Hourly</th>
+          <th>OT/hr ordinary (125%)</th>
+          <th>OT/hr rest or special (169%)</th>
+          <th>OT/hr holiday (260%)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {otRows.map((r) => (
+          <tr>
+            <td>{r.daily === ncrDaily ? <strong>{peso(r.daily)} (NCR minimum)</strong> : peso(r.daily)}</td>
+            <td>{peso(r.hourly)}</td>
+            <td>{peso(r.ordinary)}</td>
+            <td>{peso(r.rest)}</td>
+            <td>{peso(r.holiday)}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  <p class="text-sm text-ink-soft">
+    Night hours (10 PM–6 AM) add 10% on top of these OT rates. For a rate not listed, use the calculator above.
   </p>
 
   <h2>How It Is Calculated</h2>

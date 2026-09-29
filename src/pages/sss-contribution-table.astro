@@ -15,6 +15,12 @@ const memberRows = [5000, 8000, 10000, 15000, 20000, 25000, 30000, 35000].map((m
   selfEmployed: php(rate.total * msc + (msc >= ec.threshold ? ec.at_or_above : ec.below)),
   ofw: msc >= ofwMin ? php(rate.total * msc) : '—',
 }));
+/* Search snippet: the numbers people look for (rate, MSC range, monthly total), from the rule data. */
+const pct = (r: number) => `${Math.round(r * 100)}%`;
+const employedMin = rate.total * sssRules.msc.min + ec.below;
+const employedMax = rate.total * sssRules.msc.max + ec.at_or_above;
+const title = `SSS Contribution Table 2026 (${pct(rate.total)}): Employee, OFW & Self-Employed`;
+const description = `2026 SSS table at ${pct(rate.total)}: employee ${pct(rate.employee)} + employer ${pct(rate.employer)} on MSC ${php(sssRules.msc.min)}–${php(sssRules.msc.max)} (${php(employedMin)}–${php(employedMax)} a month), plus OFW, self-employed and voluntary. Printable.`;
 const faqs = [
   {
     q: 'How much is the SSS contribution in 2026?',
@@ -64,8 +70,8 @@ const faqs = [
 ---
 
 <ToolPageLayout
-  title="SSS Contribution Table 2026 – Employee, Self-Employed & OFW"
-  description="Complete 2026 SSS contribution table: Employee, Self-Employed, Voluntary and OFW schedules with salary lookup, verified against official SSS circulars."
+  title={title}
+  description={description}
   path="/sss-contribution-table/"
   h1="SSS Contribution Table 2026"
   faqs={faqs}
@@ -85,6 +91,10 @@ const faqs = [
 
   <Fragment slot="calculator">
     <SssTable client:idle />
+    <p class="no-print mt-2 text-sm">
+      <button type="button" class="print-button" onclick="window.print()" data-track="print">Print or save as PDF</button>
+      <span class="text-ink-soft"> — prints the full table without the site menus.</span>
+    </p>
   </Fragment>
 
   <h2>Current SSS Contribution Summary (2026)</h2>
@@ -208,8 +218,8 @@ const faqs = [
   <p>
     Yes. The official Schedule of Contributions is published as a PDF on sss.gov.ph (linked under
     Official Source below). The table on this page is a transcription of that schedule with a
-    salary lookup added; print this page or save it as a PDF from your browser for payroll
-    reference.
+    salary lookup added; use <em>Print or save as PDF</em> under the table for a clean copy
+    for payroll reference (the site menus, share buttons and related links are left out).
   </p>
 
   <h2>Official Source &amp; Effective Date</h2>

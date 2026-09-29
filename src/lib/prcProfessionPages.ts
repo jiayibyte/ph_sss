@@ -30,6 +30,11 @@ export interface ProfessionPage {
   /** TOOL_PAGES key for the OG card and related links. */
   toolKey: keyof typeof TOOL_PAGES;
   title: string;
+  /**
+   * Title once every round of the year has been held ({next} / {year} are filled in);
+   * default "<headingName> {next} Schedule & {year} Results". Max 65 chars (build error).
+   */
+  titleNextYear?: string;
   h1: string;
   /** Meta description; when omitted the template builds one from the exam dates (≤158 chars enforced). */
   description?: string;
@@ -57,6 +62,7 @@ export const PROFESSION_PAGES: ProfessionPage[] = [
     groupId: 'teachers-let',
     toolKey: 'letSchedule',
     title: 'LET Schedule 2026 – Teachers Board Exam Dates & Results',
+    titleNextYear: 'LET {next} Schedule & {year} Results – Teachers Board Exam',
     h1: 'LET / BLEPT Schedule 2026 (Teachers Board Exam)',
     examName: 'Licensure Examination for Professional Teachers (LET / BLEPT)',
     shortName: 'LET',
@@ -166,6 +172,7 @@ export const PROFESSION_PAGES: ProfessionPage[] = [
     groupId: 'accountancy',
     toolKey: 'cpaSchedule',
     title: 'CPALE Schedule 2026 – CPA Board Exam Dates & Results',
+    titleNextYear: 'CPALE {next} Schedule & {year} Results – CPA Board Exam',
     h1: 'CPA Board Exam (CPALE) Schedule 2026',
     examName: 'Certified Public Accountant Licensure Examination (CPALE)',
     shortName: 'CPALE',
@@ -260,6 +267,7 @@ export const PROFESSION_PAGES: ProfessionPage[] = [
     groupId: 'physicians',
     toolKey: 'physicianSchedule',
     title: 'PLE Schedule 2026 – Physician Board Exam Dates & Results',
+    titleNextYear: 'PLE {next} Schedule & {year} Results – Physician Board Exam',
     h1: 'Physician Licensure Exam (PLE) Schedule 2026',
     examName: 'Physician Licensure Examination (PLE)',
     shortName: 'PLE',
@@ -445,11 +453,11 @@ export const PROFESSION_PAGES: ProfessionPage[] = [
     extraFaqs: [
       {
         q: 'Was the August 2026 psychometrician board exam rescheduled?',
-        a: 'Yes. PRC moved both the Psychometricians and the Psychologists exams from August 19–20 to September 1–2, 2026 because of PAGASA heavy-rainfall warnings (advisory posted August 17, 2026); the Pampanga testing center sat later, on September 17–18. As of September 23, 2026 PRC has not released the September 2026 psychometrician results — the original target was August 27; the Psychologists exam on the same dates was released on September 21. Source: <a href="https://www.prc.gov.ph/article/rescheduling-august-2026-psychologists-and-psychometricians-licensure-examination" target="_blank" rel="noopener">prc.gov.ph</a>.',
+        a: 'Yes. PRC moved both the Psychometricians and the Psychologists exams from August 19–20 to September 1–2, 2026 because of PAGASA heavy-rainfall warnings (advisory posted August 17, 2026); the Pampanga testing center sat later, on September 17–18. PRC released the September 2026 psychometrician results on September 23, 2026, three working days after the last (Pampanga) sitting — the original target had been August 27; the Psychologists exam on the same dates was released on September 21. Source: <a href="https://www.prc.gov.ph/article/rescheduling-august-2026-psychologists-and-psychometricians-licensure-examination" target="_blank" rel="noopener">prc.gov.ph</a>.',
       },
       {
         q: 'What was the passing rate in the last psychometrician board exam?',
-        a: 'September 2025 (the last round with results out): 12,416 of 14,275 passed (86.98%). PRC released them on October 2, 2025, four working days after the September 24–25 exam, from 15 testing centers; two results were withheld. Source: <a href="https://www.prc.gov.ph/article/september-2025-psychometricians-licensure-examination-results-released-four-4-working-days" target="_blank" rel="noopener">prc.gov.ph</a>.',
+        a: 'September 2026: 14,146 of 15,423 passed (91.72%). PRC released the results on September 23, 2026, three working days after the last sitting, from 17 testing centers; one result was withheld. The round before, September 2025, had 12,416 of 14,275 passing (86.98%). Sources: <a href="https://www.prc.gov.ph/article/september-2026-psychometricians-licensure-examination-results-released-three-3-working-days" target="_blank" rel="noopener">prc.gov.ph (2026)</a>, <a href="https://www.prc.gov.ph/article/september-2025-psychometricians-licensure-examination-results-released-four-4-working-days" target="_blank" rel="noopener">prc.gov.ph (2025)</a>.',
       },
     ],
   },
@@ -509,6 +517,7 @@ export const PROFESSION_PAGES: ProfessionPage[] = [
     groupId: 'medical-technology',
     toolKey: 'medtechSchedule',
     title: 'MTLE Schedule 2026 – MedTech Board Exam Dates & Results',
+    titleNextYear: 'MTLE {next} Schedule & {year} Results – MedTech Board Exam',
     h1: 'MedTech Board Exam (MTLE) Schedule 2026',
     examName: 'Medical Technologist Licensure Examination (MTLE)',
     shortName: 'MTLE',
@@ -556,6 +565,7 @@ export const PROFESSION_PAGES: ProfessionPage[] = [
     exams: ['Registered Electrical Engineers', 'Registered Electrical Engineers (2nd exam)'],
     toolKey: 'electricalSchedule',
     title: 'Electrical Engineering Board Exam Schedule 2026 – REE Dates',
+    titleNextYear: 'Electrical Engineering Board Exam {next} Schedule & {year} Results',
     h1: 'Electrical Engineering Board Exam Schedule 2026 (REE)',
     examName: 'Registered Electrical Engineer Licensure Examination (REE)',
     shortName: 'REE board exam',
@@ -703,6 +713,7 @@ export const PROFESSION_PAGES: ProfessionPage[] = [
     exams: ['Electronics Engineers', 'Electronics Engineers (2nd exam)'],
     toolKey: 'electronicsSchedule',
     title: 'ECE Board Exam Schedule 2026 – Electronics Engineer Dates',
+    titleNextYear: 'ECE Board Exam {next} Schedule & {year} Results (Electronics)',
     h1: 'ECE Board Exam Schedule 2026 (Electronics Engineer Licensure Exam)',
     examName: 'Electronics Engineer Licensure Examination (ECE)',
     shortName: 'ECE board exam',

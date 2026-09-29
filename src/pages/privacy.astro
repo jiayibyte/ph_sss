@@ -10,13 +10,14 @@ import { SITE } from '../../site.config';
 >
   <article class="content-prose mx-auto max-w-content px-4 pt-8">
     <h1 class="text-2xl font-bold text-ink sm:text-3xl">Privacy Policy</h1>
-    <p class="mt-4"><em>Last updated: August 19, 2026</em></p>
+    <p class="mt-4"><em>Last updated: September 29, 2026</em></p>
 
     <h2>The short version</h2>
     <ul>
       <li>Every calculation runs entirely in your browser. The amounts you type — salaries, rates, hours — are <strong>never sent to our servers, never stored, and never logged</strong>.</li>
       <li>We have no accounts, no sign-ups, and we never ask for names, government ID numbers (SSS/PhilHealth/Pag-IBIG/TIN), passwords or OTPs.</li>
       <li>We use Google Analytics 4 to count page views and which calculators get used. It is configured to receive <strong>no user-entered values</strong> — only the fact that a calculator was used.</li>
+      <li>Our own server also notes, for each page view, how long the page was on screen, how far down it was scrolled and which kinds of controls were used (for example "a calculator field was changed" or "add to calendar was clicked") — <strong>never what you typed or selected</strong>, and with no cookie or ID that follows you from page to page.</li>
     </ul>
 
     <h2>What we collect</h2>
@@ -26,6 +27,15 @@ import { SITE } from '../../site.config';
       Analytics 4 collects the usual aggregate usage data — pages viewed, approximate location at
       city level, device type — under Google's own policies. Our analytics event whitelist contains
       exactly two events: a page view, and a "calculator used" counter carrying only the tool name.
+    </p>
+    <p>
+      When you leave or switch away from a page, your browser sends one small request to our own
+      server with four things: the page address, the seconds the page was visible, the deepest
+      scroll position as a percentage, and a list of control types used on it (input, search, add to
+      calendar, subscribe, share, a link). It carries a random number that exists only for that one
+      page view, so it cannot link your visits together. It is written to the same web server log
+      as above and rotated out with it; it is never shared with anyone. We use it to see which parts
+      of a page people actually read, so we can put the answer where it is found.
     </p>
 
     <h2>What we never collect</h2>

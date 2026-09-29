@@ -3,6 +3,7 @@ import '../styles/global.css';
 import { SITE, NOT_AFFILIATED } from '../../site.config';
 import { TOOL_PAGES, TRUST_PAGES, FOOTER_GROUPS } from '../lib/pages';
 import { pageDates } from '../lib/lastmod.mjs';
+import EngagementBeacon from '../components/EngagementBeacon.astro';
 
 interface Props {
   title: string;
@@ -83,6 +84,7 @@ const websiteSchema = isHome
       '@context': 'https://schema.org',
       '@type': 'WebSite',
       name: SITE.name,
+      alternateName: ['Ay Tool', 'aytool.com'],
       url: siteHome,
       description: SITE.description,
       inLanguage: 'en-PH',
@@ -110,6 +112,7 @@ const navLinks = [
   TOOL_PAGES.thirteenth,
   TOOL_PAGES.takeHome,
   TOOL_PAGES.philhealth,
+  TOOL_PAGES.minimumWage,
 ];
 ---
 
@@ -253,5 +256,6 @@ const navLinks = [
         confirm with official sources.
       </div>
     </footer>
+    <EngagementBeacon />
   </body>
 </html>

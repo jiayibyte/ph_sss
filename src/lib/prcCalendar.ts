@@ -17,7 +17,7 @@ export function icsPath(year: number, exam: Pick<PrcExamEntry, 'exam'>): string 
   return `/data/prc/${year}/${examSlug(exam.exam)}.ics`;
 }
 
-const icsDate = (iso: string): string => iso.replace(/-/g, '');
+export const icsDate = (iso: string): string => iso.replace(/-/g, '');
 
 /** ISO date + 1 day (DTEND of an all-day event is exclusive). */
 export function nextDay(iso: string): string {
@@ -27,11 +27,11 @@ export function nextDay(iso: string): string {
 }
 
 /** RFC 5545 text escaping. */
-const esc = (s: string): string =>
+export const esc = (s: string): string =>
   s.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n');
 
 /** RFC 5545 line folding (75 octets; we fold at 70 chars to stay under with UTF-8). */
-function fold(line: string): string {
+export function fold(line: string): string {
   const parts: string[] = [];
   let rest = line;
   while (rest.length > 70) {
@@ -42,7 +42,7 @@ function fold(line: string): string {
   return parts.join('\r\n');
 }
 
-function vevent(fields: Record<string, string>): string {
+export function vevent(fields: Record<string, string>): string {
   return ['BEGIN:VEVENT', ...Object.entries(fields).map(([k, v]) => fold(`${k}:${v}`)), 'END:VEVENT'].join(
     '\r\n',
   );

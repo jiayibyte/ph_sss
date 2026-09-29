@@ -66,6 +66,12 @@ body {
   @apply -mx-1 overflow-x-auto px-1;
 }
 
+/* Links in the answer block above the calculator (same look as body links;
+   the .prc-jump chips below override it). */
+.answer-first a {
+  @apply text-accent underline underline-offset-2 hover:text-accent-strong;
+}
+
 /* PRC per-profession sections: chip jump-nav + muted alias line.
    Declared after .content-prose so the chip links beat its underlined <a>. */
 .prc-jump ul {
@@ -74,11 +80,34 @@ body {
 .prc-jump a {
   @apply block rounded-full border border-line bg-surface-soft px-3 py-1 text-sm text-ink-soft no-underline hover:border-accent hover:text-accent-strong;
 }
+/* Compact variant for the first screen (PRC page exam guides). */
+.prc-jump.compact ul {
+  @apply mb-0 gap-1.5;
+}
+.prc-jump.compact a {
+  @apply px-2.5 py-0.5 text-xs;
+}
 .content-prose .prc-aka {
   @apply mb-2 text-sm text-ink-soft;
 }
 .prc-note {
   @apply text-sm font-normal text-ink-soft;
+}
+
+/* Exam pages: "subscribe to this exam's calendar" callout under the answer. */
+.prc-subscribe {
+  @apply mt-3 rounded-lg border border-line bg-surface-soft px-3 py-2 text-sm;
+}
+
+/* "On this page" list (ToolPageLayout, pages with 5+ sections). */
+.content-prose .page-toc {
+  @apply mb-5 rounded-lg border border-line bg-surface-soft px-4 py-2 text-sm;
+}
+.content-prose .page-toc summary {
+  @apply cursor-pointer font-semibold text-ink;
+}
+.content-prose .page-toc ol {
+  @apply my-2 ml-5 list-decimal space-y-1;
 }
 
 /* Example / callout card */
@@ -87,4 +116,29 @@ body {
 }
 .example-card p {
   @apply mb-2 last:mb-0;
+}
+
+/* "Print or save as PDF" button (SSS table page). */
+.print-button {
+  @apply rounded border border-line px-2.5 py-1 font-medium text-ink hover:border-accent hover:text-accent-strong;
+}
+
+/* Printing a table page gives the table, not the site chrome. */
+@media print {
+  header,
+  footer,
+  nav,
+  figure,
+  details:has(> pre),
+  section[aria-label='Related Philippine payroll calculators'],
+  .no-print,
+  .share-buttons {
+    display: none !important;
+  }
+  .table-scroll {
+    overflow: visible !important;
+  }
+  body {
+    background: #fff !important;
+  }
 }

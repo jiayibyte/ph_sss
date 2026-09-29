@@ -7,6 +7,7 @@
  * Mirrors the structure of nursing-board-exam-schedule.astro.
  */
 import ToolPageLayout from '../layouts/ToolPageLayout.astro';
+import PrcSubscribe from '../components/PrcSubscribe.astro';
 import prcRules from '../data/prc/2026.json';
 import { PRC_PROFESSIONS, resolveGroup, scheduleSentence } from '../lib/prcProfessions';
 import { PROFESSION_PAGES, type ProfessionPage } from '../lib/prcProfessionPages';
@@ -55,6 +56,54 @@ const next = upcoming[0];
 const released = rounds.filter((r) => r.results_released);
 const filingOpen = next?.application_deadline ? next.application_deadline >= today : false;
 
+/* Once every round of the year has been held, searchers want next year's dates or
+   the latest results (GSC 2026-09-20..26: "<profession> board exam 2027" queries at
+   positions 1–4 with zero clicks while every title still said 2026). Title,
+   description and the answer switch on the build date — the nightly rebuild flips
+   a page the day after its last round starts. */
+const allHeld = !next;
+const latest = rounds.at(-1);
+const passPct = (r: PrcExamEntry): string | null =>
+  r.passers && r.examinees ? ((r.passers / r.examinees) * 100).toFixed(2) : null;
+const fmtShort = (d: string): string =>
+  new Date(d + 'T00:00:00').toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' });
+const latestPct = latest ? passPct(latest) : null;
+const latestResults = !latest
+  ? ''
+  : latest.results_released
+    ? `${rounds.length === 1 ? 'Results' : `Results of the ${latest.dates_display} exam`} came out on ${fmt(latest.results_released)}${
+        latestPct ? `: ${latest.passers!.toLocaleString('en-PH')} of ${latest.examinees!.toLocaleString('en-PH')} passed (${latestPct}%)` : ''
+      }.`
+    : latest.results_target
+      ? `${rounds.length === 1 ? 'Results' : `Results of the ${latest.dates_display} exam`}: PRC's target release date is ${fmt(latest.results_target)}.`
+      : `PRC has not announced the results date for the ${latest.dates_display} exam.`;
+const fillYears = (t: string): string => t.replaceAll('{year}', String(year)).replaceAll('{next}', String(nextYear));
+
+/* A round starting within MONTH_TITLE_DAYS gets a month-specific title — searchers name
+   the month ("cpale 2026 october schedule", "physicians licensure exam for october 2026",
+   "ece october 2026 board exam final date": GSC and Bing, September 2026). Longest
+   variant that fits 65 characters; the generic title otherwise. */
+const MONTH_TITLE_DAYS = 75;
+const daysUntil = (d: string): number => Math.round((Date.parse(`${d}T00:00:00Z`) - Date.parse(`${today}T00:00:00Z`)) / 86_400_000);
+const soonTitle = (() => {
+  if (!next || daysUntil(next.first_date) > MONTH_TITLE_DAYS) return null;
+  const month = new Date(next.first_date + 'T00:00:00').toLocaleDateString('en-PH', { month: 'long' });
+  const dates = next.dates_display.replace(/, \d{4}.*$/, '');
+  const head = `${page.headingName} ${month} ${year} Schedule: ${dates}`;
+  const variants = [
+    next.results_target ? `${head}, Results ${fmtShort(next.results_target).replace(/, \d{4}$/, '')} (Target)` : null,
+    `${head} + Results Date`,
+    head,
+  ];
+  return variants.find((t): t is string => t !== null && t.length <= 65) ?? null;
+})();
+const title = allHeld
+  ? fillYears(page.titleNextYear ?? `${page.headingName} {next} Schedule & {year} Results`)
+  : (soonTitle ?? page.title);
+if (title.length > 65) {
+  throw new Error(`${pagePath}: title "${title}" is ${title.length} chars (max 65) — set page.titleNextYear in prcProfessionPages.ts.`);
+}
+
 const nextRoundSentence = next
   ? `The next ${page.shortName} is on ${next.dates_display}. ${
       next.application_deadline
@@ -101,9 +150,43 @@ const roundsHtml = joinList(
 const targetsHtml = joinList(
   rounds.map((r) => `<strong>${fmt(r.results_target)}</strong> for the ${r.dates_display} exam`),
 );
-const description =
-  page.description ??
-  `${cap(page.shortName)} ${year}: ${rounds.map((r) => r.dates_display).join(' and ')}. Filing deadlines, passing score, requirements and PRC's results dates.`;
+/* All-held description: longest variant that fits 158 chars. */
+const heldDescription = (() => {
+  const head = `All ${year} ${page.shortName} rounds are done. ${nextYear} dates: not out yet — PRC posts them in mid-November`;
+  const results = !latest
+    ? ''
+    : latest.results_released && latestPct
+      ? `; latest results: ${latestPct}% passed`
+      : !latest.results_released && latest.results_target
+        ? `; results due ${fmtShort(latest.results_target)}`
+        : '';
+  const tail = ' Subscribe to get them in your calendar.';
+  for (const d of [`${head}${results}.${tail}`, `${head}.${tail}`, `${head}${results}.`, `${head}.`]) {
+    if (d.length <= 158) return d;
+  }
+  return `${head}.`;
+})();
+/* Upcoming-round description: the next date, whether filing is still open, and the results target. */
+const nextDescription = (() => {
+  if (!next) return null;
+  const filing = next.application_deadline
+    ? filingOpen
+      ? `Filing open until ${fmtShort(next.application_deadline)}`
+      : `Filing closed ${fmtShort(next.application_deadline)}`
+    : 'Filing dates to be announced';
+  const results = next.results_target ? `; results target ${fmtShort(next.results_target)}` : '';
+  const head = `Next ${page.shortName}: ${next.dates_display}. ${filing}${results}.`;
+  return [
+    `${head} Passing score, requirements, past results and a calendar you can subscribe to.`,
+    `${head} Passing score, requirements and past results.`,
+    head,
+  ].find((d) => d.length <= 158) ?? null;
+})();
+const description = allHeld
+  ? heldDescription
+  : (nextDescription ??
+    page.description ??
+    `${cap(page.shortName)} ${year}: ${rounds.map((r) => r.dates_display).join(' and ')}. Filing deadlines, passing score, requirements and PRC's results dates.`);
 if (description.length > 158) {
   throw new Error(`${pagePath}: meta description is ${description.length} chars (max 158) — set page.description in prcProfessionPages.ts.`);
 }
@@ -155,7 +238,7 @@ const faqs = [
 ---
 
 <ToolPageLayout
-  title={page.title}
+  title={title}
   description={description}
   path={pagePath}
   h1={page.h1}
@@ -165,26 +248,35 @@ const faqs = [
   extraSchema={[datasetSchema, ...eventSchema]}
 >
   <Fragment slot="answer">
-    <p>
-      The <strong>{page.examName}</strong> is given {times} in {year} per
-      <strong>{meta.rule_version.split(' — ')[0]}</strong>: <Fragment set:html={roundsHtml} />.{' '}
-      {next ? (
-        <Fragment>
-          <strong>Next round: {next.dates_display}</strong>
-          {next.application_deadline
-            ? filingOpen
-              ? ` — filing is open until ${fmt(next.application_deadline)}.`
-              : ` — the filing window closed on ${fmt(next.application_deadline)}.`
-            : '.'}{' '}
-          Target results date: {fmt(next.results_target)}.
-        </Fragment>
-      ) : (
-        <Fragment>
-          <strong>All {year} rounds have been held.</strong> The next {page.shortName} is in {nextYear}; PRC has
-          not published the {nextYear} calendar yet (expected November {year}).
-        </Fragment>
-      )}
-    </p>
+    {allHeld && (
+      <p>
+        <strong>All {year} rounds of the {page.examName} have been held</strong>
+        ({rounds.map((r) => r.dates_display).join(' and ')}). {latestResults}{' '}
+        <strong>The next {page.shortName} is in {nextYear}.</strong> PRC has not published the {nextYear}
+        calendar yet — it normally posts the whole next-year schedule in mid-November (the {year} one went
+        up on November 17, 2025).{' '}
+        {latest?.results_released && (
+          <Fragment>
+            Passing rates for every {year} release are on the{' '}
+            <a href="/board-exam-results-2026/">PRC Board Exam Results {year}</a> page.
+          </Fragment>
+        )}
+      </p>
+    )}
+    {next && (
+      <p>
+        The <strong>{page.examName}</strong> is given {times} in {year} per
+        <strong>{meta.rule_version.split(' — ')[0]}</strong>: <Fragment set:html={roundsHtml} />.{' '}
+        <strong>Next round: {next.dates_display}</strong>
+        {next.application_deadline
+          ? filingOpen
+            ? ` — filing is open until ${fmt(next.application_deadline)}.`
+            : ` — the filing window closed on ${fmt(next.application_deadline)}.`
+          : '.'}{' '}
+        Target results date: {fmt(next.results_target)}.
+      </p>
+    )}
+    <PrcSubscribe slug={page.slug} name={page.shortName} nextYear={nextYear} upcoming={!allHeld} />
   </Fragment>
 
   <h2>{page.headingName} {year}: Exam Dates and Deadlines</h2>

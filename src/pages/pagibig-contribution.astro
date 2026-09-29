@@ -37,7 +37,7 @@ const faqs = [
 ---
 
 <ToolPageLayout
-  title="Pag-IBIG Contribution Calculator & Table 2026"
+  title={`Pag-IBIG Contribution Table 2026: ${Math.round(pagibigRules.employee_rate * 100)}% + ${Math.round(pagibigRules.employer_rate * 100)}%, Max ₱${Math.round((pagibigRules.employee_rate + pagibigRules.employer_rate) * pagibigRules.mfs_ceiling)}/Month`}
   description="Pag-IBIG (HDMF) contribution for 2026: 2% employee + 2% employer on a fund salary capped at ₱10,000 — max ₱400/month total. Calculator and full table."
   path="/pagibig-contribution/"
   h1="Pag-IBIG Contribution Calculator 2026"

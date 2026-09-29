@@ -1,5 +1,6 @@
 ---
 import ToolPageLayout from '../layouts/ToolPageLayout.astro';
+import PrcSubscribe from '../components/PrcSubscribe.astro';
 import prcRules from '../data/prc/2026.json';
 import { PRC_PROFESSIONS, resolveGroup, scheduleSentence } from '../lib/prcProfessions';
 import type { PrcExamEntry, PrcRules } from '../lib/rules/types';
@@ -38,6 +39,9 @@ if (!second.results_released) {
   );
 }
 const released = fmt(second.results_released);
+const secondPassers = second.passers?.toLocaleString('en-PH');
+const secondExaminees = second.examinees?.toLocaleString('en-PH');
+const secondPct = second.passers && second.examinees ? ((second.passers / second.examinees) * 100).toFixed(2) : null;
 const firstReleased = fmt(first.results_released ?? first.results_target);
 
 /* PNLE results history (src/data/prc/pnle-history.json — every row from a PRC press release). */
@@ -156,7 +160,7 @@ const faqs = [
 ---
 
 <ToolPageLayout
-  title="PNLE 2026 Schedule – Nursing Board Exam Dates & Results Date"
+  title={`PNLE ${nextYear} Schedule & ${prcRules.year} Results – Nursing Board Exam`}
   description={description}
   path="/nursing-board-exam-schedule/"
   h1="Nursing Board Exam Schedule 2026 (PNLE)"
@@ -167,16 +171,16 @@ const faqs = [
 >
   <Fragment slot="answer">
     <p>
-      <strong>Both {prcRules.year} rounds of the Philippine Nurse Licensure Examination (PNLE) are
-      over.</strong> The {first.dates_display} round is done, and the {second.dates_display} round
-      — with make-up sittings on September 11–12 for Region III and Metro Manila — had its results
-      released on <strong>{released}</strong>: 28,652 of 37,359 examinees passed (76.69%).
-      <strong>The next PNLE is in {nextYear}.</strong> PRC has not published the {nextYear}
-      schedule; it normally posts the whole calendar in mid-November, so expect the dates around
-      November {prcRules.year} (<a href="#pnle-2027">what is known so far</a>). The {prcRules.year}
-      schedule below, per PRC Resolution No. 2113, s. 2025, stays as the record of this year’s
-      rounds.
+      <strong>The next PNLE is in {nextYear} — PRC has not released the dates yet.</strong> PRC normally
+      posts the whole next-year calendar in mid-November (the {prcRules.year} one went up on November 17,
+      2025), so expect the {nextYear} PNLE dates around November {prcRules.year}
+      (<a href="#pnle-2027">what is known so far</a>). Both {prcRules.year} rounds are over: the
+      {second.dates_display} round — with make-up sittings on September 11–12 for Region III and Metro
+      Manila — had its results released on <strong>{released}</strong>{secondPct && (
+        <Fragment>: {secondPassers} of {secondExaminees} examinees passed ({secondPct}%)</Fragment>
+      )}.
     </p>
+    <PrcSubscribe slug="nursing" name="PNLE" nextYear={nextYear} />
   </Fragment>
 
   <h2>PNLE {prcRules.year} Exam Dates and Deadlines</h2>

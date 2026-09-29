@@ -59,7 +59,7 @@ export default function SssTable() {
 
   return (
     <div>
-      <div class="rounded-xl border border-line bg-surface p-4 shadow-sm sm:p-5">
+      <div class="no-print rounded-xl border border-line bg-surface p-4 shadow-sm sm:p-5">
         <h2 class="mb-3 text-base font-bold text-ink">Find Your SSS Contribution</h2>
         <Tabs
           label="Member type"

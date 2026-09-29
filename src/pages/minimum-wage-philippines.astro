@@ -124,13 +124,24 @@ const faqs = [
   },
 ];
 
+/* Search snippet. Bing 2026-09 (the page's first week): 855 impressions at position ~8
+   and no clicks for "dole wage increase 2026", "minimum wage philippines 2026" and
+   "ncr minimum wage 2026", with every news result above us saying "₱60 wage hike" and
+   "₱755". The title answers with the same words; DOLE appears only as the source. */
+const whole = (n: number) => '₱' + n.toLocaleString('en-PH');
+const monthDay = (d: string | null) =>
+  d ? new Date(d + 'T00:00:00').toLocaleDateString('en-PH', { month: 'short', day: 'numeric' }) : 'soon';
+const title = live28
+  ? `Minimum Wage Philippines 2026: ₱${n28.increase} Wage Increase, NCR Now ${whole(n28.non_agriculture)}`
+  : `Minimum Wage Philippines 2026: NCR ${whole(n26.non_agriculture)}, ${whole(n28.non_agriculture)} From ${monthDay(n28.effectivity)}`;
 const description = live28
-  ? `Daily minimum wage in every Philippine region under the latest wage orders — NCR ${peso(n28.non_agriculture)} since ${fmt(n28.effectivity)} — with monthly equivalents and who is exempt.`
-  : `Daily minimum wage in every Philippine region under the latest wage orders — NCR ${peso(n26.non_agriculture)}, rising to ${peso(n28.non_agriculture)} on ${fmt(n28.effectivity)} — plus monthly equivalents.`;
+  ? `DOLE's ₱${n28.increase} NCR wage increase took effect ${fmt(n28.effectivity)}: ${whole(n28.non_agriculture)} a day, ${whole(n28.other_tier)} for agriculture and small shops. Daily and monthly rates for all ${withOrder.length} regions.`
+  : `NCR minimum wage: ${whole(n26.non_agriculture)} a day now, ${whole(n28.non_agriculture)} from ${fmt(n28.effectivity)} after DOLE's ₱${n28.increase} increase. Daily and monthly rates for all ${withOrder.length} regions.`;
+if (title.length > 65) throw new Error(`minimum wage title is ${title.length} chars (max 65): ${title}`);
 ---
 
 <ToolPageLayout
-  title="Minimum Wage Philippines 2026 – Rates by Region & NCR Update"
+  title={title}
   description={description}
   path="/minimum-wage-philippines/"
   h1="Minimum Wage Philippines 2026 (by Region)"

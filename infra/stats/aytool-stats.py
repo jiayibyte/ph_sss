@@ -15,6 +15,7 @@ import json
 import os
 import re
 import urllib.request
+from urllib.parse import parse_qs, urlsplit
 from collections import Counter, defaultdict
 from datetime import datetime, timedelta
 
@@ -109,6 +110,21 @@ def geo_lookup(ips):
     return cache
 
 
+def parse_beacon(path):
+    """/e?pv=…&p=…&t=…&d=…&a=… (src/components/EngagementBeacon.astro) → (pv, dict) or None."""
+    q = parse_qs(urlsplit(path).query)
+    get = lambda k: q.get(k, [''])[0]
+    try:
+        t, depth = int(get('t')), int(get('d'))
+    except ValueError:
+        return None
+    return get('pv')[:12], {'p': get('p')[:120], 't': t, 'd': depth, 'a': get('a')[:80]}
+
+
+def secs_label(secs):
+    return f'{secs // 60}分{secs % 60:02d}秒' if secs >= 60 else f'{secs}秒'
+
+
 def ua_short(ua):
     os_m = ('iPhone' if 'iPhone' in ua else 'iPad' if 'iPad' in ua else
             'Android' if 'Android' in ua else 'Windows' if 'Windows' in ua else
@@ -165,6 +181,7 @@ def main():
     ip_times = defaultdict(list)   # 每个真人IP的全部请求时间（含资源，用于停留估算）
     ip_pages = defaultdict(list)   # 每个真人IP的页面访问序列 (时间, 路径)
     ip_ua = {}
+    beacons = defaultdict(dict)    # 真人IP → {pv: 探针数据}（同一次浏览可能发多次，取停留最长那条）
 
     for d in rows:
         t = parse_time(d['time'])
@@ -183,6 +200,13 @@ def main():
             human_ips.add(d['ip'])
             ip_times[d['ip']].append(t)
             ip_ua[d['ip']] = d['ua']
+            if d['path'].startswith('/e?'):
+                parsed = parse_beacon(d['path'])
+                if parsed:
+                    pv, b = parsed
+                    if b['t'] >= beacons[d['ip']].get(pv, {}).get('t', -1):
+                        beacons[d['ip']][pv] = b
+                continue
             if not is_asset and d['status'] == '200':
                 human_pages[d['path']] += 1
                 human_hits.append(d | {'dt': t})
@@ -249,12 +273,31 @@ def main():
     country_chips = ' '.join(
         f'<span class="chip">{e(c)} × {n}</span>' for c, n in countries.most_common(12))
 
+    # 探针汇总：每个页面的真实停留 / 滚动深度 / 动作（只算非机房IP）
+    page_eng = defaultdict(list)
+    for ip, pvs in beacons.items():
+        if not geo.get(ip, {}).get('hosting'):
+            for b in pvs.values():
+                page_eng[b['p']].append(b)
+    eng_rows = ''
+    for p, bs in sorted(page_eng.items(), key=lambda kv: -len(kv[1]))[:25]:
+        ts = sorted(b['t'] for b in bs)
+        acts = Counter(a for b in bs for a in b['a'].split('.') if a)
+        eng_rows += (f'<tr><td>{e(p)}</td><td class="num">{len(bs)}</td>'
+                     f'<td class="num">{secs_label(ts[len(ts) // 2])}</td>'
+                     f'<td class="num">{sum(1 for t in ts if t >= 60)}</td>'
+                     f'<td class="num">{sum(1 for b in bs if b["d"] >= 75)}</td>'
+                     f'<td>{e(" ".join(f"{k}×{n}" for k, n in acts.most_common())) or "—"}</td></tr>')
+    eng_rows = eng_rows or '<tr><td colspan="6" class="empty">还没有探针数据（上线探针并同步 nginx 后开始累积）</td></tr>'
+
     visitor_rows = ''
     for ip in sorted(human_ips, key=lambda i: max(ip_times[i]), reverse=True):
         g = geo.get(ip, {})
         pages = ip_pages.get(ip, [])
         seq = ' → '.join(p for _, p in sorted(pages)[:6]) + (' …' if len(pages) > 6 else '')
         stay = dwell(ip_times[ip]) or '—'
+        eng = ' · '.join(f'{b["p"]} {secs_label(b["t"])} ↓{b["d"]}%{(" " + b["a"]) if b["a"] else ""}'
+                         for b in beacons.get(ip, {}).values())
         first = min(ip_times[ip]).strftime('%m-%d %H:%M')
         last = max(ip_times[ip]).strftime('%m-%d %H:%M')
         flag = ('<em class="dc">机房IP·疑似自动化</em>' if g.get('hosting')
@@ -266,7 +309,8 @@ def main():
             f'<td class="num">{first}<br>{last}</td>'
             f'<td class="num">{stay}</td>'
             f'<td class="num">{len(pages)}</td>'
-            f'<td>{e(seq) or "(仅资源请求)"}<br><span class="sub">{e(ua_short(ip_ua.get(ip, "")))}</span></td></tr>')
+            f'<td>{e(seq) or "(仅资源请求)"}<br><span class="sub">{e(ua_short(ip_ua.get(ip, "")))}</span>'
+            f'{f"<br><span class=sub>探针：{e(eng)}</span>" if eng else ""}</td></tr>')
 
     page = f'''<!doctype html>
 <html lang="zh"><head><meta charset="utf-8">
@@ -319,6 +363,8 @@ def main():
 <div>{country_chips or '<span class="chip">暂无</span>'}</div>
 <h2>访客明细（判定依据：加载JS + 是否机房IP + 停留行为）</h2>
 <table><tr><th>IP / 运营商</th><th>国家 / 判定</th><th class="num">首次<br>最近</th><th class="num">停留估算</th><th class="num">页面数</th><th>访问路径 / 设备</th></tr>{visitor_rows}</table>
+<h2>页面停留与行为（探针：页面可见时长、滚动深度、用过的控件；不含任何输入内容）</h2>
+<table><tr><th>页面</th><th class="num">浏览</th><th class="num">停留中位数</th><th class="num">≥1分钟</th><th class="num">滚到75%+</th><th>动作</th></tr>{eng_rows}</table>
 <h2>真人访问的页面 Top 20</h2>
 <table><tr><th>页面</th><th class="num">浏览次数</th></tr>{pages_rows}</table>
 <h2>外部流量来源（referrer）</h2>
