@@ -74,9 +74,24 @@ export interface WageRules {
     enjoined: { wage_order: string; date_issued: string; date_published?: string; nominal_effectivity: string; non_agriculture: number; other_tier: number; status: string; url: string; nwpc_statement_url: string };
     cola_note: string;
     rtwpb_url: string;
+    /** Earlier NCR orders as printed in NWPC's per-wage-order summary (oldest first). */
+    history?: {
+      source_label: string;
+      source_url: string;
+      note: string;
+      orders: Array<{ wage_order: string; date_issued: string; effectivity: string; non_agriculture: number; other_tier: number }>;
+    };
   };
   regions: WageRegion[];
-  kasambahay_monthly: Array<{ region: string; monthly: number; wage_order?: string; effectivity?: string; note?: string }>;
+  kasambahay_monthly: Array<{
+    region: string;
+    monthly: number;
+    wage_order?: string;
+    effectivity?: string;
+    note?: string;
+    /** A new domestic-worker order already published; the page switches on its effectivity. */
+    upcoming?: { monthly: number; wage_order: string; effectivity: string };
+  }>;
   divisors: { source: string; source_label: string; options: WageDivisor[]; alternates_note: string; nwpc_practice: string };
   coverage: Record<string, string>;
 }

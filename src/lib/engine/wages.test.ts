@@ -106,7 +106,7 @@ describe('wagesAsOf (orders switch on their effectivity date)', () => {
 
   it('untouched regions pass through unchanged; Davao shows its September 1 tranche', () => {
     const view = wagesAsOf(wages, '2026-12-01');
-    expect(region(view, 'r7')).toEqual(region(wages, 'r7'));
+    expect(region(view, 'r4a')).toEqual(region(wages, 'r4a'));
     expect(currentRateSince(region(view, 'r11'), '2026-09-23')).toBe('2026-09-01');
   });
 
@@ -127,5 +127,39 @@ describe('wagesAsOf (orders switch on their effectivity date)', () => {
     expect(row.upcoming!.wage_order_url).toBe(wages.ncr.upcoming.url);
     expect(row.upcoming!.rates[0]!.rate).toBe(wages.ncr.upcoming.non_agriculture);
     expect(row.upcoming!.rates[1]!.rate).toBe(wages.ncr.upcoming.other_tier);
+  });
+});
+
+describe('NCR wage history (NWPC per-wage-order summary)', () => {
+  const r = wagesJson as unknown as WageRules;
+  const orders = r.ncr.history!.orders;
+  it('runs oldest to newest with rising rates and ends at the order in force before NCR-28', () => {
+    for (let i = 1; i < orders.length; i++) {
+      expect(orders[i]!.effectivity > orders[i - 1]!.effectivity).toBe(true);
+      expect(orders[i]!.non_agriculture).toBeGreaterThan(orders[i - 1]!.non_agriculture);
+      expect(orders[i]!.other_tier).toBeLessThan(orders[i]!.non_agriculture);
+    }
+    const last = orders.at(-1)!;
+    expect(last.wage_order).toBe(r.ncr.in_force.wage_order);
+    expect(last.effectivity).toBe(r.ncr.in_force.effectivity);
+    expect(last.non_agriculture).toBe(r.ncr.in_force.non_agriculture);
+    expect(last.other_tier).toBe(r.ncr.in_force.other_tier);
+    expect(r.ncr.upcoming.non_agriculture - last.non_agriculture).toBe(r.ncr.upcoming.increase);
+  });
+});
+
+describe('Region VII: ROVII-27 switches on October 14, 2026', () => {
+  const r = wagesJson as unknown as WageRules;
+  const r7 = (today: string) => wagesAsOf(r, today).regions.find((x) => x.id === 'r7')!;
+  it('keeps ROVII-26 until the day before and moves to ROVII-27 on its effectivity', () => {
+    expect(r7('2026-10-13').wage_order).toBe('ROVII-26');
+    expect(r7('2026-10-13').tiers.map((t) => t.rate)).toEqual([540, 500]);
+    const after = r7('2026-10-14');
+    expect(after.wage_order).toBe('ROVII-27');
+    expect(after.tiers.map((t) => t.rate)).toEqual([582, 542]);
+    expect(after.effectivity).toBe('2026-10-14');
+    expect(after.upcoming).toBeUndefined();
+    // the order grants the same ₱42 to both classes
+    expect(after.tiers.map((t, i) => t.rate - r7('2026-10-13').tiers[i]!.rate)).toEqual([42, 42]);
   });
 });

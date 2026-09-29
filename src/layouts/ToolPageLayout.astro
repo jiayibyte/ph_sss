@@ -139,6 +139,7 @@ const showToc = toc.length >= 5;
       embedSnippet && (
         <details class="mt-4 rounded-lg border border-line bg-surface px-4 py-3 text-sm">
           <summary class="cursor-pointer font-semibold text-ink">Embed this calculator on your website</summary>
+          <div data-nosnippet>
           <p class="mt-2 text-ink-soft">
             Free for any site — HR blogs, review centers, cooperatives. Paste this HTML where the
             calculator should appear; it keeps following the official rates on its own.
@@ -147,6 +148,7 @@ const showToc = toc.length >= 5;
           <p class="mt-2 text-ink-soft">
             More widgets: <a href="/free-calculator-widgets/" class="text-accent-strong hover:underline">all free calculator widgets</a>.
           </p>
+          </div>
         </details>
       )
     }
@@ -182,7 +184,7 @@ const showToc = toc.length >= 5;
             class="w-full rounded-md border border-line"
           />
           <figcaption class="mt-2 flex flex-wrap items-center justify-between gap-2 text-xs text-ink-soft">
-            <span>Save or share this card — the page address is printed on it.</span>
+            <span data-nosnippet>Save or share this card — the page address is printed on it.</span>
             <ShareButtons path={pagePath} title={title} />
           </figcaption>
         </figure>
@@ -206,7 +208,7 @@ const showToc = toc.length >= 5;
       )
     }
 
-    <section class="mt-12" aria-label="Related Philippine payroll calculators">
+    <section class="mt-12" aria-label="Related Philippine payroll calculators" data-nosnippet>
       <h2 class="text-lg font-bold text-ink">Related Philippine Payroll Calculators</h2>
       <ul class="mt-3 grid gap-3 sm:grid-cols-2">
         {

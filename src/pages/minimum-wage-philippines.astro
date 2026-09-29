@@ -42,6 +42,50 @@ const trancheInEffect = (r: WageRegion): string | null => {
   return t && t <= today && t !== r.effectivity ? t : null;
 };
 const upcomingRegions = view.regions.filter((r) => r.upcoming);
+
+/* Kasambahay rows as of today: a published domestic-worker order replaces the row on its effectivity. */
+const kasambahay = rules.kasambahay_monthly.map((k) =>
+  k.upcoming && today >= k.upcoming.effectivity
+    ? { region: k.region, monthly: k.upcoming.monthly, wage_order: k.upcoming.wage_order, effectivity: k.upcoming.effectivity, note: k.note }
+    : k,
+);
+const kasOf = (region: string) => kasambahay.find((k) => k.region === region)!;
+
+/* NCR history (NWPC per-wage-order summary) + the current order, with each step's increase.
+   NCR-27 is left out: it never took effect. */
+const history = rules.ncr.history;
+const historyRows = history
+  ? [
+      ...history.orders,
+      ...(live28 && n28.effectivity
+        ? [{ wage_order: n28.wage_order, date_issued: n28.date_issued, effectivity: n28.effectivity, non_agriculture: n28.non_agriculture, other_tier: n28.other_tier }]
+        : []),
+    ]
+      .map((r, i, all) => ({ ...r, increase: i > 0 ? r.non_agriculture - all[i - 1]!.non_agriculture : null }))
+  : [];
+const firstHist = historyRows[0];
+const lastHist = historyRows.at(-1);
+const histYear = (d: string) => d.slice(0, 4);
+const longestGap = historyRows.slice(1).reduce(
+  (best, r, i) => {
+    const prev = historyRows[i]!;
+    const months = (Date.parse(r.effectivity) - Date.parse(prev.effectivity)) / (30.44 * 86_400_000);
+    return months > best.months ? { months, from: prev, to: r } : best;
+  },
+  { months: 0, from: firstHist, to: firstHist },
+);
+
+/* What the latest NCR increase is worth, from the same factors the page uses. */
+const inc = n28.increase;
+const impactRows = [
+  ['Daily wage', inc],
+  [`Monthly, six-day week (factor ${f313})`, monthlyEquivalent(inc, f313)],
+  [`Monthly, five-day week (factor ${f261})`, monthlyEquivalent(inc, f261)],
+  [`Monthly-paid, every day of the year (factor ${f365})`, monthlyEquivalent(inc, f365)],
+  ['One regular holiday worked (200%)', inc * 2],
+  ['One ordinary-day overtime hour (125%)', (inc / 8) * 1.25],
+  [`13th month pay, for a full year at the new rate (factor ${f313})`, monthlyEquivalent(inc, f313)],
+] as const;
 const otherTier = 'agriculture, service and retail establishments with 15 or fewer workers, and manufacturing with fewer than 10 workers';
 
 // "Lowest" FAQ: BARMM holds the floor; among one-rate regions, name every region tied at the lowest rate.
@@ -91,6 +135,17 @@ const faqs = [
     q: live28 ? 'When did the ₱755 NCR minimum wage take effect?' : 'When does the ₱755 NCR minimum wage take effect?',
     a: `On ${fmt(n28.effectivity)}. Wage Order NCR-28 (₱${n28.increase} increase to ${peso(n28.non_agriculture)} / ${peso(n28.other_tier)}) was approved on ${fmt(n28.date_issued)} and published on ${fmt(n28.date_published)}; its Section 7 makes it effective 15 days after publication, and DOLE announced ${fmt(n28.effectivity)} as the start date. Employers with 10 or fewer retail or service workers may apply for exemption within 75 days of publication.`,
   },
+  ...(firstHist && lastHist && historyRows.length > 1
+    ? [
+        {
+          q: 'How much has the NCR minimum wage increased over the years?',
+          a: `From ${peso(firstHist.non_agriculture)} a day under Wage Order ${firstHist.wage_order} (${fmt(firstHist.effectivity)}) to ${peso(lastHist.non_agriculture)} under ${lastHist.wage_order} (${fmt(lastHist.effectivity)}): ${peso(lastHist.non_agriculture - firstHist.non_agriculture)} more across ${historyRows.length - 1} wage orders. The recent steps were ${historyRows
+            .slice(-4)
+            .map((r) => `${r.wage_order} +${peso(r.increase ?? 0)} (${histYear(r.effectivity)})`)
+            .join(', ')}. The longest gap was from ${fmt(longestGap.from!.effectivity)} to ${fmt(longestGap.to!.effectivity)}, when no new NCR order took effect. Figures are NWPC's.`,
+        },
+      ]
+    : []),
   {
     q: 'What happened to Wage Order NCR-27?',
     a: n27.status + ` NCR-27 (${fmt(n27.date_issued)}) would have set ${peso(n27.non_agriculture)} / ${peso(n27.other_tier)} from ${fmt(n27.nominal_effectivity)}; NCR-28 re-grants the same ₱${n28.increase} increase on the NCR-26 baseline through a fresh order, effective ${fmt(n28.effectivity)}.`,
@@ -101,7 +156,12 @@ const faqs = [
   },
   {
     q: 'What is the minimum wage in Cebu, Davao and CALABARZON?',
-    a: `Cebu (Region VII, Wage Order ${byId('r7').wage_order}): ${peso(byId('r7').tiers[0]!.rate)} a day in Class A — Metro Cebu cities plus Compostela, Consolacion, Cordova, Liloan, Minglanilla and San Fernando — and ${peso(byId('r7').tiers[1]!.rate)} elsewhere in the region. Davao (Region XI, ${byId('r11').wage_order}): ${peso(byId('r11').tiers[0]!.rate)} non-agriculture and ${peso(byId('r11').tiers[1]!.rate)} agriculture since the September 1, 2026 tranche. CALABARZON (Region IV-A, ${byId('r4a').wage_order}): ${peso(byId('r4a').tiers[0]!.rate)} in the extended metropolitan area and component cities, ${peso(byId('r4a').tiers[1]!.rate)} in first-class municipalities, ${peso(byId('r4a').tiers[2]!.rate)} in second- to fifth-class municipalities, and ${peso(byId('r4a').tiers[5]!.rate)} for retail and service establishments with 10 or fewer workers.`,
+    a: `Cebu (Region VII, Wage Order ${byId('r7').wage_order}): ${peso(byId('r7').tiers[0]!.rate)} a day in Class A — Metro Cebu cities plus Compostela, Consolacion, Cordova, Liloan, Minglanilla and San Fernando — and ${peso(byId('r7').tiers[1]!.rate)} elsewhere in the region${(() => {
+      const u = byId('r7').upcoming;
+      return u && !u.tranche && u.effectivity
+        ? `, rising to ${peso(u.rates[0]!.rate)} and ${peso(u.rates[1]!.rate)} on ${fmt(u.effectivity)} under Wage Order ${u.wage_order} (published ${fmt(u.date_published)})`
+        : '';
+    })()}. Davao (Region XI, ${byId('r11').wage_order}): ${peso(byId('r11').tiers[0]!.rate)} non-agriculture and ${peso(byId('r11').tiers[1]!.rate)} agriculture since the September 1, 2026 tranche. CALABARZON (Region IV-A, ${byId('r4a').wage_order}): ${peso(byId('r4a').tiers[0]!.rate)} in the extended metropolitan area and component cities, ${peso(byId('r4a').tiers[1]!.rate)} in first-class municipalities, ${peso(byId('r4a').tiers[2]!.rate)} in second- to fifth-class municipalities, and ${peso(byId('r4a').tiers[5]!.rate)} for retail and service establishments with 10 or fewer workers.`,
   },
   { q: 'Which region has the lowest minimum wage?', a: lowestAnswer },
   {
@@ -110,7 +170,7 @@ const faqs = [
   },
   {
     q: 'What is the minimum wage for kasambahay (domestic workers)?',
-    a: `Kasambahay have separate monthly minimum wages under RA 10361, set by each regional board: ${peso(rules.kasambahay_monthly[0]!.monthly)} a month in NCR (Wage Order ${rules.kasambahay_monthly[0]!.wage_order}, since ${fmt(rules.kasambahay_monthly[0]!.effectivity)}), ${peso(7000)} in MIMAROPA and Central Visayas, and between ${peso(5500)} (BARMM) and ${peso(6750)} (CALABARZON) elsewhere — see the table on this page.`,
+    a: `Kasambahay have separate monthly minimum wages under RA 10361, set by each regional board: ${peso(kasOf('NCR').monthly)} a month in NCR (Wage Order ${kasOf('NCR').wage_order}, since ${fmt(kasOf('NCR').effectivity)}), ${peso(kasOf('Region IV-B').monthly)} in MIMAROPA, ${peso(kasOf('Region VII').monthly)} in Central Visayas${(() => { const u = kasOf('Region VII'); return 'upcoming' in u && u.upcoming ? ` (${peso(u.upcoming.monthly)} from ${fmt(u.upcoming.effectivity)} under ${u.upcoming.wage_order})` : ''; })()}, and between ${peso(kasOf('BARMM').monthly)} (BARMM) and ${peso(kasOf('Region IV-A').monthly)} (CALABARZON) elsewhere — see the table on this page.`,
   },
   {
     q: 'What is the penalty for paying below the minimum wage?',
@@ -213,6 +273,69 @@ if (title.length > 65) throw new Error(`minimum wage title is ${title.length} ch
     {' '}{rules.ncr.cola_note}
   </p>
 
+  <h2>What the ₱{inc} NCR Wage Increase Means for Your Pay</h2>
+  <p>
+    For a worker on the NCR minimum ({peso(n26.non_agriculture)} → {peso(n28.non_agriculture)} non-agriculture,
+    {' '}{peso(n26.other_tier)} → {peso(n28.other_tier)} for the lower tier), the ₱{inc} a day adds up as follows. Monthly
+    amounts use the DOLE factors explained below; your employer's factor decides which row is yours.
+  </p>
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Pay item</th><th>Increase</th></tr>
+      </thead>
+      <tbody>
+        {impactRows.map(([label, amount]) => (
+          <tr><td>{label}</td><td><strong>+{peso(amount)}</strong></td></tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  <p class="text-sm text-ink-soft">
+    SSS, PhilHealth and Pag-IBIG contributions rise slightly with the higher salary; the
+    <a href="/take-home-pay-calculator/">take-home pay calculator</a> shows the net effect. Minimum wage earners pay no income
+    tax on their statutory minimum wage.
+  </p>
+
+  {
+    historyRows.length > 1 && history && firstHist && lastHist && (
+      <Fragment>
+        <h2>NCR Minimum Wage History ({histYear(firstHist.effectivity)}–{histYear(lastHist.effectivity)})</h2>
+        <p>
+          The Metro Manila minimum went from {peso(firstHist.non_agriculture)} in {histYear(firstHist.effectivity)} to
+          {' '}{peso(lastHist.non_agriculture)} in {histYear(lastHist.effectivity)}, a rise of
+          {' '}{peso(lastHist.non_agriculture - firstHist.non_agriculture)} a day across {historyRows.length - 1} wage orders.
+          The longest wait was between {longestGap.from!.wage_order} ({fmt(longestGap.from!.effectivity)}) and
+          {' '}{longestGap.to!.wage_order} ({fmt(longestGap.to!.effectivity)}).
+        </p>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr><th>Wage order</th><th>Effective</th><th>Non-agriculture</th><th>Increase</th><th>Lower tier</th></tr>
+            </thead>
+            <tbody>
+              {historyRows.map((r) => (
+                <tr>
+                  <td>{r.wage_order}</td>
+                  <td>{fmt(r.effectivity)}</td>
+                  <td>{peso(r.non_agriculture)}</td>
+                  <td>{r.increase === null ? '—' : `+${peso(r.increase)}`}</td>
+                  <td>{peso(r.other_tier)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="text-sm text-ink-soft">
+          Source: <a href={history.source_url} target="_blank" rel="noopener">{history.source_label}</a>, and the
+          {' '}<a href={rules.ncr.rtwpb_url} target="_blank" rel="noopener">RTWPB-NCR page</a> for {n28.wage_order}. Amounts up
+          to NCR-21 include the COLA then paid on top of the basic wage. {n27.wage_order} is not listed because it never took
+          effect.
+        </p>
+      </Fragment>
+    )
+  }
+
   <h2>Daily Minimum Wage by Region (Current Wage Orders)</h2>
   <div class="table-scroll">
     <table>
@@ -256,7 +379,7 @@ if (title.length > 65) throw new Error(`minimum wage title is ${title.length} ch
         {r.upcoming!.effectivity ? ` from ${fmt(r.upcoming!.effectivity)}.` : ` — expected ${r.upcoming!.expected}, date not yet published.`}
       </li>
     ))}
-    <li><strong>Formal wage reviews open, no new order yet:</strong> Central Luzon (hearings October 5 – November 11, 2026), CALABARZON, Central Visayas, Western Visayas, SOCCSKSARGEN, Cordillera, Ilocos and Northern Mindanao. New orders normally take effect 15 days after publication.</li>
+    <li><strong>Formal wage reviews open, no new order yet (as of September 29, 2026):</strong> Central Luzon (hearings October 5 – November 11, 2026), CALABARZON, Western Visayas, SOCCSKSARGEN, Cordillera, Ilocos and Northern Mindanao. New orders normally take effect 15 days after publication.</li>
   </ul>
 
   <h2>Daily to Monthly: The DOLE Factors</h2>
@@ -295,10 +418,13 @@ if (title.length > 65) throw new Error(`minimum wage title is ${title.length} ch
     <table>
       <thead><tr><th>Region</th><th>Monthly minimum</th></tr></thead>
       <tbody>
-        {rules.kasambahay_monthly.map((k) => (
+        {kasambahay.map((k) => (
           <tr>
             <td>{k.region}{k.wage_order ? <span class="text-ink-soft"> ({k.wage_order}, since {fmt(k.effectivity)})</span> : null}</td>
-            <td><strong>{peso(k.monthly)}</strong>{k.note ? <span class="text-ink-soft"> — {k.note}</span> : null}</td>
+            <td>
+              <strong>{peso(k.monthly)}</strong>{k.note ? <span class="text-ink-soft"> — {k.note}</span> : null}
+              {'upcoming' in k && k.upcoming ? <span class="text-ink-soft"> — {peso(k.upcoming.monthly)} from {fmt(k.upcoming.effectivity)} ({k.upcoming.wage_order})</span> : null}
+            </td>
           </tr>
         ))}
       </tbody>

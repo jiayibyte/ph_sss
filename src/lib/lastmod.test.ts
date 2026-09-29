@@ -51,7 +51,8 @@ describe('lastmod', () => {
     for (const p of Object.keys(SCHEDULED)) expect(Object.keys(PAGE_DATA)).toContain(p);
     expect(scheduledChangesReached('/minimum-wage-philippines/', '2026-09-25')).toEqual([]);
     expect(scheduledChangesReached('/minimum-wage-philippines/', '2026-09-26')).toEqual(['2026-09-26']);
-    expect(scheduledChangesReached('/minimum-wage-philippines/', '2026-12-01')).toEqual(['2026-09-26', '2026-12-01']);
+    expect(scheduledChangesReached('/minimum-wage-philippines/', '2026-10-14')).toEqual(['2026-09-26', '2026-10-14']);
+    expect(scheduledChangesReached('/minimum-wage-philippines/', '2026-12-01')).toEqual(['2026-09-26', '2026-10-14', '2026-12-01']);
     expect(scheduledChangesReached('/daily-rate-calculator/', '2026-12-01')).toEqual(['2026-09-26']);
     expect(scheduledChangesReached('/sss-contribution-table/', '2026-12-01')).toEqual([]);
     expect(scheduledChangesReached('/pagibig-housing-loan-calculator/', '2026-12-31')).toEqual([]);

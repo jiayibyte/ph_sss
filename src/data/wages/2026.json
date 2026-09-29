@@ -3,14 +3,15 @@
   "rule_version": "NWPC Summary of Current Regional Daily Minimum Wage Rates (September 2, 2026) and Latest Wage Order Matrix (September 11, 2026)",
   "effective_from": "2026-09-22",
   "effective_to": null,
-  "last_verified": "2026-09-23",
+  "last_verified": "2026-09-29",
   "official_source_url": "https://nwpc.dole.gov.ph/stats/summary-of-current-regional-daily-minimum-wage-rates/",
   "official_source_label": "NWPC — Summary of Current Regional Daily Minimum Wage Rates (nwpc.dole.gov.ph)",
   "sources": {
    "summary_pdf": "https://nwpc.dole.gov.ph/wp-content/uploads/2026/09/Summary-of-Current-Regl-MWRs-Non-Agri-and-Agri-by-Region-Sep_2026-1.pdf",
    "matrix_pdf": "https://nwpc.dole.gov.ph/wp-content/uploads/2026/09/Latest-Wage-Order-Matrix-11-September-2026.pdf",
    "handbook_2024": "https://nwpc.dole.gov.ph/wp-content/uploads/2024/11/Workers-Statutory-Monetary-Benefits-Handbook-2024-Edition.pdf",
-   "kasambahay_pdf": "https://nwpc.dole.gov.ph/wp-content/uploads/2026/09/Current-Monthly-MW-for-DW-as-of-September_2026.pdf"
+   "kasambahay_pdf": "https://nwpc.dole.gov.ph/wp-content/uploads/2026/09/Current-Monthly-MW-for-DW-as-of-September_2026.pdf",
+  "rovii27_page": "https://nwpc.dole.gov.ph/region-vii/ (ROVII-27 and ROVII-DW-06: issued 14 September 2026, published 28 September 2026 in The Freeman, effective 14 October 2026; checked 2026-09-29)"
   }
  },
  "ncr": {
@@ -48,7 +49,22 @@
    "date_published": "2026-07-09"
   },
   "cola_note": "All-basic wage: the last separate COLA in NCR (₱10 under WO NCR-21, 2017) was integrated in WO NCR-22 (2018); every order since is 100% basic wage.",
-  "rtwpb_url": "https://nwpc.dole.gov.ph/ncr/"
+  "rtwpb_url": "https://nwpc.dole.gov.ph/ncr/",
+  "history": {
+   "source_label": "NWPC — Daily Minimum Wage Rates per Wage Order by Region, Non-Agriculture, 1989 to January 5, 2026",
+   "source_url": "https://nwpc.dole.gov.ph/wp-content/uploads/2026/01/Summary-of-DMWR-per-Wage-Order-by-Region_Non-Agriculture-1989-to-Jan_5_2026.pdf",
+   "note": "NCR-19 to NCR-26 as printed by NWPC (totals include the COLA then in force; other_tier is the lower rate). NCR-27 and NCR-28 are the enjoined and upcoming blocks above.",
+   "orders": [
+    { "wage_order": "NCR-19", "date_issued": "2015-03-16", "effectivity": "2015-04-04", "non_agriculture": 481, "other_tier": 444 },
+    { "wage_order": "NCR-20", "date_issued": "2016-05-11", "effectivity": "2016-06-02", "non_agriculture": 491, "other_tier": 454 },
+    { "wage_order": "NCR-21", "date_issued": "2017-09-14", "effectivity": "2017-10-05", "non_agriculture": 512, "other_tier": 475 },
+    { "wage_order": "NCR-22", "date_issued": "2018-10-30", "effectivity": "2018-11-22", "non_agriculture": 537, "other_tier": 500 },
+    { "wage_order": "NCR-23", "date_issued": "2022-05-13", "effectivity": "2022-06-04", "non_agriculture": 570, "other_tier": 533 },
+    { "wage_order": "NCR-24", "date_issued": "2023-06-26", "effectivity": "2023-07-16", "non_agriculture": 610, "other_tier": 573 },
+    { "wage_order": "NCR-25", "date_issued": "2024-06-27", "effectivity": "2024-07-17", "non_agriculture": 645, "other_tier": 608 },
+    { "wage_order": "NCR-26", "date_issued": "2025-06-24", "effectivity": "2025-07-18", "non_agriculture": 695, "other_tier": 658 }
+   ]
+  }
  },
  "regions": [
   {
@@ -332,7 +348,26 @@
      "group": "All other cities and municipalities (incl. Bais, Bayawan, Bogo, Canlaon, Dumaguete, Guihulngan, Tagbilaran, Tanjay, Toledo)"
     }
    ],
-   "notes": "No sector split — rates depend on location class. RTWPB-VII started a new wage determination with hearings in August–September 2026.",
+   "notes": "No sector split — rates depend on location class. Negros Oriental and Siquijor (now in NIR) stay under the Region VII order, Class B.",
+   "upcoming": {
+    "wage_order": "ROVII-27",
+    "date_issued": "2026-09-14",
+    "date_published": "2026-09-28",
+    "effectivity": "2026-10-14",
+    "rates": [
+     {
+      "label": "Class A",
+      "rate": 582,
+      "group": "Cities of Carcar, Cebu, Danao, Lapu-Lapu, Mandaue, Naga, Talisay; Compostela, Consolacion, Cordova, Liloan, Minglanilla, San Fernando"
+     },
+     {
+      "label": "Class B",
+      "rate": 542,
+      "group": "All other cities and municipalities (incl. Bais, Bayawan, Bogo, Canlaon, Dumaguete, Guihulngan, Tagbilaran, Tanjay, Toledo)"
+     }
+    ],
+    "wage_order_url": "https://nwpc.dole.gov.ph/wp-content/uploads/2026/09/Wage-Order-No.-ROVII-27.pdf"
+   },
    "wage_order_url": "https://nwpc.dole.gov.ph/wp-content/uploads/2025/09/Wage-Order-No.-ROVII-26.pdf",
    "rtwpb_url": "https://nwpc.dole.gov.ph/region-vii/"
   },
@@ -565,7 +600,12 @@
   },
   {
    "region": "Region VII",
-   "monthly": 7000
+   "monthly": 7000,
+   "upcoming": {
+    "monthly": 7500,
+    "wage_order": "ROVII-DW-06",
+    "effectivity": "2026-10-14"
+   }
   },
   {
    "region": "Region VIII",

@@ -128,7 +128,11 @@ export function datasetLastVerified(key) {
  * Philippine date, so their content changes the day a wage order or tranche
  * takes effect — and lastmod should say so. path → [dataset, dates picker].
  */
-const wageChangeDates = (w) => [w.ncr?.upcoming?.effectivity, ...(w.regions ?? []).map((r) => r.upcoming?.effectivity)];
+const wageChangeDates = (w) => [
+  w.ncr?.upcoming?.effectivity,
+  ...(w.regions ?? []).map((r) => r.upcoming?.effectivity),
+  ...(w.kasambahay_monthly ?? []).map((k) => k.upcoming?.effectivity),
+];
 const dayAfter = (iso) => (ISO_DATE.test(iso ?? '') ? new Date(Date.parse(iso + 'T00:00:00Z') + 86_400_000).toISOString().slice(0, 10) : null);
 export const SCHEDULED = {
   '/minimum-wage-philippines/': ['wages', wageChangeDates],
