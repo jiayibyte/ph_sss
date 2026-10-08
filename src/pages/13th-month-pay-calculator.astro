@@ -2,10 +2,30 @@
 import ToolPageLayout from '../layouts/ToolPageLayout.astro';
 import ThirteenthMonthCalculator from '../islands/ThirteenthMonthCalculator';
 import laborRules from '../data/labor/2026.json';
+import holidayRules from '../data/holidays/2026.json';
+import sslRules from '../data/ssl/2026.json';
 import { peso } from '../lib/format';
+import { TYPE_LABEL } from '../lib/holidays';
+import type { HolidayType } from '../lib/rules/types';
 
 const meta = laborRules.meta;
 const divisor = laborRules.thirteenth_month.divisor;
+
+/* The PD 851 deadline in the year this page covers, with its weekday and holiday status. */
+const deadlineIso = `${holidayRules.year}-12-24`;
+const deadlineLong = new Date(deadlineIso + 'T00:00:00').toLocaleDateString('en-PH', {
+  weekday: 'long',
+  month: 'long',
+  day: 'numeric',
+  year: 'numeric',
+});
+const deadlineHoliday = holidayRules.holidays.find((h) => h.date === deadlineIso);
+const proc = holidayRules.proclamation;
+const deadlineHolidayNote = deadlineHoliday
+  ? ` That day is also ${deadlineHoliday.name}, a ${TYPE_LABEL[deadlineHoliday.type as HolidayType].toLowerCase()} under Proclamation No. ${proc.number}, s. ${proc.series} — check when your employer runs its December payroll.`
+  : '';
+const yearEndBonus = sslRules.allowances.find((a) => a.key === 'year_end')!;
+const cashGift = sslRules.allowances.find((a) => a.key === 'cash_gift')!;
 const sampleSalary = 18000;
 const proratedRows = [1, 3, 4, 5, 6, 8, 9, 12].map((m) => ({
   months: m,
@@ -13,6 +33,18 @@ const proratedRows = [1, 3, 4, 5, 6, 8, 9, 12].map((m) => ({
   amount: peso((sampleSalary * m) / divisor),
 }));
 const faqs = [
+  {
+    q: `When is the 13th month pay deadline in ${holidayRules.year}?`,
+    a: `On or before ${deadlineLong}. PD 851 fixes December 24 every year; paying half earlier (often in June) is allowed if the balance is paid by then.${deadlineHolidayNote} Employees who resigned or were dismissed during the year get their pro-rated share with their final pay instead.`,
+  },
+  {
+    q: 'Do government employees get 13th month pay?',
+    a: `Not under PD 851, which covers the private sector. Government personnel get a year-end bonus of ${yearEndBonus.amount.charAt(0).toLowerCase() + yearEndBonus.amount.slice(1)} plus a ${cashGift.amount.replace(' a year', '')} cash gift. Who qualifies: ${yearEndBonus.rule.charAt(0).toLowerCase() + yearEndBonus.rule.slice(1)} Their salary is on the <a href="/salary-grade-table/">${holidayRules.year} salary grade table</a>.`,
+  },
+  {
+    q: `Kailan ibibigay ang 13th month pay ngayong ${holidayRules.year}?`,
+    a: `Hanggang ${deadlineLong} ang huling araw ayon sa PD 851. Puwedeng ibigay nang mas maaga o hatiin (kalahati sa June, kalahati sa December), basta buo na bago mag-December 24. Kung umalis ka na sa trabaho, kasama ito sa final pay mo.`,
+  },
   {
     q: 'How do I compute my 13th month pay?',
     a: '13th month pay = total basic salary you actually earned during the calendar year ÷ 12. If you earned ₱20,000 per month for all 12 months, your 13th month pay is ₱240,000 ÷ 12 = ₱20,000. If you worked fewer months, only the salary you actually earned is counted, which gives a pro-rated amount.',
@@ -93,6 +125,21 @@ const faqs = [
   <Fragment slot="calculator">
     <ThirteenthMonthCalculator client:idle />
   </Fragment>
+
+  <h2>13th Month Pay {holidayRules.year} Deadline: {deadlineLong}</h2>
+  <p>
+    PD 851 requires the full 13th month pay on or before <strong>December 24</strong>. In
+    {holidayRules.year} that is <strong>{deadlineLong}</strong>.{deadlineHolidayNote} Paying it in
+    two parts — commonly half in June and the rest in December — is allowed as long as the whole
+    amount is paid by the deadline.
+  </p>
+  <p>
+    <strong>Government employees</strong> are not covered by PD 851. Their equivalent is the
+    year-end bonus — {yearEndBonus.amount.charAt(0).toLowerCase() + yearEndBonus.amount.slice(1)} —
+    plus a {cashGift.amount.replace(' a year', '')} cash gift, both paid with the first agency
+    payroll in November (FY {holidayRules.year} GAA). See the
+    <a href="/salary-grade-table/">salary grade table</a> for the basic salary that drives it.
+  </p>
 
   <h2>The Official Formula</h2>
   <p>
@@ -191,7 +238,9 @@ const faqs = [
     payroll or company policy may be <em>more</em> generous than this legal minimum — this
     calculator computes the statutory floor. Minimum wage earners are covered too: their 13th
     month is the year's basic pay at the <a href="/minimum-wage-philippines/">minimum wage for
-    their region</a> ÷ 12.
+    their region</a> ÷ 12. <strong>Kasambahay</strong> (domestic workers) are left out of PD 851 but get
+    13th month pay under RA 10361 after one month of service — see the
+    <a href="/kasambahay-minimum-wage/">kasambahay minimum wage and benefits</a>.
   </p>
   <p>
     Tax: the 13th month and other bonuses are tax-free up to ₱90,000 for the year combined; the

@@ -1,17 +1,18 @@
 {
  "meta": {
-  "rule_version": "NWPC Summary of Current Regional Daily Minimum Wage Rates (September 2, 2026) and Latest Wage Order Matrix (September 11, 2026)",
+  "rule_version": "NWPC Summary of Current Regional Daily Minimum Wage Rates (September 2, 2026) and Latest Wage Order Matrix (as of September 28, 2026)",
   "effective_from": "2026-09-22",
   "effective_to": null,
-  "last_verified": "2026-09-29",
+  "last_verified": "2026-10-08",
   "official_source_url": "https://nwpc.dole.gov.ph/stats/summary-of-current-regional-daily-minimum-wage-rates/",
   "official_source_label": "NWPC — Summary of Current Regional Daily Minimum Wage Rates (nwpc.dole.gov.ph)",
   "sources": {
    "summary_pdf": "https://nwpc.dole.gov.ph/wp-content/uploads/2026/09/Summary-of-Current-Regl-MWRs-Non-Agri-and-Agri-by-Region-Sep_2026-1.pdf",
-   "matrix_pdf": "https://nwpc.dole.gov.ph/wp-content/uploads/2026/09/Latest-Wage-Order-Matrix-11-September-2026.pdf",
+   "matrix_pdf": "https://nwpc.dole.gov.ph/wp-content/uploads/2026/09/Latest-Wage-Orders-Matrix-2026-2027-As-of-28-September-2026_updated.pdf",
    "handbook_2024": "https://nwpc.dole.gov.ph/wp-content/uploads/2024/11/Workers-Statutory-Monetary-Benefits-Handbook-2024-Edition.pdf",
    "kasambahay_pdf": "https://nwpc.dole.gov.ph/wp-content/uploads/2026/09/Current-Monthly-MW-for-DW-as-of-September_2026.pdf",
-  "rovii27_page": "https://nwpc.dole.gov.ph/region-vii/ (ROVII-27 and ROVII-DW-06: issued 14 September 2026, published 28 September 2026 in The Freeman, effective 14 October 2026; checked 2026-09-29)"
+  "rovii27_page": "https://nwpc.dole.gov.ph/region-vii/ (ROVII-27 and ROVII-DW-06: issued 14 September 2026, published 28 September 2026 in The Freeman, effective 14 October 2026; checked 2026-09-29)",
+  "kasambahay_pdf_oct6": "https://nwpc.dole.gov.ph/wp-content/uploads/2026/10/Current-Monthly-MW-for-DW-as-of-Oct_6_2026.pdf (NWPC, as of October 6, 2026; it prints the Region VII order as ROVII-DW-07 — the signed order and the 28 September matrix say ROVII-DW-06)"
   }
  },
  "ncr": {
@@ -564,78 +565,130 @@
    "region": "NCR",
    "monthly": 7800,
    "wage_order": "NCR-DW-06",
-   "effectivity": "2026-02-07"
+   "effectivity": "2026-02-07",
+   "url": "https://nwpc.dole.gov.ph/wp-content/uploads/2026/01/Wage-Order-No.-NCR-DW-06.pdf"
   },
   {
    "region": "CAR",
-   "monthly": 6600
+   "monthly": 6600,
+   "wage_order": "CAR-DW-07",
+   "effectivity": "2025-12-30",
+   "url": "https://nwpc.dole.gov.ph/wp-content/uploads/2025/12/Wage-Order-No.-CAR-DW-07.pdf"
   },
   {
    "region": "Region I",
-   "monthly": 6700
+   "monthly": 6700,
+   "wage_order": "RB 1-DW-06",
+   "effectivity": "2025-11-19",
+   "url": "https://nwpc.dole.gov.ph/wp-content/uploads/2025/11/Wage-Order-No.-RB-1-DW-06.pdf"
   },
   {
    "region": "Region II",
-   "monthly": 6500
+   "monthly": 6500,
+   "wage_order": "02-DW-07",
+   "effectivity": "2025-11-05",
+   "url": "https://nwpc.dole.gov.ph/wp-content/uploads/2025/10/Wage-Order-No.-02-DW-07.pdf"
   },
   {
    "region": "Region III",
-   "monthly": 6500
+   "monthly": 6500,
+   "wage_order": "RBIII-DW-05",
+   "effectivity": "2025-10-30",
+   "url": "https://nwpc.dole.gov.ph/wp-content/uploads/2025/10/Wage-Order-No.-RBIII-DW-05.pdf"
   },
   {
    "region": "Region IV-A",
-   "monthly": 6750
+   "monthly": 6750,
+   "wage_order": "RB-IVA-DW-05",
+   "effectivity": "2025-03-07",
+   "url": "https://nwpc.dole.gov.ph/wp-content/uploads/2025/02/Wage-Order-No.-RB-IVA-DW-05.pdf"
   },
   {
    "region": "Region IV-B",
-   "monthly": 7000
+   "monthly": 7000,
+   "wage_order": "RB-MIMAROPA-DW-06",
+   "effectivity": "2026-01-01",
+   "url": "https://nwpc.dole.gov.ph/wp-content/uploads/2025/12/Wage-Order-No.-RB-MIMAROPA-DW-06.pdf"
   },
   {
    "region": "Region V",
-   "monthly": 6000
+   "monthly": 6000,
+   "wage_order": "RBV-DW-04",
+   "effectivity": "2025-04-05",
+   "url": "https://nwpc.dole.gov.ph/wp-content/uploads/2025/03/Wage-Order-No.-RBV-DW-04.pdf"
   },
   {
    "region": "Region VI",
-   "monthly": 6500
+   "monthly": 6500,
+   "wage_order": "RBVI-DW-07",
+   "effectivity": "2025-11-19",
+   "url": "https://nwpc.dole.gov.ph/wp-content/uploads/2025/11/Wage-Order-No.-RBVI-DW-07.pdf",
+   "coverage": "Includes Negros Occidental and Bacolod"
   },
   {
    "region": "Region VII",
    "monthly": 7000,
+   "wage_order": "ROVII-DW-05",
+   "effectivity": "2025-10-04",
+   "url": "https://nwpc.dole.gov.ph/wp-content/uploads/2025/09/Wage-Order-No.-ROVII-DW-05.pdf",
+   "coverage": "Includes Negros Oriental and Siquijor",
    "upcoming": {
     "monthly": 7500,
     "wage_order": "ROVII-DW-06",
-    "effectivity": "2026-10-14"
+    "effectivity": "2026-10-14",
+    "url": "https://nwpc.dole.gov.ph/wp-content/uploads/2026/09/Wage-Order-No.-ROVII-DW-06.pdf"
    }
   },
   {
    "region": "Region VIII",
    "monthly": 6400,
+   "wage_order": "RBVIII-DW-06",
+   "effectivity": "2025-12-08",
+   "url": "https://nwpc.dole.gov.ph/wp-content/uploads/2025/11/Wage-Order-No.-RBVIII-DW-06.pdf",
    "note": "₱5,800 outside chartered cities and first-class municipalities"
   },
   {
    "region": "Region IX",
    "monthly": 6000,
-   "note": "₱5,500 outside chartered cities and first-class municipalities"
+   "wage_order": "RIX-DW-06",
+   "effectivity": "2026-05-20",
+   "url": "https://nwpc.dole.gov.ph/wp-content/uploads/2026/05/Wage-Order-No.-RIX-DW-06.pdf",
+   "note": "₱5,500 outside chartered cities and first-class municipalities (Sulu Province is under this order: ₱6,000 in Indanan, Jolo, Parang, Patikul, Siasi and Talipao)"
   },
   {
    "region": "Region X",
-   "monthly": 6500
+   "monthly": 6500,
+   "wage_order": "RBX-DW-06",
+   "effectivity": "2026-01-16",
+   "url": "https://nwpc.dole.gov.ph/wp-content/uploads/2025/12/Wage-Order-No.-RBX-DW-06.pdf"
   },
   {
    "region": "Region XI",
-   "monthly": 6500
+   "monthly": 6500,
+   "wage_order": "RB XI-DW-04",
+   "effectivity": "2026-03-13",
+   "url": "https://nwpc.dole.gov.ph/wp-content/uploads/2026/02/Wage-Order-No.-RB-XI-DW-04.pdf"
   },
   {
    "region": "Region XII",
-   "monthly": 6000
+   "monthly": 6000,
+   "wage_order": "RB XII-DW-05",
+   "effectivity": "2025-11-02",
+   "url": "https://nwpc.dole.gov.ph/wp-content/uploads/2025/10/Wage-Order-No.-RB-XII-DW-05.pdf"
   },
   {
    "region": "Region XIII",
-   "monthly": 6500
+   "monthly": 6500,
+   "wage_order": "RXIII-DW-06",
+   "effectivity": "2026-01-03",
+   "url": "https://nwpc.dole.gov.ph/wp-content/uploads/2025/12/Wage-Order-No.-RXIII-DW-06.pdf"
   },
   {
    "region": "BARMM",
-   "monthly": 5500
+   "monthly": 5500,
+   "wage_order": "BARMM-DW-02",
+   "effectivity": "2026-01-08",
+   "url": "https://nwpc.dole.gov.ph/wp-content/uploads/2026/04/Wage-Order-No.-BARMM-DW-02.pdf"
   }
  ],
  "divisors": {

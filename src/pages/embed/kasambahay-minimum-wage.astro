@@ -1,0 +1,9 @@
+---
+import EmbedLayout from '../../layouts/EmbedLayout.astro';
+import KasambahayCalculator from '../../islands/KasambahayCalculator';
+import { TOOL_PAGES } from '../../lib/pages';
+---
+
+<EmbedLayout page={TOOL_PAGES.kasambahay!}>
+  <KasambahayCalculator client:load />
+</EmbedLayout>

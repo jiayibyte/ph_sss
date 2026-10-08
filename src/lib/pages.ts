@@ -118,6 +118,14 @@ export const TOOL_PAGES: Record<string, PageRef> = {
     priority: 'P0',
     ogKicker: 'Free · Independent · NWPC wage orders, Sept 2026',
   },
+  kasambahay: {
+    href: '/kasambahay-minimum-wage/',
+    label: 'Kasambahay Minimum Wage 2026',
+    short: 'Kasambahay',
+    blurb: 'Monthly minimum wage for domestic workers in all 17 regions, take-home pay, who pays SSS, PhilHealth and Pag-IBIG, and RA 10361 benefits.',
+    priority: 'P1',
+    ogKicker: 'Free · Independent · RA 10361 · NWPC wage orders',
+  },
   pagibigMp2: {
     href: '/pagibig-mp2-calculator/',
     label: 'Pag-IBIG MP2 Calculator',
@@ -422,6 +430,54 @@ export const TOOL_PAGES: Record<string, PageRef> = {
     priority: 'P2',
     ogKicker: 'Free · Independent · PRC Resolution No. 2113, s. 2025',
   },
+  agriculturistSchedule: {
+    href: '/agriculturist-board-exam-schedule/',
+    label: 'Agriculturist Board Exam Schedule 2026',
+    short: 'Agriculturist',
+    blurb: 'Agriculturists Licensure Examination 2026: December 1–3 dates, filing deadline, the new RA 12215 rules (75%/50%), six subjects and results date.',
+    priority: 'P2',
+    ogKicker: 'Free · Independent · PRC Resolution No. 2113, s. 2025',
+  },
+  customsBrokerSchedule: {
+    href: '/customs-broker-board-exam-schedule/',
+    label: 'Customs Broker Board Exam Schedule 2026',
+    short: 'Customs Broker',
+    blurb: 'Customs Brokers Licensure Examination 2026: November 17–18 dates, filing deadline, 75%/60% rule (RA 9280), four parts and the AHTN book rule.',
+    priority: 'P2',
+    ogKicker: 'Free · Independent · PRC Resolution No. 2113, s. 2025',
+  },
+  chemEngSchedule: {
+    href: '/chemical-engineering-board-exam-schedule/',
+    label: 'Chemical Engineering Board Exam Schedule 2026',
+    short: 'Chemical Eng. (ChE)',
+    blurb: 'Chemical Engineers Licensure Examination 2026: May and November computer-based dates, filing deadlines, 70%/50% rule and results dates.',
+    priority: 'P2',
+    ogKicker: 'Free · Independent · PRC Resolution No. 2113, s. 2025',
+  },
+  vetSchedule: {
+    href: '/veterinarian-board-exam-schedule/',
+    label: 'Veterinarian Board Exam Schedule 2026',
+    short: 'Veterinary Medicine',
+    blurb: 'Veterinary Medicine Licensure Examination 2026: November computer-based dates, nine subjects, 75%/60% rule and results date.',
+    priority: 'P2',
+    ogKicker: 'Free · Independent · PRC Resolution No. 2113, s. 2025',
+  },
+  ptSchedule: {
+    href: '/physical-therapy-board-exam-schedule/',
+    label: 'Physical Therapist Board Exam Schedule 2026',
+    short: 'Physical Therapy (PT)',
+    blurb: 'Physical Therapists Licensure Examination 2026: June and December dates, filing deadlines, 75% passing rule, internship requirement and results.',
+    priority: 'P2',
+    ogKicker: 'Free · Independent · PRC Resolution No. 2113, s. 2025',
+  },
+  nutritionistSchedule: {
+    href: '/nutritionist-dietitian-board-exam-schedule/',
+    label: 'Nutritionist-Dietitian Board Exam Schedule 2026',
+    short: 'Nutrition & Dietetics',
+    blurb: 'Nutritionist-Dietitian computer-based exam 2026: November dates, filing deadline, 75%/50% passing rule, subjects and results date.',
+    priority: 'P2',
+    ogKicker: 'Free · Independent · PRC Resolution No. 2113, s. 2025',
+  },
 };
 
 export const TRUST_PAGES: Array<{ href: string; label: string }> = [
@@ -451,14 +507,15 @@ export const CATEGORY_LABELS: Record<PageCategory, string> = {
 
 export const CATEGORY_KEYS: Record<PageCategory, Array<keyof typeof TOOL_PAGES>> = {
   contributions: ['sssTable', 'sssCalculator', 'philhealth', 'pagibig'],
-  pay: ['takeHome', 'incomeTax', 'freelancerTax', 'salaryGrade', 'minimumWage', 'dailyRate', 'thirteenth', 'overtime', 'holidayPay', 'nightDiff', 'silLeave', 'finalPay', 'separationPay', 'retirementPay'],
+  pay: ['takeHome', 'incomeTax', 'freelancerTax', 'salaryGrade', 'minimumWage', 'kasambahay', 'dailyRate', 'thirteenth', 'overtime', 'holidayPay', 'nightDiff', 'silLeave', 'finalPay', 'separationPay', 'retirementPay'],
   benefits: ['sssPension', 'sssMaternity', 'sssSickness', 'sssUnemployment', 'sssLoan', 'pagibigLoan', 'pagibigMp2', 'pagibigHousingLoan'],
   guides: ['firstTimeJobseeker', 'sssNumber', 'tinNumber', 'pagibigMid', 'philhealthPin', 'seniorDiscount', 'holidays', 'oec'],
   exams: [
     'prc', 'prcResults', 'nursingSchedule', 'letSchedule', 'criminologySchedule', 'cpaSchedule', 'civilEngSchedule',
     'physicianSchedule', 'medtechSchedule', 'pharmacySchedule', 'midwiferySchedule', 'psychometricianSchedule',
     'radtechSchedule', 'electricalSchedule', 'mechanicalSchedule', 'electronicsSchedule', 'architectureSchedule',
-    'dentistrySchedule', 'socialWorkSchedule',
+    'dentistrySchedule', 'socialWorkSchedule', 'chemEngSchedule', 'ptSchedule', 'vetSchedule', 'nutritionistSchedule',
+    'customsBrokerSchedule', 'agriculturistSchedule',
   ],
 };
 

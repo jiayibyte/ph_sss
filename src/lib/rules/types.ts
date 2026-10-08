@@ -88,9 +88,13 @@ export interface WageRules {
     monthly: number;
     wage_order?: string;
     effectivity?: string;
+    /** Signed domestic-worker wage order (NWPC). */
+    url?: string;
+    /** Provinces outside the region that this order also covers (e.g. Negros Occidental under Region VI). */
+    coverage?: string;
     note?: string;
     /** A new domestic-worker order already published; the page switches on its effectivity. */
-    upcoming?: { monthly: number; wage_order: string; effectivity: string };
+    upcoming?: { monthly: number; wage_order: string; effectivity: string; url?: string };
   }>;
   divisors: { source: string; source_label: string; options: WageDivisor[]; alternates_note: string; nwpc_practice: string };
   coverage: Record<string, string>;
@@ -312,6 +316,32 @@ export interface LaborRules {
     tax_exempt_cap: number;
   };
   final_pay: { release_days: number; coe_days: number };
+  /** RA 10361 (Batas Kasambahay) parameters for the kasambahay page and calculator. */
+  kasambahay: {
+    employer_pays_all_premiums_below: number;
+    premium_rule: string;
+    coverage_after_months: number;
+    sss_household_msc_floor: number;
+    thirteenth_month_after_months: number;
+    sil_days: number;
+    sil_after_years: number;
+    daily_rest_hours: number;
+    weekly_rest_hours: number;
+    notice_days: number;
+    unjust_dismissal_indemnity_days: number;
+    min_age: number;
+    fine_min: number;
+    fine_max: number;
+    max_deduction_pct: number;
+    law_url: string;
+    irr_url: string;
+    qa_url: string;
+    contract_url: string;
+    sss_table_url: string;
+    sss_household_url: string;
+    philhealth_circular_url: string;
+    source_note: string;
+  };
   separation_pay: {
     min_months: number;
     half_month_causes: string[];

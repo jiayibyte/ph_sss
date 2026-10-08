@@ -10,6 +10,7 @@
 import ToolPageLayout from '../layouts/ToolPageLayout.astro';
 import MinimumWageCalculator from '../islands/MinimumWageCalculator';
 import wagesJson from '../data/wages/2026.json';
+import taxJson from '../data/tax/2026.json';
 import type { WageRegion, WageRules } from '../lib/rules/types';
 import { describeRates, monthlyEquivalent, ncrInForce, ncrUpcomingInForce, rateRange, wagesAsOf } from '../lib/engine/wages';
 import { todayInManila } from '../lib/today.mjs';
@@ -164,6 +165,11 @@ const faqs = [
     })()}. Davao (Region XI, ${byId('r11').wage_order}): ${peso(byId('r11').tiers[0]!.rate)} non-agriculture and ${peso(byId('r11').tiers[1]!.rate)} agriculture since the September 1, 2026 tranche. CALABARZON (Region IV-A, ${byId('r4a').wage_order}): ${peso(byId('r4a').tiers[0]!.rate)} in the extended metropolitan area and component cities, ${peso(byId('r4a').tiers[1]!.rate)} in first-class municipalities, ${peso(byId('r4a').tiers[2]!.rate)} in second- to fifth-class municipalities, and ${peso(byId('r4a').tiers[5]!.rate)} for retail and service establishments with 10 or fewer workers.`,
   },
   { q: 'Which region has the lowest minimum wage?', a: lowestAnswer },
+  /* Bing, Oct 2026: "755 minimum wage does that include tax philippines" at position ~8. */
+  {
+    q: `Is the ₱${(live28 ? n28.non_agriculture : n26.non_agriculture).toLocaleString('en-PH')} minimum wage taxed?`,
+    a: `Not by income tax. ${taxJson.exclusions.minimum_wage_earner}. The daily rate is still a gross figure: the employee shares of SSS, PhilHealth and Pag-IBIG are deducted from it. The <a href="/take-home-pay-calculator/">take-home pay calculator</a> shows the net amount for any salary.`,
+  },
   {
     q: 'Who is exempt from the minimum wage?',
     a: `${rules.coverage.exempt_bmbe} ${rules.coverage.retail_service_le10} ${rules.coverage.kasambahay}`,
@@ -412,7 +418,8 @@ if (title.length > 65) throw new Error(`minimum wage title is ${title.length} ch
   <h2>Kasambahay Monthly Minimum Wage</h2>
   <p>
     Domestic workers are covered by RA 10361 and get a <strong>monthly</strong> minimum set by separate regional wage
-    orders (NWPC table, September 2026):
+    orders (NWPC table, September 2026). The <a href="/kasambahay-minimum-wage/">kasambahay page</a> adds take-home pay,
+    the SSS, PhilHealth and Pag-IBIG split and the RA 10361 benefits:
   </p>
   <div class="table-scroll">
     <table>

@@ -56,6 +56,10 @@ describe('PRC table search', () => {
     expect(hits('radtech')).toContain('Radiologic Technologists');
     expect(hits('accountancy')).toContain('Certified Public Accountants (CPALE)');
     expect(hits('PNLE')).toHaveLength(2);
+    expect(hits('customs')).toEqual(['Customs Brokers']);
+    expect(hits('ChE')).toContain('Chemical Engineers (2nd exam)');
+    expect(hits('vet')).toEqual(['Veterinarians']);
+    expect(hits('RND')).toEqual(['Nutritionist-Dietitians']);
   });
 
   it('ignores spacing, punctuation and case', () => {
@@ -66,7 +70,7 @@ describe('PRC table search', () => {
 
   it('still matches exams that have no profession group, by PRC name', () => {
     expect(hits('geodetic')).toEqual(['Geodetic Engineers']);
-    expect(hits('customs')).toEqual(['Customs Brokers']);
+    expect(hits('fisheries')).toEqual(['Fisheries Professionals']);
   });
 
   it('returns everything for a blank query and nothing for a miss', () => {

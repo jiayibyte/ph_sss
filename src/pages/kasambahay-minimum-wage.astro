@@ -1,0 +1,227 @@
+---
+/**
+ * Kasambahay (domestic worker) minimum wage and benefits. Monthly minimums and
+ * wage orders come from src/data/wages/<year>.json (each row checked against the
+ * signed NWPC domestic-worker order, 2026-10-08); the RA 10361 parameters from
+ * src/data/labor/<year>.json → kasambahay. Rows switch on a published order's
+ * effectivity date (todayInManila), like the minimum wage page; `today` is only
+ * compared, never printed.
+ */
+import ToolPageLayout from '../layouts/ToolPageLayout.astro';
+import KasambahayCalculator from '../islands/KasambahayCalculator';
+import wagesJson from '../data/wages/2026.json';
+import laborJson from '../data/labor/2026.json';
+import sssJson from '../data/sss/2026.json';
+import philhealthJson from '../data/philhealth/2026.json';
+import pagibigJson from '../data/pagibig/2026.json';
+import type { LaborRules, PagibigRules, PhilhealthRules, SssRules, WageRules } from '../lib/rules/types';
+import { kasambahayAsOf } from '../lib/engine/wages';
+import { kasambahayCosts } from '../lib/engine/kasambahay';
+import { todayInManila } from '../lib/today.mjs';
+import { peso } from '../lib/format';
+
+const wages = wagesJson as unknown as WageRules;
+const labor = laborJson as unknown as LaborRules;
+const law = labor.kasambahay;
+const today = todayInManila();
+const rows = kasambahayAsOf(wages, today);
+const rowOf = (region: string) => rows.find((r) => r.region === region)!;
+const ncr = rowOf('NCR');
+const r7 = rowOf('Region VII');
+const others = rows.filter((r) => r.region !== 'NCR');
+const otherHigh = Math.max(...others.map((r) => r.monthly));
+const otherHighRegions = others.filter((r) => r.monthly === otherHigh).map((r) => r.region);
+const low = Math.min(...rows.map((r) => r.monthly));
+const lowRegions = rows.filter((r) => r.monthly === low).map((r) => r.region);
+const upcoming = rows.filter((r) => r.upcoming);
+
+const rules = {
+  sss: sssJson as unknown as SssRules,
+  philhealth: philhealthJson as unknown as PhilhealthRules,
+  pagibig: pagibigJson as unknown as PagibigRules,
+  employerPaysAllBelow: law.employer_pays_all_premiums_below,
+  householdMscFloor: law.sss_household_msc_floor,
+};
+const costRows = [...new Set(rows.map((r) => r.monthly))]
+  .sort((a, b) => b - a)
+  .map((wage) => ({ wage, c: kasambahayCosts(wage, rules), regions: rows.filter((r) => r.monthly === wage).map((r) => r.region) }));
+const ncrCost = kasambahayCosts(ncr.monthly, rules);
+
+const fmt = (d: string | null | undefined): string =>
+  d ? new Date(d + 'T00:00:00').toLocaleDateString('en-PH', { month: 'long', day: 'numeric', year: 'numeric' }) : '—';
+const LAW = law.law_url;
+const IRR = law.irr_url;
+const lawLink = (sec: string) => `<a href="${LAW}" target="_blank" rel="noopener">RA 10361, ${sec}</a>`;
+
+const title = 'Kasambahay Minimum Wage 2026 by Region + SSS & Benefits';
+const description = `Kasambahay minimum wage 2026: ${peso(ncr.monthly)} a month in NCR, ${peso(low)}–${peso(otherHigh)} in other regions. Who pays SSS, PhilHealth, Pag-IBIG; 13th month and leave.`;
+if (title.length > 65) throw new Error(`kasambahay title is ${title.length} chars (max 65)`);
+if (description.length > 160) throw new Error(`kasambahay description is ${description.length} chars (max 160)`);
+
+const faqs = [
+  {
+    q: 'How much is the kasambahay minimum wage in 2026?',
+    a: `${peso(ncr.monthly)} a month in Metro Manila under Wage Order ${ncr.wage_order} (since ${fmt(ncr.effectivity)}). Outside NCR it runs from ${peso(low)} (${lowRegions.join(', ')}) to ${peso(otherHigh)} (${otherHighRegions.join(', ')}). Each regional wage board sets its own monthly rate, and domestic-worker orders allow no exemptions.`,
+  },
+  {
+    q: 'Who pays the SSS, PhilHealth and Pag-IBIG of a kasambahay?',
+    a: `Both share them once the kasambahay earns ${peso(law.employer_pays_all_premiums_below)} a month or more; below that the employer pays everything (${lawLink('Sec. 30')}). Every regional minimum is now above ${peso(law.employer_pays_all_premiums_below)}, so a kasambahay paid at least the minimum pays the employee share. Coverage starts after ${law.coverage_after_months} month of service, and the employer registers the kasambahay with all three agencies.`,
+  },
+  {
+    q: 'How much SSS do I pay for my kasambahay?',
+    a: `At the NCR minimum of ${peso(ncr.monthly)}, the SSS credit is ${peso(ncrCost.sssMsc)}: the employer pays ${peso(ncrCost.sss.employer)} (10% plus the ₱10 EC) and the kasambahay ${peso(ncrCost.sss.worker)} (5%). With PhilHealth (${peso(ncrCost.philhealth.employer)} each) and Pag-IBIG (${peso(ncrCost.pagibig.employer)} each), the employer adds ${peso(ncrCost.employerTotal)} a month and the kasambahay takes home ${peso(ncrCost.netPay)}.`,
+  },
+  {
+    q: 'Do kasambahay get 13th month pay?',
+    a: `Yes. After at least ${law.thirteenth_month_after_months} month of service a kasambahay is owed 13th month pay of at least 1/12 of the basic salary earned in the year, paid by December 24 or on separation (${lawLink('Sec. 25')}; IRR Rule IV Sec. 8). PD 851 itself leaves out household employers, but RA 10361 grants it anyway.`,
+  },
+  {
+    q: 'Do kasambahay get holiday pay or overtime pay?',
+    a: 'No. The Labor Code rules on hours of work, overtime, night shift differential, holiday pay and premium pay do not cover domestic helpers (Labor Code Art. 82; DOLE Handbook 2024). Kasambahay instead get an 8-hour daily rest, a 24-hour weekly rest day and 5 days of paid leave a year under RA 10361. Extra pay for extra hours applies only if the written contract provides it.',
+  },
+  {
+    q: 'Can I deduct food and lodging from my kasambahay’s salary?',
+    a: `No. Three adequate meals a day and humane sleeping arrangements are the employer’s duty (${lawLink('Sec. 6')}), wages may not be cut by deductions the law does not mandate unless the kasambahay consents in writing (Sec. 25), and the regional domestic-worker wage orders state that no deductions other than those mandated by law may be made. Requiring a deposit to cover loss or damage is unlawful (Sec. 14).`,
+  },
+  {
+    q: 'Is a family driver a kasambahay?',
+    a: `No. The IRR of RA 10361 (Rule I Sec. 2) excludes family drivers, service providers, children under foster family arrangement and people who work only occasionally. Source: <a href="${IRR}" target="_blank" rel="noopener">IRR of RA 10361</a>.`,
+  },
+  {
+    q: 'Magkano ang minimum na sahod ng kasambahay sa Metro Manila?',
+    a: `${peso(ncr.monthly)} kada buwan (Wage Order ${ncr.wage_order}, simula ${fmt(ncr.effectivity)}). Kasama pa rito ang 13th month pay, 5 araw na service incentive leave pagkatapos ng isang taon, at hati sa SSS, PhilHealth at Pag-IBIG — ang employer ang nagbabayad ng lahat kung kulang sa ${peso(law.employer_pays_all_premiums_below)} ang sahod.`,
+  },
+  {
+    q: 'What is the kasambahay minimum wage in Cebu (Central Visayas)?',
+    a: r7.upcoming
+      ? `${peso(r7.monthly)} a month under Wage Order ${r7.wage_order}, rising to ${peso(r7.upcoming.monthly)} on ${fmt(r7.upcoming.effectivity)} under ${r7.upcoming.wage_order}. The Region VII order also covers Negros Oriental and Siquijor.`
+      : `${peso(r7.monthly)} a month under Wage Order ${r7.wage_order}, in effect since ${fmt(r7.effectivity)}. The Region VII order also covers Negros Oriental and Siquijor.`,
+  },
+];
+---
+
+<ToolPageLayout
+  title={title}
+  description={description}
+  path="/kasambahay-minimum-wage/"
+  h1="Kasambahay Minimum Wage 2026 and Benefits"
+  faqs={faqs}
+  related={['minimumWage', 'thirteenth', 'sssTable', 'silLeave']}
+>
+  <Fragment slot="answer">
+    <p>
+      The <strong>kasambahay minimum wage</strong> is <strong>{peso(ncr.monthly)} a month in Metro Manila</strong>
+      (Wage Order {ncr.wage_order}, since {fmt(ncr.effectivity)}) and {peso(low)} to
+      {' '}{peso(otherHigh)} in the other regions. Under
+      RA 10361 (Batas Kasambahay) a domestic worker also gets 13th month pay, {law.sil_days} days of paid leave after a year,
+      an {law.daily_rest_hours}-hour daily rest and a {law.weekly_rest_hours}-hour weekly rest day, and SSS, PhilHealth and
+      Pag-IBIG coverage — with the premiums shared once the wage reaches {peso(law.employer_pays_all_premiums_below)}.
+      Pick a region below to see the take-home pay and what the household pays each month.
+    </p>
+  </Fragment>
+
+  <Fragment slot="calculator">
+    <KasambahayCalculator client:idle />
+  </Fragment>
+
+  <h2>Kasambahay Minimum Wage by Region (2026)</h2>
+  <p>
+    Each Regional Tripartite Wages and Productivity Board sets a <strong>monthly</strong> minimum for domestic workers,
+    separate from the daily minimum wage for other workers. Every rate below was checked against the signed wage order on
+    the NWPC site.
+  </p>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Region</th><th>Monthly minimum</th><th>Wage order</th><th>In effect since</th></tr></thead>
+      <tbody>
+        {rows.map((r) => (
+          <tr>
+            <td>{r.region}{r.coverage ? <span class="text-ink-soft"> — {r.coverage}</span> : null}</td>
+            <td>
+              <strong>{peso(r.monthly)}</strong>{r.note ? <span class="text-ink-soft"> — {r.note}</span> : null}
+              {r.upcoming ? <span class="text-ink-soft"> — {peso(r.upcoming.monthly)} from {fmt(r.upcoming.effectivity)}</span> : null}
+            </td>
+            <td>{r.url ? <a href={r.url} target="_blank" rel="noopener">{r.wage_order}</a> : r.wage_order}</td>
+            <td>{fmt(r.effectivity)}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  <p>
+    The Negros Island Region has no domestic-worker wage order yet: Negros Occidental (including Bacolod) stays under the
+    Region VI order and Negros Oriental and Siquijor under Region VII. Sulu is covered by the Region IX order.
+    {upcoming.length > 0 && <> Already published: {upcoming.map((r, i) => <>{i > 0 && ', '}{r.region} {peso(r.upcoming!.monthly)} on {fmt(r.upcoming!.effectivity)} ({r.upcoming!.wage_order})</>)}.</>}
+    {' '}A board may issue at most one order every 12 months, and domestic-worker orders allow no exemptions.
+  </p>
+
+  <h2>What the Household Pays Each Month</h2>
+  <p>
+    Premiums for a kasambahay paid at each regional minimum, using the SSS household-employer schedule (Circular
+    2024-007), PhilHealth’s 5% on the ₱10,000 income floor split 50/50, and Pag-IBIG 2% each. The employer’s SSS share
+    includes the ₱10 Employees’ Compensation premium.
+  </p>
+  <div class="table-scroll">
+    <table>
+      <thead><tr><th>Monthly wage</th><th>Kasambahay pays</th><th>Take-home</th><th>Employer pays</th><th>Household’s monthly cost</th></tr></thead>
+      <tbody>
+        {costRows.map(({ wage, c, regions }) => (
+          <tr>
+            <td><strong>{peso(wage)}</strong> <span class="text-ink-soft">({regions.join(', ')})</span></td>
+            <td>{peso(c.workerTotal)}</td>
+            <td>{peso(c.netPay)}</td>
+            <td>{peso(c.employerTotal)}</td>
+            <td><strong>{peso(c.employerCost)}</strong></td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+  <p>
+    <strong>The ₱{law.employer_pays_all_premiums_below.toLocaleString('en-PH')} rule:</strong> {law.premium_rule} Register
+    the kasambahay within 30 days of hiring through the Kasambahay Unified Registration System — one form at SSS,
+    PhilHealth or Pag-IBIG produces all three numbers (<a href={law.sss_household_url} target="_blank" rel="noopener">SSS
+    Household Employers</a>). Late or unremitted SSS contributions carry a 2% monthly penalty.
+  </p>
+
+  <h2>Kasambahay Benefits Under RA 10361</h2>
+  <ul>
+    <li><strong>13th month pay</strong> after {law.thirteenth_month_after_months} month of service: at least 1/12 of the year’s basic salary, by December 24 or on separation (Sec. 25; IRR Rule IV Sec. 8). See the <a href="/13th-month-pay-calculator/">13th month pay calculator</a>.</li>
+    <li><strong>Service incentive leave:</strong> {law.sil_days} days with pay after {law.sil_after_years} year of service. Unused leave is not carried over and <strong>cannot be converted to cash</strong> (Sec. 29) — unlike the Labor Code SIL of other workers.</li>
+    <li><strong>Rest:</strong> an aggregate daily rest of {law.daily_rest_hours} hours (Sec. 20) and at least {law.weekly_rest_hours} consecutive hours of rest a week, scheduled by written agreement (Sec. 21). The law sets no 8-hour workday for adult kasambahay.</li>
+    <li><strong>Board and lodging:</strong> at least three adequate meals a day and humane sleeping arrangements, which the employer may not withhold as punishment (Sec. 6).</li>
+    <li><strong>Pay:</strong> in cash at least once a month, with a pay slip every payday that the employer keeps for three years (Secs. 25–26). No vouchers, tokens or promissory notes.</li>
+    <li><strong>Social protection:</strong> SSS, PhilHealth and Pag-IBIG after {law.coverage_after_months} month of service (Sec. 30), plus Employees’ Compensation.</li>
+    <li><strong>Deductions:</strong> no deposits for loss or damage (Sec. 14); loan repayments and proven loss or damage may be deducted only with written consent and up to {law.max_deduction_pct}% of the monthly wage (IRR Rule IV Sec. 11, Rule V Sec. 6).</li>
+  </ul>
+
+  <h2>Holiday Pay, Overtime and Night Differential</h2>
+  <p>
+    These Labor Code benefits do <strong>not</strong> apply to kasambahay: Article 82 excludes domestic helpers from the
+    rules on hours of work, overtime, night shift differential, weekly rest, holiday pay and service incentive leave, and the
+    DOLE Handbook on Workers’ Statutory Monetary Benefits (2024) lists kasambahay among those not covered. A household may
+    agree to pay extra for extra hours or holiday work — RA 10361 Sec. 11 requires the contract to state the hours of work
+    and any proportionate additional payment.
+  </p>
+
+  <h2>Contract, Registration and Termination</h2>
+  <ul>
+    <li><strong>Written contract</strong> before work starts, in a language both understand, covering duties, pay, hours, rest days, board and lodging and termination (Sec. 11). DOLE’s standard form is BK-1; NWPC hosts a <a href={law.contract_url} target="_blank" rel="noopener">sample contract</a>.</li>
+    <li><strong>Barangay registration:</strong> the employer registers every kasambahay in the Registry of Domestic Workers of the barangay where the household lives (Sec. 17).</li>
+    <li><strong>Minimum age:</strong> {law.min_age}. Working children aged 15–17 get the full minimum wage and benefits but may not work more than 8 hours a day or 40 hours a week, or between 10 p.m. and 6 a.m. (Sec. 16; IRR Rule VI).</li>
+    <li><strong>Ending the job:</strong> with no fixed term, either side may give {law.notice_days} days’ notice (Sec. 32). A kasambahay dismissed without just cause gets the pay already earned plus {law.unjust_dismissal_indemnity_days} days’ pay; one who leaves without just cause forfeits up to {law.unjust_dismissal_indemnity_days} days of unpaid wages. Pregnancy and marriage are not valid grounds for dismissal (IRR Rule VII Sec. 4).</li>
+    <li><strong>Penalties:</strong> fines of {peso(law.fine_min)} to {peso(law.fine_max)} for unlawful acts such as withholding wages or hiring a child under 15 (Sec. 40). Disputes go to the DOLE Regional Office for conciliation first (Sec. 37).</li>
+  </ul>
+
+  <h2>Official Sources</h2>
+  <p>
+    <a href={LAW} target="_blank" rel="noopener">RA 10361 (Domestic Workers Act)</a> and its
+    <a href={IRR} target="_blank" rel="noopener">implementing rules</a>; the NWPC domestic-worker wage orders linked in
+    the table and NWPC’s <a href="https://nwpc.dole.gov.ph/wp-content/uploads/2026/10/Current-Monthly-MW-for-DW-as-of-Oct_6_2026.pdf" target="_blank" rel="noopener">monthly minimum wage table for domestic workers</a>
+    (as of October 6, 2026); <a href={law.sss_table_url} target="_blank" rel="noopener">SSS Circular 2024-007</a> (household
+    employers and kasambahay); <a href={law.philhealth_circular_url} target="_blank" rel="noopener">PhilHealth Circular
+    2020-0005</a>; Pag-IBIG Fund Circular No. 460; Labor Code Art. 82 and the DOLE Handbook 2024. Last verified
+    {' '}{fmt(labor.meta.last_verified)}. For the daily minimum wage of other workers see
+    {' '}<a href="/minimum-wage-philippines/">Minimum Wage Philippines 2026</a>.
+  </p>
+</ToolPageLayout>

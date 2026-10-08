@@ -36,6 +36,23 @@ export function wagesAsOf(rules: WageRules, today: string): WageRules {
   return { ...rules, regions };
 }
 
+export type KasambahayRow = WageRules['kasambahay_monthly'][number];
+
+/**
+ * Kasambahay monthly minimums as of a Philippine calendar day: a published
+ * domestic-worker order replaces the row (rate, order, date, PDF) on its
+ * effectivity date — ROVII-DW-06 on October 14, 2026.
+ */
+export function kasambahayAsOf(rules: WageRules, today: string): KasambahayRow[] {
+  return rules.kasambahay_monthly.map((k): KasambahayRow => {
+    const up = k.upcoming;
+    if (!up || today < up.effectivity) return k;
+    const next: KasambahayRow = { ...k, monthly: up.monthly, wage_order: up.wage_order, effectivity: up.effectivity, url: up.url ?? k.url };
+    delete next.upcoming;
+    return next;
+  });
+}
+
 /** Date the region's current rates started: the latest tranche already in effect, else the order's effectivity. */
 export function currentRateSince(region: WageRegion, today: string): string | null {
   const t = region.second_tranche_effectivity;

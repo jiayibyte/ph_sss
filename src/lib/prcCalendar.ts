@@ -26,6 +26,35 @@ export function nextDay(iso: string): string {
   return d.toISOString().slice(0, 10);
 }
 
+const MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+
+/**
+ * Last exam day of a row, read from `dates_display` ("Oct 3–4 & 10–11, 2026" →
+ * 2026-10-11, "Nov 28 – Dec 5, 2026" → 2026-12-05). `first_date` alone flips a
+ * multi-weekend exam to "held" after its first day — the October 2026 PLE read
+ * "all rounds are done" on October 4 with the second weekend still ahead.
+ * Throws on a display string it cannot read, so a new wording fails the build.
+ */
+export function lastExamDate(exam: Pick<PrcExamEntry, 'exam' | 'dates_display' | 'first_date'>): string {
+  const head = exam.dates_display.split(/,\s*(?=\d{4})/)[0] ?? '';
+  const yearMatch = exam.dates_display.match(/\b(\d{4})\b/);
+  let month = -1;
+  let day = -1;
+  for (const tok of head.match(/[A-Za-z]+|\d+/g) ?? []) {
+    const m = MONTHS.indexOf(tok.slice(0, 3).toLowerCase());
+    if (m >= 0) month = m;
+    else if (/^\d+$/.test(tok)) day = Number(tok);
+  }
+  if (!yearMatch || month < 0 || day < 1 || day > 31) {
+    throw new Error(`Cannot read the last exam day of "${exam.exam}" from dates_display "${exam.dates_display}".`);
+  }
+  let iso = `${yearMatch[1]}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+  /* "Dec 28 – Jan 3, 2027": the year printed belongs to the last day already;
+     a last day before the first means the first day was in the year before. */
+  if (iso < exam.first_date) iso = `${Number(yearMatch[1]) + 1}${iso.slice(4)}`;
+  return iso;
+}
+
 /** RFC 5545 text escaping. */
 export const esc = (s: string): string =>
   s.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n');
@@ -112,8 +141,8 @@ function addDays(iso: string, days: number): string {
 }
 
 /**
- * schema.org EducationEvent objects for the exams in `exams` that start on or
- * after `today` and within EVENT_HORIZON_DAYS. Past rows produce nothing.
+ * schema.org EducationEvent objects for the exams in `exams` that have not
+ * finished by `today` and start within EVENT_HORIZON_DAYS. Past rows produce nothing.
  */
 export function educationEvents(
   rules: PrcRules,
@@ -123,13 +152,14 @@ export function educationEvents(
 ): Record<string, unknown>[] {
   const horizon = addDays(today, EVENT_HORIZON_DAYS);
   return exams
-    .filter((e) => e.first_date >= today && e.first_date <= horizon)
+    .filter((e) => lastExamDate(e) >= today && e.first_date <= horizon)
     .map((e) => ({
       '@context': 'https://schema.org',
       '@type': 'EducationEvent',
       name: `${e.exam} Licensure Examination ${rules.year}`,
       description: `PRC ${e.exam} board exam, ${e.dates_display}. Filing through LERIS: ${e.application_start ?? 'to be announced'} to ${e.application_deadline ?? 'to be announced'}. Results target: ${e.results_target ?? 'to be announced'}. Per ${rules.meta.rule_version}.`,
       startDate: e.first_date,
+      endDate: lastExamDate(e),
       eventStatus: /reschedul/i.test(e.note ?? '')
         ? 'https://schema.org/EventRescheduled'
         : 'https://schema.org/EventScheduled',

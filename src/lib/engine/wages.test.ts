@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import wagesJson from '../../data/wages/2026.json';
 import type { WageRules } from '../rules/types';
-import { currentRateSince, dailyEquivalent, hourlyFromDaily, monthlyEquivalent, ncrInForce, ncrUpcomingInForce, rateRange, shortfall, wagesAsOf } from './wages';
+import { currentRateSince, dailyEquivalent, hourlyFromDaily, kasambahayAsOf, monthlyEquivalent, ncrInForce, ncrUpcomingInForce, rateRange, shortfall, wagesAsOf } from './wages';
 
 const wages = wagesJson as unknown as WageRules;
 
@@ -161,5 +161,27 @@ describe('Region VII: ROVII-27 switches on October 14, 2026', () => {
     expect(after.upcoming).toBeUndefined();
     // the order grants the same ₱42 to both classes
     expect(after.tiers.map((t, i) => t.rate - r7('2026-10-13').tiers[i]!.rate)).toEqual([42, 42]);
+  });
+});
+
+describe('kasambahay rows by date', () => {
+  it('every region has its domestic-worker order and PDF on file', () => {
+    expect(wages.kasambahay_monthly).toHaveLength(17);
+    for (const k of wages.kasambahay_monthly) {
+      expect(k.wage_order, k.region).toMatch(/DW/);
+      expect(k.effectivity, k.region).toMatch(/^\d{4}-\d{2}-\d{2}$/);
+      expect(k.url, k.region).toMatch(/^https:\/\/nwpc\.dole\.gov\.ph\//);
+    }
+  });
+
+  it('Region VII switches to ROVII-DW-06 (₱7,500) on October 14, 2026', () => {
+    const before = kasambahayAsOf(wages, '2026-10-13').find((k) => k.region === 'Region VII')!;
+    const after = kasambahayAsOf(wages, '2026-10-14').find((k) => k.region === 'Region VII')!;
+    expect([before.monthly, before.wage_order]).toEqual([7000, 'ROVII-DW-05']);
+    expect(before.upcoming?.effectivity).toBe('2026-10-14');
+    expect([after.monthly, after.wage_order, after.effectivity]).toEqual([7500, 'ROVII-DW-06', '2026-10-14']);
+    expect(after.upcoming).toBeUndefined();
+    expect(after.coverage).toMatch(/Negros Oriental/);
+    expect(after.url).toMatch(/ROVII-DW-06/);
   });
 });

@@ -113,13 +113,13 @@ const agencies = [
     name: 'NWPC — National Wages and Productivity Commission / Regional Tripartite Wages and Productivity Boards',
     links: [
       { label: 'Summary of Current Regional Daily Minimum Wage Rates (September 2, 2026)', url: 'https://nwpc.dole.gov.ph/wp-content/uploads/2026/09/Summary-of-Current-Regl-MWRs-Non-Agri-and-Agri-by-Region-Sep_2026-1.pdf' },
-      { label: 'Latest Wage Orders Issued by the Regional Boards (matrix, September 11, 2026)', url: 'https://nwpc.dole.gov.ph/wp-content/uploads/2026/09/Latest-Wage-Order-Matrix-11-September-2026.pdf' },
+      { label: 'Latest Wage Orders Issued by the Regional Boards (matrix, as of September 28, 2026)', url: 'https://nwpc.dole.gov.ph/wp-content/uploads/2026/09/Latest-Wage-Orders-Matrix-2026-2027-As-of-28-September-2026_updated.pdf' },
       { label: 'Wage Order No. NCR-28 (September 7, 2026)', url: 'https://nwpc.dole.gov.ph/wp-content/uploads/2026/09/Wage-Order-No.-NCR-28.pdf' },
       { label: 'Wage Order No. NCR-26 (June 24, 2025)', url: 'https://nwpc.dole.gov.ph/wp-content/uploads/2025/06/01.-Wage-Order-No.-NCR-26.pdf' },
-      { label: 'Monthly minimum wage for kasambahay by region (September 2026)', url: 'https://nwpc.dole.gov.ph/wp-content/uploads/2026/09/Current-Monthly-MW-for-DW-as-of-September_2026.pdf' },
+      { label: 'Monthly minimum wage for kasambahay by region (as of October 6, 2026)', url: 'https://nwpc.dole.gov.ph/wp-content/uploads/2026/10/Current-Monthly-MW-for-DW-as-of-Oct_6_2026.pdf' },
       { label: 'DOLE Handbook on Workers’ Statutory Monetary Benefits, 2024 edition (NWPC mirror; monthly-equivalent factors)', url: 'https://nwpc.dole.gov.ph/wp-content/uploads/2024/11/Workers-Statutory-Monetary-Benefits-Handbook-2024-Edition.pdf' },
     ],
-    usedBy: [t.minimumWage, t.dailyRate, t.retirementPay],
+    usedBy: [t.minimumWage, t.kasambahay, t.dailyRate, t.retirementPay],
   },
   {
     name: 'Malacañang / Presidential Communications Office',
@@ -140,12 +140,23 @@ const agencies = [
     usedBy: [t.oec],
   },
   {
+    name: 'Kasambahay (domestic workers): RA 10361 and the agencies’ household-employer rules',
+    links: [
+      { label: 'RA 10361 — Domestic Workers Act (Batas Kasambahay), 2013', url: 'https://lawphil.net/statutes/repacts/ra2013/ra_10361_2013.html' },
+      { label: 'Implementing Rules and Regulations of RA 10361 (NWPC copy)', url: 'https://nwpc.dole.gov.ph/wp-content/uploads/2023/04/IRR-of-RA-10361-Batas-Kasambahay.pdf' },
+      { label: 'SSS Circular No. 2024-007 — contribution schedule for household employers and kasambahay (January 2025)', url: 'https://www.sss.gov.ph/wp-content/uploads/2024/12/Cir-2024-007-HR-Kasambahay-scaled.jpg' },
+      { label: 'PhilHealth Circular No. 2020-0005 — premium contribution schedule (kasambahay ₱5,000 rule)', url: 'https://www.philhealth.gov.ph/circulars/2020/circ2020-0005.pdf' },
+      { label: 'Labor Code Art. 82 (PD 442) — domestic helpers excluded from Book III, Title I', url: 'https://lawphil.net/statutes/presdecs/pd1974/pd_442_1974.html' },
+    ],
+    usedBy: [t.kasambahay],
+  },
+  {
     name: 'PRC — Professional Regulation Commission',
     links: [
       { label: 'Schedule of Licensure Examinations for 2026 (Resolution No. 2113, s. 2025)', url: 'https://www.prc.gov.ph/article/schedule-licensure-examinations-year-2026' },
       { label: 'PRC main site / LERIS', url: 'https://www.prc.gov.ph/' },
     ],
-    usedBy: [t.prc, t.prcResults, t.nursingSchedule, t.letSchedule, t.criminologySchedule, t.cpaSchedule, t.civilEngSchedule, t.physicianSchedule, t.pharmacySchedule, t.midwiferySchedule, t.psychometricianSchedule, t.radtechSchedule, t.medtechSchedule, t.electricalSchedule, t.mechanicalSchedule, t.architectureSchedule, t.electronicsSchedule, t.dentistrySchedule, t.socialWorkSchedule],
+    usedBy: [t.prc, t.prcResults, t.nursingSchedule, t.letSchedule, t.criminologySchedule, t.cpaSchedule, t.civilEngSchedule, t.physicianSchedule, t.pharmacySchedule, t.midwiferySchedule, t.psychometricianSchedule, t.radtechSchedule, t.medtechSchedule, t.electricalSchedule, t.mechanicalSchedule, t.architectureSchedule, t.electronicsSchedule, t.dentistrySchedule, t.socialWorkSchedule, t.chemEngSchedule, t.ptSchedule, t.vetSchedule, t.nutritionistSchedule, t.customsBrokerSchedule, t.agriculturistSchedule],
   },
   {
     name: 'Republic Acts cited on the board exam pages (via the Arellano Law Foundation’s LawPhil archive)',
@@ -167,9 +178,15 @@ const agencies = [
       { label: 'RA 9292 — Electronics Engineering Law of 2004', url: 'https://lawphil.net/statutes/repacts/ra2004/ra_9292_2004.html' },
       { label: 'RA 9484 — Philippine Dental Act of 2007 (with Board of Dentistry Res. 02 and 05, s. 2021)', url: 'https://lawphil.net/statutes/repacts/ra2007/ra_9484_2007.html' },
       { label: 'RA 4373 — Social Work Law of 1965, as amended by RA 5175 and RA 10847', url: 'https://lawphil.net/statutes/repacts/ra1965/ra_4373_1965.html' },
+      { label: 'RA 9297 — Chemical Engineering Law of 2004', url: 'https://lawphil.net/statutes/repacts/ra2004/ra_9297_2004.html' },
+      { label: 'RA 5680 — Philippine Physical and Occupational Therapy Law of 1969 (as modified by RA 11241)', url: 'https://lawphil.net/statutes/repacts/ra1969/ra_5680_1969.html' },
+      { label: 'RA 9268 — Philippine Veterinary Medicine Act of 2004', url: 'https://lawphil.net/statutes/repacts/ra2004/ra_9268_2004.html' },
+      { label: 'RA 10862 — Nutrition and Dietetics Law of 2016', url: 'https://lawphil.net/statutes/repacts/ra2016/ra_10862_2016.html' },
+      { label: 'RA 9280 — Customs Brokers Act of 2004 (as amended by RA 9853)', url: 'https://lawphil.net/statutes/repacts/ra2004/ra_9280_2004.html' },
+      { label: 'RA 12215 — Philippine Agriculturists Act (2025)', url: 'https://lawphil.net/statutes/repacts/ra2025/ra_12215_2025.html' },
       { label: 'RA 8981 — PRC Modernization Act of 2000 (Boards set passing averages where a law is silent)', url: 'https://lawphil.net/statutes/repacts/ra2000/ra_8981_2000.html' },
     ],
-    usedBy: [t.nursingSchedule, t.letSchedule, t.criminologySchedule, t.cpaSchedule, t.civilEngSchedule, t.physicianSchedule, t.pharmacySchedule, t.midwiferySchedule, t.psychometricianSchedule, t.radtechSchedule, t.medtechSchedule, t.electricalSchedule, t.mechanicalSchedule, t.architectureSchedule, t.electronicsSchedule, t.dentistrySchedule, t.socialWorkSchedule],
+    usedBy: [t.nursingSchedule, t.letSchedule, t.criminologySchedule, t.cpaSchedule, t.civilEngSchedule, t.physicianSchedule, t.pharmacySchedule, t.midwiferySchedule, t.psychometricianSchedule, t.radtechSchedule, t.medtechSchedule, t.electricalSchedule, t.mechanicalSchedule, t.architectureSchedule, t.electronicsSchedule, t.dentistrySchedule, t.socialWorkSchedule, t.chemEngSchedule, t.ptSchedule, t.vetSchedule, t.nutritionistSchedule, t.customsBrokerSchedule, t.agriculturistSchedule],
   },
 ];
 ---

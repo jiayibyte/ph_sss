@@ -11,7 +11,7 @@ import PrcSubscribe from '../components/PrcSubscribe.astro';
 import prcRules from '../data/prc/2026.json';
 import { PRC_PROFESSIONS, resolveGroup, scheduleSentence } from '../lib/prcProfessions';
 import { PROFESSION_PAGES, type ProfessionPage } from '../lib/prcProfessionPages';
-import { educationEvents, icsPath } from '../lib/prcCalendar';
+import { educationEvents, icsPath, lastExamDate } from '../lib/prcCalendar';
 import type { PrcExamEntry, PrcRules } from '../lib/rules/types';
 import { SITE } from '../../site.config';
 import { TOOL_PAGES } from '../lib/pages';
@@ -51,8 +51,11 @@ const fmt = (d: string | null | undefined): string =>
    commit every night at 00:05 Manila time (infra/server/), so "next round" and
    "filing is open" are at most a day old, never a hand-typed date. */
 const today = todayInManila();
-const upcoming = rounds.filter((r) => r.first_date >= today);
+/* A round stays "next" until its LAST exam day (lastExamDate) — the October 2026
+   PLE runs Oct 3–4 & 10–11, and first_date alone called it done on October 4. */
+const upcoming = rounds.filter((r) => lastExamDate(r) >= today);
 const next = upcoming[0];
+const inProgress = next ? next.first_date < today : false;
 const released = rounds.filter((r) => r.results_released);
 const filingOpen = next?.application_deadline ? next.application_deadline >= today : false;
 
@@ -78,6 +81,27 @@ const latestResults = !latest
       ? `${rounds.length === 1 ? 'Results' : `Results of the ${latest.dates_display} exam`}: PRC's target release date is ${fmt(latest.results_target)}.`
       : `PRC has not announced the results date for the ${latest.dates_display} exam.`;
 const fillYears = (t: string): string => t.replaceAll('{year}', String(year)).replaceAll('{next}', String(nextYear));
+const monthOf = (d: string): string => new Date(d + 'T00:00:00').toLocaleDateString('en-PH', { month: 'long' });
+
+/* Between the first exam day and PRC's release, searchers ask for the results date
+   ("when is the ple 2026 results", "ple october 2026 results": Bing, Oct 2026, clicks
+   at position 1). While a round is under way, or its results are still ahead of the
+   target, the title and description lead with the results target. */
+const resultsRound = inProgress
+  ? next
+  : !next && latest && !latest.results_released && latest.results_target && latest.results_target >= today
+    ? latest
+    : undefined;
+const resultsTitle = (() => {
+  if (!resultsRound?.results_target) return null;
+  const head = `${page.headingName} ${monthOf(resultsRound.first_date)} ${year} Results`;
+  const target = fmtShort(resultsRound.results_target).replace(/, \d{4}$/, '');
+  return (
+    [`${head}: ${target} Target & ${nextYear} Dates`, `${head} Date: ${target} (Target)`, `${head} Date`].find(
+      (t) => t.length <= 65,
+    ) ?? null
+  );
+})();
 
 /* A round starting within MONTH_TITLE_DAYS gets a month-specific title — searchers name
    the month ("cpale 2026 october schedule", "physicians licensure exam for october 2026",
@@ -97,15 +121,17 @@ const soonTitle = (() => {
   ];
   return variants.find((t): t is string => t !== null && t.length <= 65) ?? null;
 })();
-const title = allHeld
-  ? fillYears(page.titleNextYear ?? `${page.headingName} {next} Schedule & {year} Results`)
-  : (soonTitle ?? page.title);
+const title =
+  resultsTitle ??
+  (allHeld ? fillYears(page.titleNextYear ?? `${page.headingName} {next} Schedule & {year} Results`) : (soonTitle ?? page.title));
+/* The H1 follows the title's year once every round is held (title said 2027, H1 still 2026). */
+const h1 = allHeld ? `${page.headingName} ${nextYear} Schedule & ${year} Results` : page.h1;
 if (title.length > 65) {
   throw new Error(`${pagePath}: title "${title}" is ${title.length} chars (max 65) — set page.titleNextYear in prcProfessionPages.ts.`);
 }
 
 const nextRoundSentence = next
-  ? `The next ${page.shortName} is on ${next.dates_display}. ${
+  ? `${inProgress ? `The ${page.shortName} is under way: ${next.dates_display}.` : `The next ${page.shortName} is on ${next.dates_display}.`} ${
       next.application_deadline
         ? filingOpen
           ? `Filing through LERIS is open until ${fmt(next.application_deadline)}.`
@@ -157,7 +183,7 @@ const heldDescription = (() => {
     ? ''
     : latest.results_released && latestPct
       ? `; latest results: ${latestPct}% passed`
-      : !latest.results_released && latest.results_target
+      : !latest.results_released && latest.results_target && latest.results_target >= today
         ? `; results due ${fmtShort(latest.results_target)}`
         : '';
   const tail = ' Subscribe to get them in your calendar.';
@@ -182,11 +208,26 @@ const nextDescription = (() => {
     head,
   ].find((d) => d.length <= 158) ?? null;
 })();
-const description = allHeld
+/* Results-phase description: the target date first, then next year's status. */
+const resultsDescription = (() => {
+  if (!resultsRound?.results_target) return null;
+  const lead = inProgress
+    ? `The ${monthOf(resultsRound.first_date)} ${year} ${page.shortName} is under way (${resultsRound.dates_display}).`
+    : `${cap(page.shortName)} ${monthOf(resultsRound.first_date)} ${year} results:`;
+  const target = `PRC's results target is ${fmtShort(resultsRound.results_target)}.`;
+  return (
+    [
+      `${lead} ${target} ${nextYear} dates: not out yet — PRC posts them in mid-November.`,
+      `${lead} ${target} Passing score, past results and a calendar you can subscribe to.`,
+      `${lead} ${target}`,
+    ].find((d) => d.length <= 158) ?? null
+  );
+})();
+const description = resultsDescription ?? (allHeld
   ? heldDescription
   : (nextDescription ??
     page.description ??
-    `${cap(page.shortName)} ${year}: ${rounds.map((r) => r.dates_display).join(' and ')}. Filing deadlines, passing score, requirements and PRC's results dates.`);
+    `${cap(page.shortName)} ${year}: ${rounds.map((r) => r.dates_display).join(' and ')}. Filing deadlines, passing score, requirements and PRC's results dates.`));
 if (description.length > 158) {
   throw new Error(`${pagePath}: meta description is ${description.length} chars (max 158) — set page.description in prcProfessionPages.ts.`);
 }
@@ -241,7 +282,7 @@ const faqs = [
   title={title}
   description={description}
   path={pagePath}
-  h1={page.h1}
+  h1={h1}
   faqs={faqs}
   related={related}
   isApp={false}
@@ -267,7 +308,7 @@ const faqs = [
       <p>
         The <strong>{page.examName}</strong> is given {times} in {year} per
         <strong>{meta.rule_version.split(' — ')[0]}</strong>: <Fragment set:html={roundsHtml} />.{' '}
-        <strong>Next round: {next.dates_display}</strong>
+        <strong>{inProgress ? 'Under way now' : 'Next round'}: {next.dates_display}</strong>
         {next.application_deadline
           ? filingOpen
             ? ` — filing is open until ${fmt(next.application_deadline)}.`
@@ -297,7 +338,7 @@ const faqs = [
             <td>
               <strong>{r.dates_display}</strong>
               {r.note && <span class="text-ink-soft"> ({r.note})</span>}
-              {r.first_date >= today && (
+              {lastExamDate(r) >= today && (
                 <div class="text-xs">
                   <a href={icsPath(year, r)}>Add to calendar</a>
                 </div>

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import prcJson from '../data/prc/2026.json';
 import type { PrcExamEntry, PrcRules } from './rules/types';
-import { EVENT_HORIZON_DAYS, educationEvents, examIcs, icsPath, nextDay } from './prcCalendar';
+import { EVENT_HORIZON_DAYS, educationEvents, examIcs, icsPath, lastExamDate, nextDay } from './prcCalendar';
 import { examSlug } from './prcProfessions';
 
 const prc = prcJson as unknown as PrcRules;
@@ -51,27 +51,59 @@ describe('examIcs', () => {
 });
 
 describe('educationEvents', () => {
-  it('emits only exams from today up to the horizon, with schema.org fields', () => {
+  it('emits only exams not yet finished, up to the horizon, with schema.org fields', () => {
     const today = '2026-09-22';
     const events = educationEvents(prc, exams, PAGE, today);
     expect(events.length).toBeGreaterThan(0);
     for (const ev of events) {
       expect(ev['@type']).toBe('EducationEvent');
-      const start = ev.startDate as string;
-      expect(start >= today).toBe(true);
+      expect((ev.endDate as string) >= today).toBe(true);
+      expect((ev.startDate as string) <= (ev.endDate as string)).toBe(true);
       expect(ev.location).toMatchObject({ '@type': 'Place' });
       expect(ev.url).toBe(PAGE);
     }
     const withinHorizon = exams.filter((e) => {
       const d = (Date.parse(e.first_date) - Date.parse(today)) / 86_400_000;
-      return d >= 0 && d <= EVENT_HORIZON_DAYS;
+      return lastExamDate(e) >= today && d <= EVENT_HORIZON_DAYS;
     });
     expect(events).toHaveLength(withinHorizon.length);
+  });
+
+  it('keeps a multi-weekend exam until its last day, with endDate', () => {
+    const ple = exams.find((e) => e.exam === 'Physicians (PLE, 2nd exam)')!;
+    const [ev] = educationEvents(prc, [ple], PAGE, '2026-10-08');
+    expect(ev).toMatchObject({ startDate: '2026-10-03', endDate: '2026-10-11' });
+    expect(educationEvents(prc, [ple], PAGE, '2026-10-12')).toEqual([]);
   });
 
   it('flags rescheduled rows and produces nothing for an all-past list', () => {
     const rescheduled = educationEvents(prc, [pnle2], PAGE, '2026-08-01')[0]!;
     expect(rescheduled.eventStatus).toBe('https://schema.org/EventRescheduled');
     expect(educationEvents(prc, [pnle2], PAGE, '2026-09-22')).toEqual([]);
+  });
+});
+
+describe('lastExamDate', () => {
+  const row = (dates_display: string, first_date: string) => ({ exam: 'Test', dates_display, first_date });
+
+  it('reads every wording used in the rule data', () => {
+    for (const e of exams) {
+      const last = lastExamDate(e);
+      expect(last >= e.first_date).toBe(true);
+      expect(Date.parse(last) - Date.parse(e.first_date)).toBeLessThanOrEqual(31 * 86_400_000);
+    }
+  });
+
+  it('handles ranges, second weekends, month spans and weekday notes', () => {
+    expect(lastExamDate(row('Oct 3–4 & 10–11, 2026', '2026-10-03'))).toBe('2026-10-11');
+    expect(lastExamDate(row('Oct 5–9 & 12, 2026', '2026-10-05'))).toBe('2026-10-12');
+    expect(lastExamDate(row('Nov 28 – Dec 5, 2026', '2026-11-28'))).toBe('2026-12-05');
+    expect(lastExamDate(row('Jan 20 & 22, 2026', '2026-01-20'))).toBe('2026-01-22');
+    expect(lastExamDate(row('Sep 20, 2026 (Sun)', '2026-09-20'))).toBe('2026-09-20');
+    expect(lastExamDate(row('Dec 30 – Jan 2, 2026', '2026-12-30'))).toBe('2027-01-02');
+  });
+
+  it('fails loudly on a wording it cannot read', () => {
+    expect(() => lastExamDate(row('to be announced', '2026-10-01'))).toThrow(/dates_display/);
   });
 });

@@ -8,6 +8,7 @@ import { SITE } from '../../site.config';
 import { educationEvents } from '../lib/prcCalendar';
 import { todayInManila } from '../lib/today.mjs';
 import pnleHistory from '../data/prc/pnle-history.json';
+import { upcomingExams } from '../lib/prcUpcoming';
 
 const meta = prcRules.meta;
 const byName = new Map((prcRules.exams as PrcExamEntry[]).map((e) => [e.exam, e]));
@@ -63,7 +64,44 @@ const eventSchema = educationEvents(
   `${SITE.url}/nursing-board-exam-schedule/`,
   todayInManila(),
 );
-const description = `Both ${prcRules.year} PNLE rounds are done (results released ${released}). Next PNLE: ${nextYear} — PRC has not released the dates yet, expected November ${prcRules.year}.`;
+/* GSC 2026-09-28..10-04: "pnle feb 2027 schedule / date / filing" and "how many days
+   before pnle feb 2027" were 1,700 of the page's 4,800 impressions at position ~4 with
+   ~1% CTR, while the title said only "PNLE 2027" and the description led with the
+   finished 2026 rounds ("expected November 2026" even read like an exam date). The
+   title now names the month searchers type, and the copy gives last year's official
+   dates plus a clearly-labelled estimate until PRC posts the real ones. */
+const shortFmt = (d: string): string =>
+  new Date(d + 'T00:00:00').toLocaleDateString('en-PH', { month: 'short', day: 'numeric' });
+const monthOf = (d: string): string => new Date(d + 'T00:00:00').toLocaleDateString('en-PH', { month: 'long' });
+const firstMonth = monthOf(first.first_date);
+const secondMonth = monthOf(second.first_date);
+/* Same calendar day one year on — a planning estimate only, never shown as a date. */
+const sameDayNextYear = (d: string): string => `${Number(d.slice(0, 4)) + 1}${d.slice(4)}`;
+const today = todayInManila();
+const daysFrom = (d: string): number => Math.round((Date.parse(`${d}T00:00:00Z`) - Date.parse(`${today}T00:00:00Z`)) / 86_400_000);
+const daysToExam = daysFrom(sameDayNextYear(first.first_date));
+const daysToFiling = first.application_start ? daysFrom(sameDayNextYear(first.application_start)) : null;
+const description = (() => {
+  const head = `PNLE ${firstMonth} ${nextYear}: PRC posts the official date in mid-November.`;
+  const last = `The ${prcRules.year} round ran ${first.dates_display.replace(/, \d{4}$/, '')} (filing ${shortFmt(first.application_start!)}–${shortFmt(first.application_deadline!)})`;
+  return (
+    [
+      `${head} ${last} — see the expected window and a free date alert.`,
+      `${head} ${last}; see the expected window.`,
+      `${head} ${last}.`,
+    ].find((d) => d.length <= 158) ?? head
+  );
+})();
+const title = `PNLE ${firstMonth} ${nextYear} Schedule & Filing Dates – Nursing Board Exam`;
+/* Links from the cluster's strongest page to the exam pages whose rounds are next. */
+const otherExams = upcomingExams(prcRules.exams as PrcExamEntry[], today, 45)
+  .filter((u) => u.href && u.href !== '/nursing-board-exam-schedule/')
+  .slice(0, 5)
+  .map((u, i, all) => ({
+    ...u,
+    text: `(${u.entry.dates_display.replace(/, \d{4}.*$/, '')}${u.inProgress ? ', under way' : ''})${i < all.length - 1 ? ',' : '.'}`,
+  }));
+if (title.length > 65) throw new Error(`nursing page title is ${title.length} chars (max 65): ${title}`);
 
 const datasetSchema = {
   '@context': 'https://schema.org',
@@ -88,6 +126,14 @@ const datasetSchema = {
 };
 
 const faqs = [
+  {
+    q: `How many days before the ${firstMonth} ${nextYear} PNLE?`,
+    a: `PRC has not set the ${firstMonth} ${nextYear} date yet, so any countdown is an estimate. Counting to ${fmt(sameDayNextYear(first.first_date))} — one year after the ${first.dates_display} round — it is about ${daysToExam} days away${
+      daysToFiling !== null && daysToFiling > 0
+        ? `, and if PRC repeats the ${prcRules.year} timing, LERIS filing would open in about ${daysToFiling} days (around ${fmt(sameDayNextYear(first.application_start!))})`
+        : ''
+    }. Subscribe to the PNLE calendar on this page to get the official dates the day PRC posts them.`,
+  },
   {
     q: 'When is the next PNLE?',
     a: `There is no PNLE round left in ${prcRules.year}: both rounds (${first.dates_display} and ${second.dates_display}) have been held and the results are out. The next PNLE is in ${nextYear}. PRC has not released the ${nextYear} schedule — it normally publishes the whole following-year calendar on prc.gov.ph in mid-November, so expect the dates around November ${prcRules.year}. If the February/August pattern introduced in ${prcRules.year} continues, the next round would fall in late February ${nextYear}, but that is unconfirmed until PRC posts it.`,
@@ -125,6 +171,18 @@ const faqs = [
     a: 'Not confirmed. The 2026 calendar moved the PNLE to February and August, and review centers are enrolling for a February 2027 round on that assumption, but PRC has not released the 2027 resolution. Treat any 2027 date as unofficial until it appears on prc.gov.ph.',
   },
   {
+    q: `Is there a PNLE in May ${nextYear}?`,
+    a: `Not on the current pattern. Since ${prcRules.year} the PNLE has been given in ${firstMonth} and ${secondMonth} — there was no May round in ${prcRules.year} — so a May ${nextYear} round would mean PRC changed the calendar again. The ${nextYear} months become official only when PRC posts the ${nextYear} resolution, expected in mid-November ${prcRules.year}.`,
+  },
+  {
+    q: `When is the ${secondMonth} ${nextYear} PNLE?`,
+    a: `Not announced. The ${prcRules.year} second round was ${second.dates_display} with filing from ${fmt(second.application_start)} to ${fmt(second.application_deadline)}; if PRC keeps that slot, the ${secondMonth} ${nextYear} round would fall in late ${secondMonth} with filing opening around ${fmt(sameDayNextYear(second.application_start!))}. Both ${nextYear} rounds come out together in the ${nextYear} resolution.`,
+  },
+  {
+    q: 'Is Cabanatuan a PNLE testing center?',
+    a: `It was in ${prcRules.year}: PRC's August 2026 advisory named San Fernando, Pampanga and Cabanatuan, Nueva Ecija as the Region III testing centers for the NLE. PRC fixes the testing centers for each round in the schedule resolution and the program of examination, so the ${nextYear} list arrives with the ${nextYear} calendar — check the centers offered in LERIS when you file.`,
+  },
+  {
     q: 'What months is the PNLE given?',
     a: `From ${prcRules.year} the PNLE is given in February and August (PRC Resolution No. 2113, s. 2025 — the resolution states no reason for the change). From 2019 to 2025 it was given in May and November, with two exceptions: both 2020 rounds were postponed for COVID-19 and never held, and the 2021 rounds were July and November. The ${nextYear} months are not yet official.`,
   },
@@ -160,10 +218,10 @@ const faqs = [
 ---
 
 <ToolPageLayout
-  title={`PNLE ${nextYear} Schedule & ${prcRules.year} Results – Nursing Board Exam`}
+  title={title}
   description={description}
   path="/nursing-board-exam-schedule/"
-  h1="Nursing Board Exam Schedule 2026 (PNLE)"
+  h1={`PNLE ${nextYear} Schedule & ${prcRules.year} Results (Nursing Board Exam)`}
   faqs={faqs}
   related={['prc', 'letSchedule', 'criminologySchedule', 'physicianSchedule']}
   isApp={false}
@@ -171,15 +229,41 @@ const faqs = [
 >
   <Fragment slot="answer">
     <p>
-      <strong>The next PNLE is in {nextYear} — PRC has not released the dates yet.</strong> PRC normally
+      <strong>The next PNLE is in {firstMonth} {nextYear} if PRC keeps the {prcRules.year} pattern — the official dates are not out yet.</strong> PRC normally
       posts the whole next-year calendar in mid-November (the {prcRules.year} one went up on November 17,
-      2025), so expect the {nextYear} PNLE dates around November {prcRules.year}
+      2025), so expect PRC to publish the {nextYear} PNLE dates around mid-November {prcRules.year}
       (<a href="#pnle-2027">what is known so far</a>). Both {prcRules.year} rounds are over: the
       {second.dates_display} round — with make-up sittings on September 11–12 for Region III and Metro
       Manila — had its results released on <strong>{released}</strong>{secondPct && (
         <Fragment>: {secondPassers} of {secondExaminees} examinees passed ({secondPct}%)</Fragment>
       )}.
     </p>
+    <div class="table-scroll">
+      <table>
+        <caption class="text-left text-sm text-ink-soft">
+          PNLE {nextYear} at a glance: PRC has not released the {nextYear} dates. The {prcRules.year} column is official (Resolution No. 2113, s. 2025); the {nextYear} column is an estimate.
+        </caption>
+        <thead>
+          <tr>
+            <th>Round</th>
+            <th>{prcRules.year} (official)</th>
+            <th>{nextYear} if PRC keeps the pattern</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>{firstMonth}</strong></td>
+            <td>{first.dates_display.replace(/, \d{4}$/, '')}; filing {shortFmt(first.application_start!)} – {shortFmt(first.application_deadline!)}</td>
+            <td>Late {firstMonth} {nextYear}, about {daysToExam} days away; filing from around {shortFmt(sameDayNextYear(first.application_start!))}</td>
+          </tr>
+          <tr>
+            <td><strong>{secondMonth}</strong></td>
+            <td>{second.dates_display.replace(/, \d{4}$/, '')}; filing {shortFmt(second.application_start!)} – {shortFmt(second.application_deadline!)}</td>
+            <td>Late {secondMonth} {nextYear}; filing from around {shortFmt(sameDayNextYear(second.application_start!))}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
     <PrcSubscribe slug="nursing" name="PNLE" nextYear={nextYear} />
   </Fragment>
 
@@ -220,7 +304,16 @@ const faqs = [
     Looking for another profession? See the complete
     <a href="/prc-board-exam-schedule/">PRC Board Exam Schedule {prcRules.year}</a> — all
     {prcRules.exams.length} licensure exams, searchable, with the same filing windows and result
-    targets.
+    targets.{otherExams.length > 0 && (
+      <Fragment>
+        {' '}Coming up next:{' '}
+        {otherExams.map((u) => (
+          <Fragment>
+            <a href={u.href}>{u.label}</a>{' '}{u.text}{' '}
+          </Fragment>
+        ))}
+      </Fragment>
+    )}
   </p>
 
   <h2 id="pnle-2027">PNLE 2027 Schedule: What Is Known So Far</h2>

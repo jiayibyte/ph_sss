@@ -51,8 +51,9 @@ export const PAGE_DATA = {
   '/service-incentive-leave-calculator/': ['labor', 'wages'],
   '/senior-citizen-discount-calculator/': ['tax'],
   '/salary-grade-table/': ['ssl', 'tax', 'philhealth', 'pagibig'],
-  '/minimum-wage-philippines/': ['wages'],
-  '/13th-month-pay-calculator/': ['labor'],
+  '/minimum-wage-philippines/': ['wages', 'tax'], // tax: minimum wage earner exemption FAQ
+  '/kasambahay-minimum-wage/': ['wages', 'labor', 'sss', 'philhealth', 'pagibig'],
+  '/13th-month-pay-calculator/': ['labor', 'holidays', 'ssl'], // 2026 deadline weekday/holiday + government year-end bonus
   '/holiday-pay-calculator/': ['holidays', 'labor'],
   '/philippine-holidays/': ['holidays', 'labor'],
   '/night-differential-calculator/': ['labor'],
@@ -77,6 +78,12 @@ export const PAGE_DATA = {
   '/electronics-engineering-board-exam-schedule/': ['prc'],
   '/dentistry-board-exam-schedule/': ['prc'],
   '/social-work-board-exam-schedule/': ['prc'],
+  '/agriculturist-board-exam-schedule/': ['prc'],
+  '/customs-broker-board-exam-schedule/': ['prc'],
+  '/chemical-engineering-board-exam-schedule/': ['prc'],
+  '/veterinarian-board-exam-schedule/': ['prc'],
+  '/physical-therapy-board-exam-schedule/': ['prc'],
+  '/nutritionist-dietitian-board-exam-schedule/': ['prc'],
   '/sources/': DATASETS,
 };
 
@@ -136,6 +143,7 @@ const wageChangeDates = (w) => [
 const dayAfter = (iso) => (ISO_DATE.test(iso ?? '') ? new Date(Date.parse(iso + 'T00:00:00Z') + 86_400_000).toISOString().slice(0, 10) : null);
 export const SCHEDULED = {
   '/minimum-wage-philippines/': ['wages', wageChangeDates],
+  '/kasambahay-minimum-wage/': ['wages', (w) => (w.kasambahay_monthly ?? []).map((k) => k.upcoming?.effectivity)],
   '/daily-rate-calculator/': ['wages', (w) => [w.ncr?.upcoming?.effectivity]],
   '/overtime-pay-calculator/': ['wages', (w) => [w.ncr?.upcoming?.effectivity]],
   // The "rates may have changed" notice appears the day after the published rates lapse.
@@ -163,6 +171,7 @@ export const PAGE_SOURCE = Object.fromEntries(
     'let', 'criminology', 'cpa', 'civil-engineering', 'physician',
     'pharmacy', 'midwifery', 'psychometrician', 'radtech', 'medtech',
     'electrical-engineering', 'mechanical-engineering', 'architecture', 'electronics-engineering', 'dentistry', 'social-work',
+    'agriculturist', 'customs-broker', 'chemical-engineering', 'veterinarian', 'physical-therapy', 'nutritionist-dietitian',
   ].map((slug) => [
     `/${slug}-board-exam-schedule/`,
     ['src/pages/[slug]-board-exam-schedule.astro', 'src/lib/prcProfessionPages.ts'],

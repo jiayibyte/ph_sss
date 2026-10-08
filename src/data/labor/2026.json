@@ -3,7 +3,7 @@
   "rule_version": "Labor Code of the Philippines / PD 851 / DOLE Handbook on Workers' Statutory Monetary Benefits",
   "effective_from": "2026-01-01",
   "effective_to": null,
-  "last_verified": "2026-09-23",
+  "last_verified": "2026-10-08",
   "official_source_url": "https://bwc.dole.gov.ph/",
   "official_source_label": "DOLE — Bureau of Working Conditions (bwc.dole.gov.ph)"
  },
@@ -152,5 +152,30 @@
   ],
   "source_note": "DOLE Handbook on Workers' Statutory Monetary Benefits, 2024 Edition: summary table of statutory leave benefits and Chapters 7 (SIL, Art. 95, with the ₱610 example), 8 (maternity, RA 11210), 9 (paternity, RA 8187), 10 (solo parents, RA 11861), 11 (VAWC, RA 9262) and 12 (special leave for women, RA 9710).",
   "source_url": "https://nwpc.dole.gov.ph/wp-content/uploads/2024/11/Workers-Statutory-Monetary-Benefits-Handbook-2024-Edition.pdf"
+ },
+ "kasambahay": {
+  "employer_pays_all_premiums_below": 5000,
+  "premium_rule": "RA 10361 Sec. 30: SSS, PhilHealth and Pag-IBIG premiums are shouldered by the employer; a kasambahay earning ₱5,000 a month and above pays the proportionate share. Same threshold in SSS Circular 2024-007 (household schedule, January 2025), PhilHealth Circular 2020-0005 and HDMF Circular 460 Item C.1.5.",
+  "coverage_after_months": 1,
+  "sss_household_msc_floor": 1000,
+  "thirteenth_month_after_months": 1,
+  "sil_days": 5,
+  "sil_after_years": 1,
+  "daily_rest_hours": 8,
+  "weekly_rest_hours": 24,
+  "notice_days": 5,
+  "unjust_dismissal_indemnity_days": 15,
+  "min_age": 15,
+  "fine_min": 10000,
+  "fine_max": 40000,
+  "max_deduction_pct": 20,
+  "law_url": "https://lawphil.net/statutes/repacts/ra2013/ra_10361_2013.html",
+  "irr_url": "https://nwpc.dole.gov.ph/wp-content/uploads/2023/04/IRR-of-RA-10361-Batas-Kasambahay.pdf",
+  "qa_url": "https://nwpc.dole.gov.ph/wp-content/uploads/2023/04/English-Version-Q-A-on-Batas-Kasambahay.pdf",
+  "contract_url": "https://nwpc.dole.gov.ph/wp-content/uploads/2023/04/Sample_Contract-Kasambahay.pdf",
+  "sss_table_url": "https://www.sss.gov.ph/wp-content/uploads/2024/12/Cir-2024-007-HR-Kasambahay-scaled.jpg",
+  "sss_household_url": "https://www.sss.gov.ph/household-employer/",
+  "philhealth_circular_url": "https://www.philhealth.gov.ph/circulars/2020/circ2020-0005.pdf",
+  "source_note": "RA 10361 (Batas Kasambahay) and its IRR (NWPC-hosted scan, read 2026-10-08); Labor Code Art. 82 and the DOLE Handbook 2024 (pp. 16, 20, 23, 25, 28) for the holiday, premium, overtime, night-differential and Labor Code SIL exclusions."
  }
 }
