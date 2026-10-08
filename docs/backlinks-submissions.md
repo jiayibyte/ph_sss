@@ -65,16 +65,22 @@
 | 2026-09-23 | Expat Forum › Philippines | 已回复，**待审核**（新号前几帖要人工审） | 账号由用户注册。在版主 M.C.A. 的《Live in maids/helpers》帖（/threads/live-in-maids-helpers.1554580/，第 3 页）回复：从他说的"₱12,000"切入，两名保姆按地区最低工资合计约 ₱13k–14k；再按 RA 10361 列雇佣要求（地区月最低工资、SSS/PhilHealth/Pag-IBIG 按 ₱5,000 分界、以 ₱6,500 月薪算的缴费金额、书面合同、barangay 登记、休息、13th month、SIL、不许收押金）。**不带链接**：新号试用期限制发链接，用户名也不能用品牌名。等发够正常帖、过了试用期，再私信 M.C.A. 请他把计算器加进《Useful Links For Expats》 |
 | 2026-09-23 | PHCorner（phcorner.org） | 已注册，**暂不发** | 版规：只能用英语或他加禄语；不许为打广告发博客或网站链接，作为引用来源可以；YouTube、社交群组、其他论坛都算广告。Career & Finance（/forums/524/）很活跃，但工资社保类求助很少；SSS 病假帖 7 月已标注 resolved，别挖坟。**11–12 月 13th month 旺季再来**；站内搜索偶尔会冒出可疑的验证框，别去点 |
 | 2026-09-23 | Indie Hackers | 产品页已上线 | https://www.indiehackers.com/product/aytool （账号 aytools；Solo、Side Project、Bootstrapped、Free、Web；标签 B2C / Financial Services / Utilities）。新号还不能发帖，开发日志草稿在 backlinks-drafts-2026-09.md 的 3b，先在社区评论攒积分 |
-| 2026-09-23 | Uneed | 免费队列，**2027-02-20 自动上线** | 账号 cherryeveli-10e6；描述改掉了 AI 自动填的"每年更新"；标签 Productivity / Personal Finances；logo + 3 张图。规则：上线当天投票分 ≥10 才能保留，≥20 才给 dofollow。付费插队（$14.99 / $29.99）和 $249 的"100+ 目录提交"都没买 |
+| 2026-09-23 | Uneed | ~~免费队列 2027-02-20 上线~~ → **09-30 来信拒收**（不发布） | 账号 cherryeveli-10e6；描述改掉了 AI 自动填的"每年更新"；标签 Productivity / Personal Finances；logo + 3 张图。规则：上线当天投票分 ≥10 才能保留，≥20 才给 dofollow。付费插队（$14.99 / $29.99）和 $249 的"100+ 目录提交"都没买 |
 | 2026-09-23 | Fazier | **不做** | 免费档要求在我方首页或页脚放 Fazier 回链徽章，等于链接交换，违反 playbook；付费档 $29–$99 |
 | 2026-09-23 | SaaSHub | **不做**（用户决定） | |
 | 2026-09-23 | 挂件外联邮件（草稿见 backlinks-drafts-2026-09.md §4） | 已发 4 封，定时 7 封，跳过 1 封 | 从用户 Gmail（cherryeveli@gmail.com）发出，署名 JJ。**09-23 已发**：#2 Tax and Accounting Center、#7 filipinos.sg、#4 FilePino、#6 iScale。**09-24 08:00 定时**：#3 Triple i、#8 Dubai OFW、#9 Pilipino sa Kuwait（pilipinosakuwait@gmail.com，对方 /about-us/ 公布，Cloudflare 混淆解码核实）、#11 PHRI。**09-28 08:00 定时**：#10 PMAP、#1 Accountaholics、#12 UC Career Center。**跳过** #5 Manila Recruitment：只有招聘业务的销售表单，必填电话且选项不对口。回信跟进：约 7 天后没回的，可以发一封简短的跟进，只发一次 |
 | — | Reddit | 需手动发 | Claude in Chrome 对 reddit.com 有安全限制，自动化打不开 |
+| 2026-10-08 | 核对（Bing 提示「来自高质量域的入站链接不足」） | 记录 | 查了服务器近 15 天的访问日志：挂件 /embed/ 的外站来源是 0，12 家外联对象**没有一家挂上**。真实来访的外站只有 Product Hunt（6 次）和 stackscope.dev（自动收录的 launch 页 /launch/mx9m5bm2-r/aytool）。AlternativeTo 的 /software/aytool/ 仍是 404，还在排队。日志里有 30 多个 "backlink generator / pbnlinks / highdrbacklinks" 之类的域名，是伪造来源的垃圾流量，不是真外链，别理也别去点 |
+| 2026-10-08 | 挂件跟进信（§5）+ 退信核查 | 已发 4 封，剩 6 封待发 | 11:30–11:31 由用户点发送（Claude 预填 view=cm 写信页；系统不允许 Claude 代点发送）：#2 Tax and Accounting Center、#7 filipinos.sg、#4 FilePino、#6 iScale。正文把 "last week" 改成 "a couple of weeks ago"。**#1 Accountaholics 退信**：hello@accountaholicsph.com 返回 550 "No mailbox by that name"，地址失效，不再跟进。#10 PMAP 只回了自动回复。其余原信无人回复。待发：#3 Triple i、#8 Dubai OFW、#9 Pilipino sa Kuwait、#11 PHRI、#10 PMAP、#12 UC |
+| 2026-10-08 | Quora | 已发 3 答（共 7 答） | ⑤ SIL 与 VL 的区别 → /service-incentive-leave-calculator/ https://www.quora.com/Is-a-Service-Incentive-Leave-SIL-the-same-as-a-Vacation-Leave-or-are-these-two-things-completely-different/answer/Jahgs-2 ⑥ Pag-IBIG 工资贷怎么算 → /pagibig-salary-loan-calculator/ https://www.quora.com/How-is-Pag-IBIG-salary-loan-calculated/answer/Jahgs-2 ⑦ 缺勤对 13 薪的影响 → /13th-month-pay-calculator/ https://www.quora.com/How-is-the-13th-month-pay-computed-by-absences-in-the-Philippines/answer/Jahgs-2 。Claude 填好编辑框，用户点 Post |
+| 2026-10-08 | Reddit | 出稿 3 条，待用户手发 | 见 backlinks-drafts-2026-09.md §7：r/AntiworkPH 日薪 ₱695 与 SSS、r/AntiworkPH 银行拖欠 final pay、r/taxPH 自雇 SSS 最低档 |
+| 2026-10-08 | 定时任务 | 已建 | `aytool-weekly-backlink-check`：每周一 09:38 查服务器外站来源、挂件嵌入、AlternativeTo，只出报告 |
+| 2026-10-08 下午 | 剩余跟进信 6 封 + 复习中心 9 封（§5、§6c） | 已在 Chrome 打开预填写信页，**待用户点发送** | 用户决定当天全部发出、不分批。打开的有：跟进信 Triple i、Dubai OFW、Pilipino sa Kuwait、PHRI、PMAP、UC；复习中心 CEVAS、SLRC、CREED、Team PRTC、Inhinyero、GERTC、ACTS、Pioneer、Overarch。Inhinyero 那封把已过的放榜日改成过去时。发送前核对过：信里链接的 6 个考试页、挂件页和首次求职者页都返回 200。Ray A. Gapuz 的联系表单由脚本渲染，读不到输入框，只打开了页面，正文见 drafts §6c #2。可选的 CRC-ACE、Manor 没发 |
+| 2026-10-08 下午 | 编辑型外联（理财网站） | Moneymax 邮件已打开、Ready To Be Rich 表单已填，**待用户发送** | 子任务调研结果，草稿见 drafts §8。Moneymax：phmarketing@moneymax.ph（About 页公布），文章《What do the Salary Deductions on Your Payslip Mean?》还按 SSS 3.63%、₱16,000 上限计算。Ready To Be Rich：fitzvillafuerte.com/contact 表单，MP2 文章的历年分红只列到 2024 年。Poor Pinoy Investor：全站没有任何联系方式，只能公开评论，暂缓。Grit.ph：2026 年无新文，且属于 SEO/外链代理公司，跳过 |
+| 2026-10-08 | skill | 已建 | `~/.claude/skills/aytool-outreach/`：外链核对脚本（服务器端先筛来源，约 90 秒）、批量生成写信链接脚本、Quora/表单/Reddit 流程、渠道状态表。以后说「外链 / 外联 / 都打开填好我来点发送」就会用它 |
 
 Quora 待答队列（新号一天 ≤4 条、同类题隔天；每条先完整作答再附链接并注明"我做的"）：
-- Is a "Service Incentive Leave" (SIL) the same as a "Vacation Leave"?（0 答 2 关注）→ /service-incentive-leave-calculator/
-- How is Pag-IBIG salary loan calculated?（1 答）→ /pagibig-salary-loan-calculator/
-- How is the 13th month pay computed by absences in the Philippines?（与①同类，隔几天再答）→ /13th-month-pay-calculator/
+- ~~SIL vs VL、Pag-IBIG 工资贷、13 薪缺勤~~（10-08 已答）
 - Company never paid 13th month, SIL and holiday pay for years, employee being retrenched — can they demand it?（法律向，答时只讲 Labor Code 权利与 DOLE 投诉途径，不下结论）→ /separation-pay-calculator/、/final-pay-calculator/
 - Do we still get a Senior Citizen discount on the doctor's fee after having an HMO discount?（需先核实 RA 9994 与 HMO 的叠加规则再答）→ /senior-citizen-discount-calculator/
 

@@ -833,3 +833,68 @@ Subject: A free pharmacist licensure exam calendar for your reviewees
 
 [预填写信链接](https://mail.google.com/mail/u/0/?view=cm&fs=1&to=manorreviewcenter%40yahoo.com&su=A%20free%20pharmacist%20licensure%20exam%20calendar%20for%20your%20reviewees&body=Hi%20Manor%20Review%20Center%20team%2C%0A%0AAs%20a%20long-running%20review%20provider%20for%20the%20Pharmacist%20Licensure%20Examination%2C%20you%20probably%20get%20the%20%22when%20is%20the%20next%20PhLE%3F%22%20question%20often.%20The%20next%20one%20is%20October%2015%E2%80%9316%2C%202026%2C%20with%20PRC%27s%20results%20target%20on%20October%2021.%0A%0AI%20run%20AyTool%2C%20an%20independent%20site%20that%20keeps%20the%20PRC%20schedule%20by%20profession.%20We%20now%20have%20a%20free%20pharmacist%20licensure%20exam%20calendar%20your%20reviewees%20can%20subscribe%20to%20in%20Google%20Calendar%20or%20on%20an%20iPhone%3A%20filing%20deadlines%2C%20exam%20days%20and%20results%20dates%2C%20and%20it%20updates%20itself%20%E2%80%94%20when%20PRC%20releases%20the%202027%20schedule%20%28expected%20mid-November%29%2C%20the%20new%20dates%20appear%20in%20subscribers%27%20calendars%20without%20them%20doing%20anything.%0A%0APage%20and%20subscribe%20links%3A%20https%3A%2F%2Faytool.com%2Fpharmacy-board-exam-schedule%2F%0A%0AIf%20it%27s%20useful%2C%20feel%20free%20to%20link%20it%20for%20your%20reviewees.%20If%20not%2C%20no%20need%20to%20reply.%0A%0AJJ%0AAyTool%20%E2%80%94%20free%20Philippine%20payroll%20and%20PRC%20exam%20tools%0Ahttps%3A%2F%2Faytool.com%20%C2%B7%20contact%40aytool.com)
 
+
+## 7. Reddit 回帖草稿（2026-10-08，RSS 抓帖，用户手发）
+
+Reddit 在两个浏览器里都被拦，只能出稿。规矩同 §1：先完整回答，最后一行才放链接并写明是自己做的；每帖只回一次。数字都取自线上页面与 `src/data`。
+
+**① r/AntiworkPH｜NCR 日薪 ₱695 + SSS 说三个月后才交**
+https://www.reddit.com/r/AntiworkPH/comments/1wzrjea/can_i_report_these_employment_concerns_to_dole/
+
+> Both are valid concerns, and both have a clear answer.
+>
+> Wage: the NCR minimum went from ₱695 to ₱755 a day on September 26, 2026 (Wage Order NCR-28; ₱718 for agriculture, retail/service with 15 or fewer workers, and manufacturing with fewer than 10). The minimum follows where you actually work, not where you were supposed to be assigned, so if you've been in NCR, ₱695 has been below the minimum since Sept 26 whatever was said about Davao.
+>
+> SSS: coverage starts on your first day of employment, not after 3 months (RA 11199, Sec. 10), and the employer has to report you within 30 days. Check your contribution record in My.SSS; missing months are an SSS matter.
+>
+> Process: the wage differential goes to DOLE as a SEnA request for assistance (free, starts with a mediation conference). Unremitted SSS contributions go to SSS; you can file at any branch. You can do both at the same time.
+>
+> The regional rates and effectivity dates are on a page I keep (I made it, it's free): https://aytool.com/minimum-wage-philippines/
+
+**② r/AntiworkPH｜银行两个月不发 final pay 和 COE**
+https://www.reddit.com/r/AntiworkPH/comments/1wxxuog/bakit_karamihan_sa_mga_banks_ang_tatagal/
+
+> Under DOLE Labor Advisory No. 06-20, final pay has to be released within 30 days from your separation date unless a company policy, contract or CBA gives you something better, and the COE has to be issued within 3 days of your request. Clearance doesn't stop that clock. With an August 17 separation, both are well past due.
+>
+> Since your follow-ups got no answer, the next step is a SEnA request for assistance at the DOLE field office covering the employer (free, and HR usually shows up to the conference with a date). Bring your resignation acceptance, the follow-up emails, and your last payslips.
+>
+> To check the amount they should pay (unpaid days, leave conversion, pro-rated 13th month), I made a free calculator: https://aytool.com/final-pay-calculator/
+
+**③ r/taxPH｜给澳洲公司做独立承包人，想交 SSS 最低档**
+https://www.reddit.com/r/taxPH/comments/1wyz94v/independent_contractor/
+
+> One thing to weigh before you go with the minimum. As self-employed, the minimum is the ₱5,000 salary credit: ₱760 a month (₱750 if you're registered as voluntary). That's allowed, but your salary credits are also what your benefits are computed from. Maternity, for example, is your 6 highest MSCs ÷ 180 × 105 days: ₱17,500 at ₱5,000, versus ₱70,000 at ₱20,000. Sickness and the pension work the same way. For benefits the MSC is capped at ₱20,000; anything you pay above that goes to your MPF savings account (formerly WISP), not the benefit formula.
+>
+> So a middle option is to declare whatever you can sustain up to ₱20,000 and stop there.
+>
+> The full table by MSC is here (I made this page, it's free): https://aytool.com/sss-contribution-table/
+
+## 8. 编辑型外联：理财网站（2026-10-08 子任务调研）
+
+**Moneymax** · phmarketing@moneymax.ph（https://www.moneymax.ph/page/about-us 公布）
+文章：https://www.moneymax.ph/personal-finance/blog/salary-deductions-philippines（2022-08-10 更新，SSS 3.63%／₱16,000 上限、PhilHealth 2.75%、2018–2022 税表）
+Subject: Outdated SSS/tax figures in your payslip deductions guide
+
+> Hi Moneymax editors,
+>
+> Your guide "What do the Salary Deductions on Your Payslip Mean?" (updated Aug 10, 2022) still computes SSS at 3.63% with a ₱16,000 salary-credit cap, PhilHealth at 2.75%, and uses the 2018–2022 BIR table. Since January 2025, SSS is 15% (5% employee share) on ₱5,000–₱35,000, and withholding has used the 15%–35% table since 2023.
+>
+> Our free Take-Home Pay Calculator applies the current SSS, PhilHealth, Pag-IBIG and BIR rates and itemizes every deduction: https://aytool.com/take-home-pay-calculator/
+>
+> You're welcome to cite or link it for readers checking their payslips. If it isn't a fit, no need to reply.
+
+**Ready To Be Rich（Fitz Villafuerte）** · 表单 https://fitzvillafuerte.com/contact（没有公开邮箱；/advertise-here 卖赞助文，如果对方回报价就拒绝）
+文章：https://fitzvillafuerte.com/what-is-pag-ibig-mp2-benefits-risks-how-it-works-and-how-to-invest.html（2026-03-06 更新，历年分红只列到 2024 年的 7.10%）
+Subject: 2025 MP2 dividend (7.12%) for your MP2 guide
+
+> Hi Fitz,
+>
+> Your post "What is Pag-IBIG MP2? Benefits, Risks, How It Works, and How to Invest" lists historical dividend rates through 2024 (7.10%). Pag-IBIG has since declared 7.12% for 2025.
+>
+> Our free Pag-IBIG MP2 Calculator uses the 7.12% rate and shows the 5-year result for monthly or lump-sum savings, compounded or with annual payout: https://aytool.com/pagibig-mp2-calculator/
+>
+> If it's useful, feel free to link it as a reference for readers who want to run their own numbers. If it isn't a fit, no need to reply.
+
+**Poor Pinoy Investor**（暂缓）：没有联系页、关于页、邮箱或社交账号，只能在文章下公开评论，容易被当成垃圾评论。可切入的点：https://poorpinoyinvestor.com/sss-faqs/ 的 SSS 表还是 2023 年版（14%，₱4,000–₱30,000）。注意该站自己也有工资、13 薪、MP2 计算器，是竞争对手。
+
+**Grit.ph**（跳过）：2026 年没有新文章；网站属于 Avaris（SEO 和外链代理公司），发过去大概率被转成销售线索。
