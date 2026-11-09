@@ -282,10 +282,11 @@ export const TOOL_PAGES: Record<string, PageRef> = {
   },
   prc: {
     href: '/prc-board-exam-schedule/',
-    label: 'PRC Board Exam Schedule 2026',
+    label: 'PRC Board Exam Schedule 2026 & 2027 Status',
     short: 'PRC Exam Schedule',
-    blurb: 'Searchable 2026 PRC licensure exam calendar with application deadlines.',
+    blurb: 'Official 2026 exam dates and filing windows, with a dated 2027 source check and profession guides.',
     priority: 'P2',
+    ogKicker: 'Independent guide · Official 2026 dates · 2027 status',
   },
   prcResults: {
     href: '/board-exam-results-2026/',
@@ -297,10 +298,11 @@ export const TOOL_PAGES: Record<string, PageRef> = {
   },
   nursingSchedule: {
     href: '/nursing-board-exam-schedule/',
-    label: 'Nursing Board Exam Schedule 2026',
+    label: 'PNLE 2027 Schedule & Nursing Requirements',
     short: 'Nursing (PNLE)',
-    blurb: 'PNLE 2026 exam dates, application deadlines, LERIS filing steps and target result dates.',
+    blurb: '2027 date and filing status, PRC document checklist, LERIS steps and 2026 nursing exam results for reference.',
     priority: 'P2',
+    ogKicker: 'Independent guide · PRC sources · Unconfirmed 2027 dates',
   },
   letSchedule: {
     href: '/let-board-exam-schedule/',

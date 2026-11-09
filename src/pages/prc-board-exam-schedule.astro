@@ -2,6 +2,8 @@
 import ToolPageLayout from '../layouts/ToolPageLayout.astro';
 import PrcScheduleTable from '../islands/PrcScheduleTable';
 import PrcProfessionSections from '../components/PrcProfessionSections.astro';
+import PrcScheduleStatus from '../components/PrcScheduleStatus.astro';
+import scheduleStatus from '../data/prc/next-schedule-status.json';
 import prcRules from '../data/prc/2026.json';
 import { PRC_PROFESSIONS, resolveGroup, scheduleSentence } from '../lib/prcProfessions';
 import type { PrcExamEntry, PrcRules } from '../lib/rules/types';
@@ -47,10 +49,10 @@ const comingUp = upcomingExams(prcRules.exams as PrcExamEntry[], todayInManila()
 const withPage = comingUp.filter((u) => u.href);
 const description = (() => {
   const tails = [
-    `All ${prcRules.exams.length} ${prcRules.year} dates, filing deadlines and results; ${nextYear} schedule due mid-November.`,
-    `All ${prcRules.exams.length} ${prcRules.year} dates; ${nextYear} schedule due mid-November.`,
+    `All ${prcRules.exams.length} ${prcRules.year} dates, filing deadlines and results; ${nextYear} status and official sources.`,
+    `All ${prcRules.exams.length} ${prcRules.year} dates; ${nextYear} status and official sources.`,
   ];
-  const fallback = `All ${prcRules.exams.length} PRC board exams for ${prcRules.year}: dates, filing deadlines and results. The ${nextYear} schedule is not out yet — PRC posts it in mid-November.`;
+  const fallback = `All ${prcRules.exams.length} PRC board exams for ${prcRules.year}: dates, filing deadlines and results. Check the ${nextYear} status and official sources.`;
   for (const n of [4, 3, 2]) {
     if (withPage.length < n) continue;
     for (const tail of tails) {
@@ -120,7 +122,7 @@ const faqs = [
   },
   {
     q: 'When will PRC release the schedule of exam for 2027?',
-    a: 'PRC publishes the following year\'s schedule of examination in a single resolution, usually signed in late October and posted on prc.gov.ph in mid-November. The 2026 schedule (Resolution No. 2113, s. 2025) was signed on October 23, 2025 and published on November 17, 2025, so the 2027 schedule of exam is expected around November 2026. This page is updated as soon as PRC releases it.',
+    a: `We did not locate an official ${nextYear} calendar in our PRC source review on ${scheduleStatus.checked_on}. The ${prcRules.year} calendar was posted on November 17, 2025, but this does not confirm the ${nextYear} release date. Check PRC announcements for later notices; dates will be added here after verification.`,
   },
   {
     q: 'Kailan ang board exam ng nursing sa 2026?',
@@ -134,10 +136,10 @@ const faqs = [
 ---
 
 <ToolPageLayout
-  title={`PRC Board Exam Schedule ${prcRules.year} & ${nextYear} Release Date – All Exams`}
+  title={`PRC Exam Schedule ${nextYear} Status & ${prcRules.year} Board Exam Dates`}
   description={description}
   path="/prc-board-exam-schedule/"
-  h1="PRC Board Exam Schedule 2026"
+  h1={`PRC Board Exam Schedule ${prcRules.year} and ${nextYear} Status`}
   faqs={faqs}
   related={['nursingSchedule', 'oec', 'takeHome', 'sssTable']}
   isApp={false}
@@ -147,11 +149,10 @@ const faqs = [
     <p>
       The official {prcRules.year} PRC schedule of examination is <strong>PRC Resolution No. 2113, s.
       2025</strong>: {prcRules.exams.length} licensure examinations with their filing windows and target
-      results dates — search or filter them below. <strong>{nextYear} schedule: not released yet.</strong>
-      PRC posts the whole next-year calendar in mid-November (the {prcRules.year} one went up on November
-      17, 2025); this page switches to the {nextYear} dates the day it is out
-      (<a href="#schedule-2027">what to expect</a>).
+      results dates — search or filter them below. For {nextYear}, check the
+      <a href="#schedule-2027">date and filing status</a> before using an older year's dates.
     </p>
+    <PrcScheduleStatus />
     {comingUp.length > 0 && (
       <p>
         <strong>Coming up:</strong>{' '}
@@ -189,18 +190,26 @@ const faqs = [
     <li><strong>Marine officers:</strong> Marine Deck/Engine licensure moved from PRC to MARINA in 2014 and is not part of the PRC calendar.</li>
   </ul>
 
-  <h2 id="schedule-2027">PRC Schedule of Exam 2026: Release Date and the 2027 Calendar</h2>
+  <h2 id="schedule-2027">PRC Schedule of Exam {nextYear}: Dates and Filing Status</h2>
   <p>
-    PRC releases its schedule of examination once a year, in a single resolution covering every
-    licensure exam. The 2026 schedule of exam was signed as Resolution No. 2113 on October 23, 2025
-    and published on prc.gov.ph on November 17, 2025. The 2027 schedule is expected on the same
-    cycle — a resolution in late October 2026, posted in mid-November 2026 — and this page will
-    switch to the 2027 dates as soon as it is out. Until then, the 2026 dates above are the working
-    reference: each profession usually keeps the same month of the year from one calendar to the
-    next. PRC can still move individual exams mid-year through separate resolutions, so the table
-    reflects the schedule in force as of the verification date below. To have the {nextYear} dates
-    arrive on their own, open your profession's guide above and subscribe to its calendar: the
-    filing deadlines and exam days are added to it as soon as PRC publishes them.
+    We did not locate a verified {nextYear} schedule in the sources reviewed on
+    <time datetime={scheduleStatus.checked_on}>{scheduleStatus.checked_on}</time>.
+    The {nextYear} exam dates, application windows and testing centers are therefore unconfirmed
+    in this guide. The {prcRules.year} table is not a substitute for the new calendar.
+  </p>
+  <ul>
+    <li><strong>Confirm the year:</strong> open PRC's new calendar or resolution and check that it explicitly covers {nextYear}.</li>
+    <li><strong>Find your profession:</strong> note every exam day, the filing opening and the filing deadline; separate rounds have separate windows.</li>
+    <li><strong>Check later notices:</strong> subsequent PRC resolutions and programs can amend dates or testing centers.</li>
+    <li><strong>File through LERIS:</strong> use <a href="https://online.prc.gov.ph/">online.prc.gov.ph</a> and the official documentary requirements for your profession.</li>
+  </ul>
+  <p>
+    PRC posted the {prcRules.year} calendar on
+    <a href={scheduleStatus.previous_release_url}>November 17, 2025</a>. That is historical context,
+    not a confirmed publication date for the {nextYear} calendar. New dates will appear here and
+    in the exam calendar feeds after we verify and publish them. See the
+    <a href="/nursing-board-exam-schedule/#pnle-2027">PNLE {nextYear} status</a> for nursing, or choose
+    your profession's guide above for requirements and filing steps.
   </p>
 
   <h2>Official Source</h2>

@@ -8,6 +8,8 @@
  */
 import ToolPageLayout from '../layouts/ToolPageLayout.astro';
 import PrcSubscribe from '../components/PrcSubscribe.astro';
+import PrcScheduleStatus from '../components/PrcScheduleStatus.astro';
+import scheduleStatus from '../data/prc/next-schedule-status.json';
 import prcRules from '../data/prc/2026.json';
 import { PRC_PROFESSIONS, resolveGroup, scheduleSentence } from '../lib/prcProfessions';
 import { PROFESSION_PAGES, type ProfessionPage } from '../lib/prcProfessionPages';
@@ -78,7 +80,7 @@ const latestResults = !latest
         latestPct ? `: ${latest.passers!.toLocaleString('en-PH')} of ${latest.examinees!.toLocaleString('en-PH')} passed (${latestPct}%)` : ''
       }.`
     : latest.results_target
-      ? `${rounds.length === 1 ? 'Results' : `Results of the ${latest.dates_display} exam`}: PRC's target release date is ${fmt(latest.results_target)}.`
+      ? `${rounds.length === 1 ? 'Results' : `Results of the ${latest.dates_display} exam`}: PRC's scheduled target ${latest.results_target < today ? 'was' : 'is'} ${fmt(latest.results_target)}.${latest.results_target < today ? ' We have not verified the actual release in our data; check PRC for the announcement.' : ''}`
       : `PRC has not announced the results date for the ${latest.dates_display} exam.`;
 const fillYears = (t: string): string => t.replaceAll('{year}', String(year)).replaceAll('{next}', String(nextYear));
 const monthOf = (d: string): string => new Date(d + 'T00:00:00').toLocaleDateString('en-PH', { month: 'long' });
@@ -138,7 +140,7 @@ const nextRoundSentence = next
           : `The LERIS filing window closed on ${fmt(next.application_deadline)}.`
         : ''
     } PRC's target results date is ${fmt(next.results_target)}.`
-  : `All ${year} rounds have been held. The next ${page.shortName} is in ${nextYear}; PRC has not published the ${nextYear} calendar yet — it normally posts the whole following-year schedule on prc.gov.ph in mid-November, so expect the dates around November ${year}.`;
+  : `All ${year} rounds have been held. We did not locate verified ${nextYear} dates in our PRC source review on ${fmt(scheduleStatus.checked_on)}. The previous year's exam months and filing windows do not confirm the next schedule; check PRC for later announcements.`;
 
 const datasetSchema = {
   '@context': 'https://schema.org',
@@ -178,7 +180,7 @@ const targetsHtml = joinList(
 );
 /* All-held description: longest variant that fits 158 chars. */
 const heldDescription = (() => {
-  const head = `All ${year} ${page.shortName} rounds are done. ${nextYear} dates: not out yet — PRC posts them in mid-November`;
+  const head = `All ${year} ${page.shortName} rounds are done. ${nextYear} dates: not verified in our last PRC source check`;
   const results = !latest
     ? ''
     : latest.results_released && latestPct
@@ -217,7 +219,7 @@ const resultsDescription = (() => {
   const target = `PRC's results target is ${fmtShort(resultsRound.results_target)}.`;
   return (
     [
-      `${lead} ${target} ${nextYear} dates: not out yet — PRC posts them in mid-November.`,
+      `${lead} ${target} ${nextYear} dates: not verified in our last PRC source check.`,
       `${lead} ${target} Passing score, past results and a calendar you can subscribe to.`,
       `${lead} ${target}`,
     ].find((d) => d.length <= 158) ?? null
@@ -265,7 +267,7 @@ const faqs = [
   },
   {
     q: `When will PRC release the ${page.shortName} ${nextYear} schedule?`,
-    a: `PRC publishes the whole following-year calendar in one resolution, usually signed in late October and posted on prc.gov.ph in mid-November — the ${year} schedule (Resolution No. 2113, s. 2025) was signed on October 23, 2025 and posted on November 17, 2025. Expect the ${page.shortName} ${nextYear} dates around November ${year}; this page switches to them as soon as they are out.`,
+    a: `We did not locate a confirmed ${nextYear} release date in our PRC source review on ${fmt(scheduleStatus.checked_on)}. PRC posted its ${year} calendar on November 17, 2025; this does not confirm the next year's publication date. Check PRC announcements for notices after our review.`,
   },
   ...(page.retake
     ? [{ q: `Is there a limit on retaking the ${page.shortName}?`, a: `${page.retake.text} (${cite(page.retake.cite)})` }]
@@ -293,9 +295,8 @@ const faqs = [
       <p>
         <strong>All {year} rounds of the {page.examName} have been held</strong>
         ({rounds.map((r) => r.dates_display).join(' and ')}). {latestResults}{' '}
-        <strong>The next {page.shortName} is in {nextYear}.</strong> PRC has not published the {nextYear}
-        calendar yet — it normally posts the whole next-year schedule in mid-November (the {year} one went
-        up on November 17, 2025).{' '}
+        <strong>Looking for the {nextYear} schedule?</strong> Its dates remain unconfirmed in this
+        guide; see our dated source check below.{' '}
         {latest?.results_released && (
           <Fragment>
             Passing rates for every {year} release are on the{' '}
@@ -317,6 +318,7 @@ const faqs = [
         Target results date: {fmt(next.results_target)}.
       </p>
     )}
+    {allHeld && <PrcScheduleStatus name={page.shortName} />}
     <PrcSubscribe slug={page.slug} name={page.shortName} nextYear={nextYear} upcoming={!allHeld} />
   </Fragment>
 
@@ -425,15 +427,15 @@ const faqs = [
     </Fragment>
   )}
 
-  <h2>{page.headingName} {nextYear} Schedule: When PRC Publishes It</h2>
+  <h2>{page.headingName} {nextYear} Schedule: Official Source Status</h2>
+  {!allHeld && <PrcScheduleStatus name={page.shortName} />}
   <p>
-    PRC has <strong>not yet released the {nextYear} schedule</strong>. It publishes the whole
-    following-year calendar in one resolution, usually signed in late October and posted on prc.gov.ph
-    in mid-November — the {year} schedule (Resolution No. 2113, s. 2025) was signed on October 23, 2025
-    and posted on November 17, 2025 — so the {page.shortName} {nextYear} dates are most likely out in
-    November {year}. Each profession usually keeps the same months from one calendar to the next, so
-    the {year} rounds above are the working reference until then. This page switches to the official
-    {nextYear} dates the day PRC publishes them.
+    The {year} dates above are reference for that year only. Check
+    <a href={scheduleStatus.announcements_url}>PRC announcements</a> for the new calendar and any
+    later changes. A previous year's month, filing window or publication date does not confirm
+    {nextYear}'s schedule. We add dates and calendar events after verifying the official source.
+    For the status across professions, see the
+    <a href="/prc-board-exam-schedule/#schedule-2027">PRC {nextYear} calendar status</a>.
   </p>
 
   <h2>Official Source</h2>

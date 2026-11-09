@@ -2,8 +2,7 @@
 /**
  * "Subscribe to this exam's calendar" line for the exam pages. The feed
  * (/data/prc/feed/<slug>.ics) updates itself, so subscribers get next year's
- * dates the day PRC publishes them — the useful answer to "when is the <next
- * year> exam?" while PRC has not released the calendar yet.
+ * dates after we verify and add them. Calendar providers control refresh times.
  */
 import { feedLinks, findFeed } from '../lib/prcFeeds';
 
@@ -24,10 +23,10 @@ const links = feedLinks(slug);
 
 <p class="prc-subscribe">
   <strong>
-    {upcoming ? `Never miss a ${name} filing deadline:` : `Get the ${nextYear} ${name} dates the day PRC posts them:`}
+    {upcoming ? `Subscribe to the ${name} calendar:` : `Follow the ${nextYear} ${name} calendar:`}
   </strong> subscribe to this exam's
   calendar in <a href={links.google} target="_blank" rel="noopener" data-track="subscribe">Google
-  Calendar</a> or <a href={links.webcal} data-track="subscribe">iPhone / Outlook</a>. Filing
-  deadlines, exam days and results dates appear in your calendar and update on their own — no
-  sign-up, no email.
+  Calendar</a> or <a href={links.webcal} data-track="subscribe">iPhone / Outlook</a>.
+  New dates appear after we verify the official schedule and update the feed; your calendar app
+  controls when it refreshes. The feed contains no estimated {nextYear} exam dates. No AyTool account or email is required.
 </p>

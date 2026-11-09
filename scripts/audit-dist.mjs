@@ -65,9 +65,15 @@ function redirectReason(urlPath) {
 
 const pages = htmlPages();
 const indexable = [];
+const pageHtml = new Map(pages.map(({ file, url }) => [url, readFileSync(path.join(DIST, file), 'utf8')]));
+const pageIds = new Map([...pageHtml].map(([url, html]) => {
+  const ids = [...html.matchAll(/<[a-z][^>]*\sid="([^"]+)"/gi)].map((m) => m[1]);
+  if (ids.length !== new Set(ids).size) fail(url, 'duplicate HTML ids can break jump links');
+  return [url, new Set(ids)];
+}));
 
 for (const { file, url } of pages) {
-  const html = readFileSync(path.join(DIST, file), 'utf8');
+  const html = pageHtml.get(url);
   const noindex = /<meta name="robots" content="[^"]*noindex/.test(html);
   const canonical = html.match(/<link rel="canonical" href="([^"]+)"/)?.[1] ?? null;
   const ogUrl = html.match(/<meta property="og:url" content="([^"]+)"/)?.[1] ?? null;
@@ -112,11 +118,21 @@ for (const { file, url } of pages) {
       fail(file, `origin without trailing slash (${ref}) — must be ${ORIGIN}/ to match the home canonical`);
       continue;
     } else if (ref.startsWith('/')) p = ref;
-    else continue; // external, #fragment, mailto:, data:
+    else if (ref.startsWith('#')) p = `${url}${ref}`;
+    else continue; // external, mailto:, data:
 
     const reason = redirectReason(p);
     if (reason) fail(file, `link would 301 (${reason}): ${ref}`);
     else if (!resolves(p)) fail(file, `link has no file behind it (404): ${ref}`);
+    const targetPath = p.replace(/[?#].*$/, '');
+    const hash = p.includes('#') ? p.slice(p.indexOf('#') + 1).split(':~:text=')[0] : '';
+    if (hash && pageIds.has(targetPath)) {
+      try {
+        if (!pageIds.get(targetPath).has(decodeURIComponent(hash))) fail(file, `jump link target is missing: ${ref}`);
+      } catch {
+        fail(file, `invalid encoded jump link: ${ref}`);
+      }
+    }
   }
 }
 

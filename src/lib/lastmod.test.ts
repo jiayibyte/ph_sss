@@ -24,6 +24,16 @@ describe('lastmod', () => {
     }
   });
 
+  it('exam source checks and subscription copy participate in page freshness', () => {
+    for (const p of Object.keys(PAGE_DATA).filter((p) => p.endsWith('-board-exam-schedule/'))) {
+      const sources = pageSourceFiles(p);
+      expect(sources).toContain('src/data/prc/next-schedule-status.json');
+      expect(sources).toContain('src/components/PrcScheduleStatus.astro');
+      if (p !== '/prc-board-exam-schedule/') expect(sources).toContain('src/components/PrcSubscribe.astro');
+    }
+    expect(pageSourceFiles('/sss-contribution-table/')).not.toContain('src/data/prc/next-schedule-status.json');
+  });
+
   it('every calculator/schedule page that renders rule data is registered', () => {
     // Prose-only guides (OEC, the four "how to get a number" pages) render no dataset.
     const proseOnly = new Set([

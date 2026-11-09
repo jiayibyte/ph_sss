@@ -92,6 +92,7 @@ if (faqs.length > 0) {
 }
 
 const relatedPages: PageRef[] = related.map((k) => TOOL_PAGES[k]);
+const relatedHeading = pagePath.includes('board-exam') ? 'Related Board Exam Guides and Tools' : 'Related Philippine Payroll Calculators';
 
 /* Body with an id on every <h2>, plus an "On this page" list for long pages
    (src/lib/toc.ts). Ids used by the layout itself are reserved. */
@@ -208,8 +209,8 @@ const showToc = toc.length >= 5;
       )
     }
 
-    <section class="mt-12" aria-label="Related Philippine payroll calculators" data-nosnippet>
-      <h2 class="text-lg font-bold text-ink">Related Philippine Payroll Calculators</h2>
+    <section class="mt-12" aria-label={relatedHeading} data-nosnippet>
+      <h2 class="text-lg font-bold text-ink">{relatedHeading}</h2>
       <ul class="mt-3 grid gap-3 sm:grid-cols-2">
         {
           relatedPages.map((r) => (

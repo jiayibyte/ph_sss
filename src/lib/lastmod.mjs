@@ -180,9 +180,15 @@ export const PAGE_SOURCE = Object.fromEntries(
 
 /** Repo-relative source files that render a page path ("/" or "/slug/"). */
 export function pageSourceFiles(pagePath) {
-  if (PAGE_SOURCE[pagePath]) return PAGE_SOURCE[pagePath];
-  if (pagePath === '/') return ['src/pages/index.astro'];
-  return [`src/pages/${pagePath.replace(/^\/|\/$/g, '')}.astro`];
+  const files = PAGE_SOURCE[pagePath] ?? (pagePath === '/'
+    ? ['src/pages/index.astro', 'src/lib/pages.ts']
+    : [`src/pages/${pagePath.replace(/^\/|\/$/g, '')}.astro`]);
+  if (pagePath.endsWith('-board-exam-schedule/')) {
+    return [...files, 'src/layouts/ToolPageLayout.astro', 'src/components/PrcScheduleStatus.astro', 'src/data/prc/next-schedule-status.json',
+      ...(pagePath === '/prc-board-exam-schedule/' ? [] : ['src/components/PrcSubscribe.astro']),
+      ...(pagePath === '/nursing-board-exam-schedule/' ? ['src/data/prc/pnle-history.json'] : [])];
+  }
+  return files;
 }
 
 /** First source file of a page (kept for callers that want one path). */

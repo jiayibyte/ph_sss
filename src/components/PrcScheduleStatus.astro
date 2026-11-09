@@ -1,0 +1,21 @@
+---
+import status from '../data/prc/next-schedule-status.json';
+
+interface Props { name?: string }
+const { name = 'PRC board exam' } = Astro.props;
+const checkedLabel = new Date(`${status.checked_on}T00:00:00+08:00`).toLocaleDateString('en-PH', {
+  timeZone: 'Asia/Manila', month: 'long', day: 'numeric', year: 'numeric',
+});
+---
+
+<aside class="my-3 rounded-lg border border-line bg-surface-soft p-3 text-sm leading-relaxed" aria-label={`${status.year} schedule source check`}>
+  <p>
+    <strong>{status.year} {name} source check:</strong> We did not locate an official {status.year}
+    schedule in the PRC sources reviewed on <time datetime={status.checked_on}>{checkedLabel}</time>.
+  </p>
+  <p class="mt-2">
+    Sources reviewed: <a href={status.calendar_url} target="_blank" rel="noopener">PRC's {status.year - 1} calendar</a>
+    {' '}and its <a href={status.previous_release_url} target="_blank" rel="noopener">schedule announcement</a>.
+    Check <a href={status.announcements_url} target="_blank" rel="noopener">PRC announcements</a> for later notices.
+  </p>
+</aside>
