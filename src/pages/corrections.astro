@@ -1,0 +1,24 @@
+---
+import InfoPageLayout from '../layouts/InfoPageLayout.astro';
+import { CORRECTIONS, formatEditorialDate } from '../lib/editorial';
+import { SITE } from '../../site.config';
+---
+<InfoPageLayout title="Public Corrections – What Changed and Why | AyTool"
+  description="AyTool's material factual corrections: dates, affected pages, earlier statements, changes and supporting sources, plus how to report an error."
+  path="/corrections/" h1="Public Correction Log">
+  <p>These entries document material corrections actually published by AyTool. They are a record
+    of what changed, not a claim that the rest of the site has received independent professional review.</p>
+  {CORRECTIONS.map((c) => <section class="my-5 rounded-lg border border-line bg-surface p-4">
+    <h2>{c.title}</h2>
+    <p><time datetime={c.date}>{formatEditorialDate(c.date)}</time> · Published correction</p>
+    <p><strong>Earlier statement:</strong> {c.before}</p>
+    <p><strong>Correction:</strong> {c.after}</p>
+    <p>Affected pages: {c.pages.map((path, i) => <Fragment>{i > 0 && ', '}<a href={path}>{path.replaceAll('/', '')}</a></Fragment>)}</p>
+    <ul>{c.sources.map((url) => <li><a href={url} target="_blank" rel="noopener">{new URL(url).hostname}: supporting source</a></li>)}</ul>
+  </section>)}
+  <h2>Report an error</h2>
+  <p>Email <a href={`mailto:${SITE.contactEmail}`}>{SITE.contactEmail}</a> with the page URL, the exact
+    statement and an official source or reproducible calculation. For a calculation issue, use a
+    fictional example; do not send government IDs, passwords or a real payslip.</p>
+  <p>See the <a href="/editorial-policy/">editorial policy</a> for the review and correction process.</p>
+</InfoPageLayout>

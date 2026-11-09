@@ -199,7 +199,17 @@ const faqs = [
   faqs={faqs}
   related={['prc', 'letSchedule', 'criminologySchedule', 'physicianSchedule']}
   isApp={false}
-  extraSchema={[datasetSchema, ...eventSchema]}
+  extraSchema={[datasetSchema, ...eventSchema, {
+    '@context': 'https://schema.org', '@type': 'Dataset', name: `PNLE Results History ${historyFrom}–${historyTo}`,
+    description: 'Independent transcription of PRC result counts and release dates; pass rates are calculated as passers divided by examinees.',
+    url: `${SITE.url}/nursing-board-exam-schedule/#pnle-results-history-2019-2026-pass-rates-exam-months-and-re`,
+    creator: { '@type': 'Organization', name: SITE.name, url: `${SITE.url}/` },
+    dateModified: pnleHistory.meta.last_verified, isBasedOn: pnleHistory.meta.official_source_url,
+    distribution: [
+      { '@type': 'DataDownload', encodingFormat: 'text/csv', contentUrl: `${SITE.url}/data/pnle-results-history.csv` },
+      { '@type': 'DataDownload', encodingFormat: 'application/json', contentUrl: `${SITE.url}/data/pnle-results-history.json` },
+    ],
+  }]}
 >
   <Fragment slot="answer">
     <p>
@@ -420,6 +430,9 @@ const faqs = [
     is no longer online; the text was confirmed from the Internet Archive’s copy of the same URL.
     Last verified {fmt(pnleHistory.meta.last_verified)}.
   </p>
+
+  <p><a href="/data/pnle-results-history.csv" download="aytool-pnle-results-history.csv">Download the PNLE results history as CSV</a> ·
+    <a href="/data/pnle-results-history.json">View JSON</a> · <a href="/data/">Statistical methods and field definitions</a>.</p>
 
   <h2>Retakes</h2>
   <p>

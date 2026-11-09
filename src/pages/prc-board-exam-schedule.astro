@@ -79,6 +79,7 @@ const datasetSchema = {
       encodingFormat: 'application/json',
       contentUrl: `${SITE.url}/data/prc-board-exam-schedule-2026.json`,
     },
+    { '@type': 'DataDownload', encodingFormat: 'text/csv', contentUrl: `${SITE.url}/data/prc-board-exam-schedule-2026.csv` },
   ],
   temporalCoverage: `${meta.effective_from}/${meta.effective_to}`,
   spatialCoverage: { '@type': 'Place', name: 'Philippines' },
@@ -179,6 +180,9 @@ const faqs = [
   </Fragment>
 
   <PrcProfessionSections />
+
+  <p><a href="/data/prc-board-exam-schedule-2026.csv" download="aytool-prc-exams-2026.csv">Download this 2026 calendar as CSV</a> ·
+    <a href="/data/">Data definitions, sources and reuse guidance</a>.</p>
 
   <h2>How to Use This Schedule</h2>
   <ul>

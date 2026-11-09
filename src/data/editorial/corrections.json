@@ -1,0 +1,86 @@
+[
+  {
+    "date": "2026-11-09",
+    "title": "Corrected the PNLE retake explanation and first-timer checklist",
+    "pages": [
+      "/nursing-board-exam-schedule/"
+    ],
+    "before": "The guide attributed a mandatory refresher after three failed PNLE attempts to RA 9173 and omitted the school-signed undertaking from its document summary.",
+    "after": "Removed the unsupported refresher claim, linked the conditional-retake rule in Section 15, and added the notarized Certificate of Undertaking listed by PRC for nursing first-timers.",
+    "sources": [
+      "https://www.prc.gov.ph/list-of-requirements",
+      "https://www.prc.gov.ph/sites/default/files/Nursing%20-%20Board%20Law_0.pdf"
+    ]
+  },
+  {
+    "date": "2026-11-09",
+    "title": "Separated unconfirmed 2027 exam dates from historical calendars",
+    "pages": [
+      "/prc-board-exam-schedule/",
+      "/nursing-board-exam-schedule/",
+      "/let-board-exam-schedule/",
+      "/criminology-board-exam-schedule/",
+      "/cpa-board-exam-schedule/",
+      "/civil-engineering-board-exam-schedule/",
+      "/physician-board-exam-schedule/",
+      "/pharmacy-board-exam-schedule/",
+      "/midwifery-board-exam-schedule/",
+      "/psychometrician-board-exam-schedule/",
+      "/radtech-board-exam-schedule/",
+      "/medtech-board-exam-schedule/",
+      "/electrical-engineering-board-exam-schedule/",
+      "/mechanical-engineering-board-exam-schedule/",
+      "/architecture-board-exam-schedule/",
+      "/electronics-engineering-board-exam-schedule/",
+      "/dentistry-board-exam-schedule/",
+      "/social-work-board-exam-schedule/",
+      "/agriculturist-board-exam-schedule/",
+      "/customs-broker-board-exam-schedule/",
+      "/chemical-engineering-board-exam-schedule/",
+      "/veterinarian-board-exam-schedule/",
+      "/physical-therapy-board-exam-schedule/",
+      "/nutritionist-dietitian-board-exam-schedule/"
+    ],
+    "before": "The PNLE guide showed a countdown based on adding one year to a previous exam date; exam guides described a mid-November calendar release too definitively.",
+    "after": "Removed the estimated countdown, added a dated source-check record, and identified future dates and publication timing as unconfirmed. The same publication-timing correction was applied to the profession-page template.",
+    "sources": [
+      "https://www.prc.gov.ph/2026-schedule-examination",
+      "https://www.prc.gov.ph/article/schedule-licensure-examinations-year-2026"
+    ]
+  },
+  {
+    "date": "2026-11-09",
+    "title": "Clarified when calendar subscriptions receive new dates",
+    "pages": [
+      "/prc-board-exam-schedule/",
+      "/nursing-board-exam-schedule/",
+      "/let-board-exam-schedule/",
+      "/criminology-board-exam-schedule/",
+      "/cpa-board-exam-schedule/",
+      "/civil-engineering-board-exam-schedule/",
+      "/physician-board-exam-schedule/",
+      "/pharmacy-board-exam-schedule/",
+      "/midwifery-board-exam-schedule/",
+      "/psychometrician-board-exam-schedule/",
+      "/radtech-board-exam-schedule/",
+      "/medtech-board-exam-schedule/",
+      "/electrical-engineering-board-exam-schedule/",
+      "/mechanical-engineering-board-exam-schedule/",
+      "/architecture-board-exam-schedule/",
+      "/electronics-engineering-board-exam-schedule/",
+      "/dentistry-board-exam-schedule/",
+      "/social-work-board-exam-schedule/",
+      "/agriculturist-board-exam-schedule/",
+      "/customs-broker-board-exam-schedule/",
+      "/chemical-engineering-board-exam-schedule/",
+      "/veterinarian-board-exam-schedule/",
+      "/physical-therapy-board-exam-schedule/",
+      "/nutritionist-dietitian-board-exam-schedule/"
+    ],
+    "before": "Subscription copy promised new exam dates on the day PRC published them.",
+    "after": "Clarified that AyTool must verify and publish the dates first, and that the subscriber's calendar provider controls refresh timing. No estimated 2027 exam events were added.",
+    "sources": [
+      "https://github.com/jiayibyte/ph_sss/blob/master/src/lib/prcFeeds.ts"
+    ]
+  }
+]

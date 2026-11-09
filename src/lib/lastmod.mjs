@@ -85,6 +85,8 @@ export const PAGE_DATA = {
   '/physical-therapy-board-exam-schedule/': ['prc'],
   '/nutritionist-dietitian-board-exam-schedule/': ['prc'],
   '/sources/': DATASETS,
+  '/data/': ['prc'],
+  '/calculation-examples/': ['sss', 'labor'],
 };
 
 const ISO_DATE = /^\d{4}-\d{2}-\d{2}$/;
@@ -183,12 +185,25 @@ export function pageSourceFiles(pagePath) {
   const files = PAGE_SOURCE[pagePath] ?? (pagePath === '/'
     ? ['src/pages/index.astro', 'src/lib/pages.ts']
     : [`src/pages/${pagePath.replace(/^\/|\/$/g, '')}.astro`]);
-  if (pagePath.endsWith('-board-exam-schedule/')) {
-    return [...files, 'src/layouts/ToolPageLayout.astro', 'src/components/PrcScheduleStatus.astro', 'src/data/prc/next-schedule-status.json',
-      ...(pagePath === '/prc-board-exam-schedule/' ? [] : ['src/components/PrcSubscribe.astro']),
-      ...(pagePath === '/nursing-board-exam-schedule/' ? ['src/data/prc/pnle-history.json'] : [])];
+  const sourceText = files.filter((f) => f.endsWith('.astro') && existsSync(path.join(ROOT, f)))
+    .map((f) => readFileSync(path.join(ROOT, f), 'utf8')).join('\n');
+  const dependencies = [];
+  if (sourceText.includes('/ToolPageLayout.astro') || pagePath === '/calculation-examples/') {
+    dependencies.push('src/layouts/ToolPageLayout.astro', 'src/components/ContentEvidence.astro',
+      'src/lib/pageEvidence.ts', 'src/lib/editorial.ts');
   }
-  return files;
+  if (sourceText.includes('/InfoPageLayout.astro')) dependencies.push('src/layouts/InfoPageLayout.astro', 'src/lib/editorial.ts');
+  if (pagePath === '/corrections/' || pagePath === '/nursing-board-exam-schedule/' || pagePath === '/prc-board-exam-schedule/') {
+    dependencies.push('src/data/editorial/corrections.json');
+  }
+  if (pagePath === '/data/') dependencies.push('src/data/prc/pnle-history.json');
+  if (pagePath === '/calculation-examples/') dependencies.push('src/lib/engine/sss.ts', 'src/lib/engine/thirteenthMonth.ts', 'src/lib/engine/labor.ts');
+  if (pagePath.endsWith('-board-exam-schedule/')) {
+    dependencies.push('src/components/PrcScheduleStatus.astro', 'src/data/prc/next-schedule-status.json',
+      ...(pagePath === '/prc-board-exam-schedule/' ? [] : ['src/components/PrcSubscribe.astro']),
+      ...(pagePath === '/nursing-board-exam-schedule/' ? ['src/data/prc/pnle-history.json'] : []));
+  }
+  return [...new Set([...files, ...dependencies])];
 }
 
 /** First source file of a page (kept for callers that want one path). */

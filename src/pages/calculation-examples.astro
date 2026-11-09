@@ -1,0 +1,50 @@
+---
+import InfoPageLayout from '../layouts/InfoPageLayout.astro';
+import ContentEvidence from '../components/ContentEvidence.astro';
+import sss from '../data/sss/2026.json';
+import labor from '../data/labor/2026.json';
+import { computeSss } from '../lib/engine/sss';
+import { compute13thMonthSimple } from '../lib/engine/thirteenthMonth';
+import { computeOvertime } from '../lib/engine/labor';
+import type { SssRules, LaborRules } from '../lib/rules/types';
+import { peso } from '../lib/format';
+const salary = 20000;
+const contribution = computeSss(salary, 'employee', sss as unknown as SssRules);
+const bonus = compute13thMonthSimple(salary, 6, labor.thirteenth_month.divisor);
+const hourly = 100;
+const overtime = computeOvertime(hourly, 3, 'ordinary', 0, labor as unknown as LaborRules);
+---
+<InfoPageLayout title="Philippine Payroll Calculation Examples – Steps and Sources"
+  description="Worked SSS, 13th month pay and overtime examples with fictional inputs, calculation steps, source records and the same engines used by AyTool calculators."
+  path="/calculation-examples/" h1="Worked Payroll Calculation Examples">
+  <p>These fictional examples show the inputs, rules and outputs of the same calculation functions
+    used by the live tools. They demonstrate the calculation under the stated assumptions and
+    recorded rules; they are not individual payroll advice or independent professional certification.</p>
+  <h2>SSS: an employed member earning {peso(salary)} per month</h2>
+  <ol>
+    <li>Look up the employee's applicable salary bracket in the contribution table. This example maps to monthly salary credit {peso(contribution.msc)}.</li>
+    <li>Read the employee share from that row: <strong>{peso(contribution.employeeShare)}</strong>.</li>
+    <li>The employer share is {peso(contribution.employerShare)}, plus Employees' Compensation of {peso(contribution.ec)} paid by the employer.</li>
+    <li>The combined contribution, including EC, is {peso(contribution.total)}; the employee personally pays {peso(contribution.memberPays)}.</li>
+  </ol>
+  <p>Changing the member type, salary bracket or applicable rules can change the result.
+    <a href="/sss-contribution-calculator/">Open the SSS calculator</a> or
+    <a href="/sss-contribution-table/">inspect the source-linked table</a>.</p>
+  <h2>13th month pay: {peso(salary)} basic salary for six full months</h2>
+  <ol>
+    <li>Basic salary actually earned in this example: {peso(salary)} × 6 = {peso(bonus.totalBasicSalary)}.</li>
+    <li>Divide by {bonus.divisor}: {peso(bonus.totalBasicSalary)} ÷ {bonus.divisor} = <strong>{peso(bonus.amount)}</strong>.</li>
+  </ol>
+  <p>This simplified example assumes the same basic salary for each full month. Use the
+    month-by-month mode for salary changes or unpaid periods.
+    <a href="/13th-month-pay-calculator/">Open the 13th month pay calculator</a>.</p>
+  <h2>Ordinary-day overtime: three hours at {peso(hourly)} basic hourly pay</h2>
+  <ol>
+    <li>Apply the ordinary-day factor from the labor rules: {peso(hourly)} × {overtime.otFactor} = {peso(overtime.otHourly)} per overtime hour.</li>
+    <li>Multiply by three overtime hours: {peso(overtime.otHourly)} × 3 = <strong>{peso(overtime.total)}</strong>.</li>
+  </ol>
+  <p>This is overtime pay only, excluding ordinary hours. The example uses an ordinary day and no
+    night overtime. Holidays, rest days and night work use different inputs.
+    <a href="/overtime-pay-calculator/">Open the overtime calculator</a>.</p>
+  <ContentEvidence pagePath="/calculation-examples/" bodyHtml="" />
+</InfoPageLayout>

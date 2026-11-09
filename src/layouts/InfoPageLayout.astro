@@ -1,0 +1,14 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import { MAINTAINER } from '../lib/editorial';
+interface Props { title: string; description: string; path: string; h1: string; schema?: Record<string, unknown>[] }
+const { title, description, path, h1, schema = [] } = Astro.props;
+---
+<BaseLayout title={title} description={description} path={path} pageName={h1} schema={schema}>
+  <article class="content-prose mx-auto max-w-content px-4 py-8">
+    <p class="text-sm"><a href="/">Home</a> / About this site</p>
+    <h1 class="text-2xl font-bold leading-tight text-ink sm:text-3xl">{h1}</h1>
+    <p class="text-sm text-ink-soft">Maintained by <a href={MAINTAINER.path}>{MAINTAINER.name}</a></p>
+    <slot />
+  </article>
+</BaseLayout>

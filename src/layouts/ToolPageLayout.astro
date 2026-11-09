@@ -8,6 +8,8 @@ import { TOOL_PAGES, type PageRef } from '../lib/pages';
 import { pageDates } from '../lib/lastmod.mjs';
 import { embedSnippet as buildEmbedSnippet } from '../lib/embed';
 import { withHeadingIds } from '../lib/toc';
+import ContentEvidence from '../components/ContentEvidence.astro';
+import { MAINTAINER } from '../lib/editorial';
 
 export interface Faq {
   q: string;
@@ -100,6 +102,7 @@ const { html: bodyHtml, toc: bodyToc } = withHeadingIds(await Astro.slots.render
   'main',
   'faq',
   'all-calculators',
+  'page-evidence',
 ]);
 const toc = faqs.length > 0 ? [...bodyToc, { id: 'faq', text: 'Frequently Asked Questions' }] : bodyToc;
 const showToc = toc.length >= 5;
@@ -122,6 +125,7 @@ const showToc = toc.length >= 5;
       </ol>
     </nav>
     <h1 class="text-2xl font-bold leading-tight text-ink sm:text-3xl">{h1}</h1>
+    <p class="mt-2 text-xs text-ink-soft">Maintained by <a href={MAINTAINER.path} class="underline">{MAINTAINER.name}</a> · <a href="#page-evidence" class="underline">Sources and review record</a></p>
     <div class="answer-first mt-3 text-[15px] leading-relaxed text-ink">
       <slot name="answer" />
     </div>
@@ -171,6 +175,8 @@ const showToc = toc.length >= 5;
       }
       <Fragment set:html={bodyHtml} />
     </div>
+
+    <ContentEvidence pagePath={pagePath} bodyHtml={bodyHtml} />
 
     {
       ogImage && (

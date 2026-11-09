@@ -1,0 +1,36 @@
+---
+import InfoPageLayout from '../layouts/InfoPageLayout.astro';
+import { SITE } from '../../site.config';
+---
+<InfoPageLayout title="For Educators and Publishers – Data, Widgets and Review | AyTool"
+  description="Resources for educators, review centers and publishers: source-linked exam data, calculator widgets, attribution guidance and professional review proposals."
+  path="/for-publishers/" h1="For Educators, Reviewers and Publishers">
+  <p>Schools, review centers, payroll practitioners and publishers can use these resources to
+    explain a calculation or help readers find official examination information.</p>
+  <h2>Resources you can inspect and cite</h2>
+  <ul>
+    <li><a href="/data/">PRC and PNLE data library</a> — CSV and JSON downloads with source links and field definitions.</li>
+    <li><a href="/free-calculator-widgets/">Embeddable calculators</a> — existing widgets and instructions for your own website.</li>
+    <li><a href="/calculation-examples/">Worked calculation examples</a> — inputs, calculation steps, results and the rules used.</li>
+    <li><a href="/corrections/">Public corrections</a> — material changes that may affect something you previously cited.</li>
+  </ul>
+  <h2>Attribution example</h2>
+  <blockquote>Source: AyTool, “PNLE schedule and results history”, retrieved on [your retrieval date],
+    compiled from the PRC press releases linked for each sitting.</blockquote>
+  <p>Link the title to <a href="/nursing-board-exam-schedule/">the canonical PNLE guide</a> and cite
+    the underlying PRC notice for the specific fact you use. AyTool is an independent compilation;
+    citing it does not make an estimate official or imply government endorsement.</p>
+  <h2>Propose a professional review</h2>
+  <p>If you have relevant Philippine nursing, teaching, payroll or accountancy experience, email
+    <a href={`mailto:${SITE.contactEmail}?subject=AyTool%20professional%20review%20proposal`}>{SITE.contactEmail}</a>
+    with your public professional background, the page and subject you can review, and any conflicts
+    of interest. A proposal is not a completed review. Published credits require a completed review,
+    an agreed scope and your permission to be named.</p>
+  <h2>Tell us about a published use</h2>
+  <p>If your school, publication or organization has used a resource, send the public page URL to
+    <a href={`mailto:${SITE.contactEmail}?subject=AyTool%20published%20resource%20use`}>{SITE.contactEmail}</a>.
+    Verifiable references can then be recorded accurately. No institutional endorsement or review
+    credit is inferred from a link, inquiry or unpublished proposal.</p>
+  <p>See the <a href="/editorial-policy/">editorial and review policy</a> and
+    <a href="/about/maintainer/">maintainer profile</a>.</p>
+</InfoPageLayout>

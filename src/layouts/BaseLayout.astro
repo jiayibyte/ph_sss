@@ -4,6 +4,7 @@ import { SITE, NOT_AFFILIATED } from '../../site.config';
 import { TOOL_PAGES, TRUST_PAGES, FOOTER_GROUPS } from '../lib/pages';
 import { pageDates } from '../lib/lastmod.mjs';
 import EngagementBeacon from '../components/EngagementBeacon.astro';
+import { AUTHOR, MAINTAINER } from '../lib/editorial';
 
 interface Props {
   title: string;
@@ -44,6 +45,7 @@ const organizationRef = { '@type': 'Organization', name: SITE.name, url: siteHom
 const organizationSchema = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
+  '@id': `${SITE.url}/#organization`,
   name: SITE.name,
   url: siteHome,
   logo: `${SITE.url}/icon-512.png`,
@@ -68,6 +70,7 @@ const webPageSchema = noindex
       dateModified: modified,
       isPartOf: { '@type': 'WebSite', name: SITE.name, url: siteHome },
       publisher: organizationRef,
+      author: AUTHOR,
       /* The share card is also rendered in the body (ToolPageLayout), so it is the
          one image Google can pick as the mobile result thumbnail. */
       image: ogImage,
@@ -214,6 +217,9 @@ const navLinks = [
           <p class="flex items-center gap-2 font-bold text-ink">AyTool</p>
           <p class="mt-2 text-sm italic text-ink-soft">{SITE.slogan}</p>
           <p class="mt-3 text-xs leading-relaxed text-ink-soft">{NOT_AFFILIATED}</p>
+          <p class="mt-3 text-xs text-ink-soft">
+            Maintained by <a href={MAINTAINER.path} class="underline">{MAINTAINER.name}</a>.
+          </p>
           <p class="mt-3 text-xs text-ink-soft">
             Questions or corrections: <a
               class="underline hover:text-accent-strong"

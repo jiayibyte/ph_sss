@@ -1,0 +1,45 @@
+---
+import InfoPageLayout from '../layouts/InfoPageLayout.astro';
+import history from '../data/prc/pnle-history.json';
+import prc from '../data/prc/2026.json';
+import { formatEditorialDate } from '../lib/editorial';
+const held = history.rounds.filter((r) => r.first_date !== null && r.passers !== null && r.examinees !== null);
+const minDays = Math.min(...held.map((r) => r.working_days_to_results!));
+const maxDays = Math.max(...held.map((r) => r.working_days_to_results!));
+---
+<InfoPageLayout title="Philippine Exam Data Downloads – PRC and PNLE | AyTool"
+  description="Download source-linked PRC 2026 schedules and PNLE results history as CSV or JSON, with field definitions, verification dates and calculation methods."
+  path="/data/" h1="Exam Data and Download Library">
+  <p>These files are AyTool's independent transcriptions and calculations from linked PRC sources.
+    Downloads use the same records as the guides; they are not an official PRC data service.</p>
+  <h2>PRC 2026 examination calendar</h2>
+  <p>{prc.exams.length} scheduled examination entries, including filing windows, target result dates,
+    recorded result releases and source links. Recorded dataset source check:
+    <time datetime={prc.meta.last_verified}>{formatEditorialDate(prc.meta.last_verified)}</time>.</p>
+  <p><a href="/data/prc-board-exam-schedule-2026.csv" download="aytool-prc-exams-2026.csv">Download PRC schedule CSV</a> ·
+    <a href="/data/prc-board-exam-schedule-2026.json">View PRC schedule JSON</a> ·
+    <a href="/prc-board-exam-schedule/">Read the calendar and current status</a></p>
+  <p><strong>Fields:</strong> examination name, displayed dates, first exam date, filing opening and
+    deadline, target release, recorded actual release, passers, examinees, notes and source URLs.
+    A target date is not evidence that results were released. Empty result fields mean not recorded here.</p>
+  <h2>PNLE results history</h2>
+  <p>{history.rounds.length} historical round records, including {held.length} completed sittings with
+    counts and the postponed 2020 rounds. Recorded dataset source check:
+    <time datetime={history.meta.last_verified}>{formatEditorialDate(history.meta.last_verified)}</time>.</p>
+  <p><a href="/data/pnle-results-history.csv" download="aytool-pnle-results-history.csv">Download PNLE history CSV</a> ·
+    <a href="/data/pnle-results-history.json">View PNLE history JSON</a> ·
+    <a href="/nursing-board-exam-schedule/#pnle-results-history-2019-2026-pass-rates-exam-months-and-re">Read the history table</a></p>
+  <h3>How the statistics are calculated</h3>
+  <ul>
+    <li>Pass rate for a sitting = passers ÷ examinees × 100, displayed to two decimal places. Counts come from the linked press release.</li>
+    <li>Working days to results are the values recorded for each round. Among completed records here, they range from {minDays} to {maxDays}; postponed rounds with unavailable counts are excluded.</li>
+    <li>Counts describe exam sittings, not unique people. Do not sum them and label the result as unique nurses or applicants.</li>
+    <li>Null JSON values and blank CSV fields are unavailable or not applicable, not zero. No release date is imputed for a postponed round.</li>
+    <li>Each history row keeps its source URL and verification route. Archive-backed records are identified separately.</li>
+  </ul>
+  <h2>Using and citing these files</h2>
+  <p>Link to the AyTool guide and the original PRC source, identify the year and state when you
+    retrieved the file. Check subsequent official notices before relying on a future date.
+    For attribution examples and embedding options, see <a href="/for-publishers/">For educators and publishers</a>.</p>
+  <p>Found a transcription error? Use the <a href="/corrections/">correction process</a>.</p>
+</InfoPageLayout>

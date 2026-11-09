@@ -484,8 +484,14 @@ export const TOOL_PAGES: Record<string, PageRef> = {
 
 export const TRUST_PAGES: Array<{ href: string; label: string }> = [
   { href: '/about/', label: 'About' },
+  { href: '/about/maintainer/', label: 'Maintainer' },
+  { href: '/editorial-policy/', label: 'Editorial & review policy' },
+  { href: '/corrections/', label: 'Public corrections' },
   { href: '/methodology/', label: 'Methodology' },
   { href: '/sources/', label: 'Sources' },
+  { href: '/data/', label: 'Exam data downloads' },
+  { href: '/calculation-examples/', label: 'Calculation examples' },
+  { href: '/for-publishers/', label: 'For educators & publishers' },
   { href: '/free-calculator-widgets/', label: 'Free widgets for your site' },
   { href: '/privacy/', label: 'Privacy' },
   { href: '/disclaimer/', label: 'Disclaimer' },

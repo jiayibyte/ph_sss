@@ -1,0 +1,39 @@
+---
+import InfoPageLayout from '../../layouts/InfoPageLayout.astro';
+import { MAINTAINER, AUTHOR, PROFESSIONAL_REVIEWS } from '../../lib/editorial';
+import { SITE } from '../../../site.config';
+const schema = [{ '@context': 'https://schema.org', '@type': 'ProfilePage',
+  name: 'AyTool maintainer and publishing responsibility', url: `${SITE.url}${MAINTAINER.path}`,
+  mainEntity: { ...AUTHOR, description: MAINTAINER.role } }];
+---
+<InfoPageLayout title="AyTool Maintainer – Who Prepares and Updates This Site"
+  description="Who maintains AyTool, what the public byline means, how sources and code are checked, and the status of independent professional review."
+  path={MAINTAINER.path} h1="AyTool Maintainer" schema={schema}>
+  <p>“AyTool maintainer” is the public role-based byline for the person responsible for developing,
+    publishing and correcting this independent website. It does not represent a panel of experts.</p>
+  <h2>Work covered by this byline</h2>
+  <ul>
+    <li>Building and maintaining the calculators, exam guides and downloadable datasets.</li>
+    <li>Transcribing source-linked schedules and rules, with recorded verification dates where available.</li>
+    <li>Maintaining calculation tests, links and public corrections.</li>
+  </ul>
+  <p>The <a href="https://github.com/jiayibyte/ph_sss">public project repository</a> provides the source
+    code and revision history. A source link or a passing software test is evidence of that work;
+    it is not proof of a professional qualification.</p>
+  <h2>Professional review and qualifications</h2>
+  <p>No nursing, accountancy, tax-adviser or other regulated professional qualification is claimed
+    by this byline. {PROFESSIONAL_REVIEWS.length === 0 ? 'No completed independent professional reviews are registered at present.' : 'Completed professional reviews are identified on the pages they cover.'}
+    When a qualified reviewer completes a review and agrees to be named, the relevant page will
+    show their public background, the material reviewed, review date and evidence of the review.</p>
+  <h2>How the site is prepared</h2>
+  <p>AI tools assist with software development and draft wording. Official notices, source data
+    and cited rules remain the basis for factual statements. Calculations use versioned data and
+    shared calculation functions. Automated checks are separate from independent professional review.</p>
+  <p>Read the <a href="/editorial-policy/">editorial and review policy</a>,
+    <a href="/methodology/">calculation methodology</a> and <a href="/corrections/">public correction log</a>.</p>
+  <h2>Contact and accountability</h2>
+  <p>Send a page URL, the statement in question and a primary source to
+    <a href={`mailto:${SITE.contactEmail}`}>{SITE.contactEmail}</a>. Useful corrections are checked
+    against the source and material changes are recorded publicly. Contact details do not imply
+    affiliation with PRC or another government agency.</p>
+</InfoPageLayout>
